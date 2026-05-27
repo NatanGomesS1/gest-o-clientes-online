@@ -154,8 +154,18 @@ tr:hover td { background: rgba(0,0,0,0.02); }
 /* POTENTIAL VALUE BAR */
 .pot-bar { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 9px; }
 
-a { color: var(--blue); text-decoration: none; }
-a:hover { text-decoration: underline; }
+/* SENHA */
+.lock-screen { position: fixed; inset: 0; background: var(--bg); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.lock-box { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-xl); padding: 32px 28px; width: 100%; max-width: 360px; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+.lock-box i { font-size: 36px; color: var(--text2); display: block; margin-bottom: 14px; }
+.lock-box h2 { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+.lock-box p { font-size: 13px; color: var(--text2); margin-bottom: 22px; }
+.lock-box input { width: 100%; padding: 11px 14px; border: 0.5px solid var(--border2); border-radius: var(--radius); font-size: 16px; text-align: center; letter-spacing: 0.15em; font-family: inherit; margin-bottom: 12px; transition: border-color 0.12s; }
+.lock-box input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(24,95,165,0.08); }
+.lock-box input.erro { border-color: var(--red); animation: shake 0.3s ease; }
+.lock-box .tentativas { font-size: 11px; color: var(--red); margin-top: 6px; min-height: 16px; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
 
 @media print {
   .nav, .header-actions, .btn, .add-btn, .filter-bar, .modal-overlay, .toast { display: none !important; }
@@ -165,7 +175,24 @@ a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
-<div class="container">
+
+<!-- TELA DE SENHA -->
+<div class="lock-screen" id="lock-screen">
+  <div class="lock-box">
+    <i class="ti ti-lock"></i>
+    <h2>Gestão de Clientes</h2>
+    <p>Digite sua senha para acessar</p>
+    <input type="password" id="senha-input" placeholder="••••••" maxlength="20"
+      onkeydown="if(event.key==='Enter') verificarSenha()"
+      oninput="document.getElementById('senha-input').classList.remove('erro')">
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:10px" onclick="verificarSenha()">
+      <i class="ti ti-arrow-right"></i> Entrar
+    </button>
+    <div class="tentativas" id="tentativas-msg"></div>
+  </div>
+</div>
+
+<div class="container" id="app-container" style="display:none">
   <header>
     <div>
       <h1><i class="ti ti-briefcase" style="font-size:17px;vertical-align:-2px;margin-right:6px"></i>Gestão de Clientes</h1>
@@ -493,6 +520,73 @@ a:hover { text-decoration: underline; }
 <div class="toast" id="toast"></div>
 
 <script>
+// ═══════════════════════════════ SENHA & RATE LIMIT ══════════════════════════
+const SENHA_HASH = '8e84b5bc64b07be8469ef4ea7de5eda0a2a09af7'; // SHA1 de "gestao2026" — troque se quiser
+const MAX_TENTATIVAS = 5;
+const BLOQUEIO_MIN = 10;
+
+async function sha1(str) {
+  const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+async function verificarSenha() {
+  const bloqueioAte = parseInt(localStorage.getItem('bloqueio_ate')||'0');
+  if (Date.now() < bloqueioAte) {
+    const min = Math.ceil((bloqueioAte - Date.now()) / 60000);
+    document.getElementById('tentativas-msg').textContent = `Bloqueado por ${min} min. Tente novamente mais tarde.`;
+    return;
+  }
+
+  const input = document.getElementById('senha-input');
+  const hash = await sha1(input.value);
+  if (hash === SENHA_HASH) {
+    localStorage.setItem('gc_auth', Date.now() + 8*3600000); // sessão 8h
+    localStorage.removeItem('tentativas_senha');
+    document.getElementById('lock-screen').style.display = 'none';
+    document.getElementById('app-container').style.display = 'block';
+    loadAll();
+  } else {
+    input.value = '';
+    input.classList.add('erro');
+    let tent = parseInt(localStorage.getItem('tentativas_senha')||'0') + 1;
+    localStorage.setItem('tentativas_senha', tent);
+    const restam = MAX_TENTATIVAS - tent;
+    if (restam <= 0) {
+      localStorage.setItem('bloqueio_ate', Date.now() + BLOQUEIO_MIN*60000);
+      localStorage.setItem('tentativas_senha', '0');
+      document.getElementById('tentativas-msg').textContent = `Bloqueado por ${BLOQUEIO_MIN} minutos.`;
+    } else {
+      document.getElementById('tentativas-msg').textContent = `Senha incorreta. ${restam} tentativa${restam>1?'s':''} restante${restam>1?'s':''}.`;
+    }
+  }
+}
+
+function checkAuth() {
+  const auth = parseInt(localStorage.getItem('gc_auth')||'0');
+  if (Date.now() < auth) {
+    document.getElementById('lock-screen').style.display = 'none';
+    document.getElementById('app-container').style.display = 'block';
+    return true;
+  }
+  // foco automático no campo de senha
+  setTimeout(() => document.getElementById('senha-input').focus(), 100);
+  return false;
+}
+
+// ═══════════════════════════════ RATE LIMIT (cliente) ════════════════════════
+const RL = { calls: [], max: 60, window: 60000 }; // 60 req/min
+function rateLimitOk() {
+  const now = Date.now();
+  RL.calls = RL.calls.filter(t => now - t < RL.window);
+  if (RL.calls.length >= RL.max) {
+    toast('⚠ Muitas requisições. Aguarde um momento.', 3000);
+    return false;
+  }
+  RL.calls.push(now);
+  return true;
+}
+
 // ═══════════════════════════════════ DATA ═══════════════════════════════════
 const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const now = new Date();
@@ -552,11 +646,13 @@ const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 const SB_HEADERS = { 'Content-Type':'application/json', 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY };
 
 async function sbGet(table) {
+  if (!rateLimitOk()) throw new Error('Rate limit atingido');
   const r = await fetch(`${SB_URL}/rest/v1/${table}?select=*&order=created_at.asc`, { headers: SB_HEADERS });
   if (!r.ok) throw new Error(`Erro ao buscar ${table}: ${r.status}`);
   return r.json();
 }
 async function sbUpsert(table, obj) {
+  if (!rateLimitOk()) throw new Error('Rate limit atingido');
   const r = await fetch(`${SB_URL}/rest/v1/${table}`, {
     method: 'POST',
     headers: { ...SB_HEADERS, 'Prefer': 'resolution=merge-duplicates' },
@@ -565,6 +661,7 @@ async function sbUpsert(table, obj) {
   if (!r.ok) { const t = await r.text(); throw new Error(`Erro ao salvar em ${table}: ${t}`); }
 }
 async function sbDelete(table, id) {
+  if (!rateLimitOk()) throw new Error('Rate limit atingido');
   const r = await fetch(`${SB_URL}/rest/v1/${table}?id=eq.${id}`, { method: 'DELETE', headers: SB_HEADERS });
   if (!r.ok) throw new Error(`Erro ao deletar de ${table}`);
 }
@@ -1453,7 +1550,7 @@ function marcarInadimplente(nomeCliente, pagId) {
 }
 
 // ══════════════════════════════════ INIT ═════════════════════════════════════
-loadAll();
+checkAuth();
 </script>
 </body>
 </html>
