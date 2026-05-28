@@ -1031,8 +1031,9 @@ async function salvarCliente() {
 
 function deletarCliente(id) {
   if (!confirm('Excluir cliente?')) return;
+  const obj = clientes.find(c=>c.id===id);
   clientes = clientes.filter(c=>c.id!==id);
-  persist(); renderClientes(); toast('Cliente removido');
+  persist('clientes', obj, true); renderClientes(); toast('Cliente removido');
 }
 
 function openModalPossivel(id) {
@@ -1075,27 +1076,27 @@ function salvarPossivel() {
   };
   if (id) possiveis=possiveis.map(p=>p.id===id?obj:p);
   else possiveis.push(obj);
-  persist(); closeModal('modal-possivel'); renderClientes(); renderDash(); toast('Salvo!');
+  closeModal('modal-possivel'); renderClientes(); renderDash();
+  await persist('possiveis', obj); toast('Salvo!');
 }
 
 function deletarPossivel(id) {
   if (!confirm('Excluir?')) return;
+  const obj = possiveis.find(p=>p.id===id);
   possiveis=possiveis.filter(p=>p.id!==id);
-  persist(); renderClientes(); toast('Removido');
+  persist('possiveis', obj, true); renderClientes(); toast('Removido');
 }
 
 function converterParaAtivo(id) {
   const p = possiveis.find(x=>x.id===id); if(!p) return;
   if (!confirm(`Converter "${p.nome}" em cliente ativo?`)) return;
   const svcArr = p.servicos ? p.servicos.split(/[,\s]+/).filter(Boolean) : [];
-  clientes.push({
-    id:uid(), nome:p.nome, status:'Ativo', servicos:svcArr,
-    valor:p.valor||0, venc:null, contato:p.contato||'',
-    inicio:new Date().toISOString().slice(0,10), site:p.site||'',
-    plataforma:'', contrato:'Pendente', obs:p.obs||'', debito:0
-  });
+  const novoCliente = {id:uid(), nome:p.nome, status:'Ativo', servicos:svcArr, valor:p.valor||0, venc:null, contato:p.contato||'', inicio:new Date().toISOString().slice(0,10), site:p.site||'', plataforma:'', contrato:'Pendente', obs:p.obs||'', debito:0};
+  clientes.push(novoCliente);
   possiveis=possiveis.filter(x=>x.id!==id);
-  persist(); renderClientes(); toast(`${p.nome} adicionado como cliente ativo!`);
+  await persist('clientes', novoCliente);
+  await persist('possiveis', p, true);
+  renderClientes(); toast(`${p.nome} adicionado como cliente ativo!`);
 }
 
 // ════════════════════════════════ MENSALIDADES ═══════════════════════════════
@@ -1167,13 +1168,15 @@ function salvarPagamento() {
   if (!obj.cliente||!obj.valor) { alert('Preencha cliente e valor'); return; }
   if (id) pagamentos=pagamentos.map(p=>p.id===id?obj:p);
   else pagamentos.push(obj);
-  persist(); closeModal('modal-pagamento'); renderMensalidades(); renderDash(); toast('Pagamento salvo!');
+  closeModal('modal-pagamento'); renderMensalidades(); renderDash();
+  await persist('pagamentos', obj); toast('Pagamento salvo!');
 }
 
 function deletarPagamento(id) {
   if (!confirm('Excluir pagamento?')) return;
+  const obj = pagamentos.find(p=>p.id===id);
   pagamentos=pagamentos.filter(p=>p.id!==id);
-  persist(); renderMensalidades(); toast('Removido');
+  persist('pagamentos', obj, true); renderMensalidades(); toast('Removido');
 }
 
 // ══════════════════════════════════ POSTAGENS ═════════════════════════════════
@@ -1219,7 +1222,7 @@ function togglePost(cliente,numero) {
   if (!reg) { reg={id:uid(),cliente,mes:filtroPostMes,qtd:0,obs:''}; postagens.push(reg); }
   reg.qtd = reg.qtd>=numero ? numero-1 : numero;
   if (reg.qtd<0) reg.qtd=0;
-  persist(); renderPostagens();
+  persist('postagens', reg); renderPostagens();
 }
 
 function openModalPostagem(nomeCliente) {
@@ -1242,8 +1245,9 @@ function salvarPostagem() {
   const obs=document.getElementById('post-obs').value.trim();
   let reg=postagens.find(p=>p.cliente===cliente&&p.mes===mes);
   if (reg) { reg.qtd=qtd; reg.obs=obs; }
-  else postagens.push({id:uid(),cliente,mes,qtd,obs});
-  persist(); closeModal('modal-postagem'); renderPostagens(); toast('Postagens salvas!');
+  else { reg={id:uid(),cliente,mes,qtd,obs}; postagens.push(reg); }
+  closeModal('modal-postagem'); renderPostagens();
+  await persist('postagens', reg); toast('Postagens salvas!');
 }
 
 // ══════════════════════════════════ RANKING ═══════════════════════════════════
@@ -1301,13 +1305,15 @@ function salvarRanking() {
   const obj={id:id||uid(),termo,clientes:posClientes,data:document.getElementById('rank-data').value};
   if (id) ranking=ranking.map(r=>r.id===id?obj:r);
   else ranking.push(obj);
-  persist(); closeModal('modal-ranking'); renderRanking(); toast('Ranking salvo!');
+  closeModal('modal-ranking'); renderRanking();
+  await persist('ranking', obj); toast('Ranking salvo!');
 }
 
 function deletarRanking(id) {
   if (!confirm('Excluir termo?')) return;
+  const obj = ranking.find(r=>r.id===id);
   ranking=ranking.filter(r=>r.id!==id);
-  persist(); renderRanking(); toast('Removido');
+  persist('ranking', obj, true); renderRanking(); toast('Removido');
 }
 
 // ══════════════════════════════════ RELATÓRIO ════════════════════════════════
@@ -1477,19 +1483,22 @@ function salvarAvulso() {
   };
   if (id) avulsos = avulsos.map(a=>a.id===id?obj:a);
   else avulsos.push(obj);
-  persist(); closeModal('modal-avulso'); renderAvulsos(); renderDash(); toast('Serviço salvo!');
+  closeModal('modal-avulso'); renderAvulsos(); renderDash();
+  await persist('avulsos', obj); toast('Serviço salvo!');
 }
 
 function deletarAvulso(id) {
   if (!confirm('Excluir serviço avulso?')) return;
+  const obj = avulsos.find(a=>a.id===id);
   avulsos = avulsos.filter(a=>a.id!==id);
-  persist(); renderAvulsos(); renderDash(); toast('Removido');
+  persist('avulsos', obj, true); renderAvulsos(); renderDash(); toast('Removido');
 }
 
-function marcarAvulsoPago(id) {
+async function marcarAvulsoPago(id) {
   const a = avulsos.find(x=>x.id===id); if(!a) return;
   a.status = 'Pago';
-  persist(); renderAvulsos(); renderDash(); toast(`${a.cliente} — serviço marcado como pago!`);
+  renderAvulsos(); renderDash();
+  await persist('avulsos', a); toast(`${a.cliente} — serviço marcado como pago!`);
 }
 
 // ══════════════════════════════════ IMPORT / EXPORT ══════════════════════════
@@ -1514,7 +1523,13 @@ function lerImport(e) {
       if(d.postagens) postagens=d.postagens;
       if(d.ranking) ranking=d.ranking;
       if(d.avulsos) avulsos=d.avulsos;
-      persist();
+      // re-seed tudo no Supabase
+      for(const obj of clientes) await persist('clientes', obj);
+      for(const obj of possiveis) await persist('possiveis', obj);
+      for(const obj of pagamentos) await persist('pagamentos', obj);
+      for(const obj of postagens) await persist('postagens', obj);
+      for(const obj of ranking) await persist('ranking', obj);
+      for(const obj of avulsos) await persist('avulsos', obj);
       const active=document.querySelector('.nav button.active');
       if(active) active.click();
       toast('Backup importado com sucesso!');
@@ -1534,7 +1549,7 @@ function dispensarAlerta(pagId) {
   toast('Aviso dispensado');
 }
 
-function marcarInadimplente(nomeCliente, pagId) {
+async function marcarInadimplente(nomeCliente, pagId) {
   const c = clientes.find(x=>x.nome===nomeCliente);
   if (!c) return;
   const debitoTotal = pagamentos.filter(p=>p.cliente===nomeCliente&&(p.status==='Pendente'||p.status==='Atrasado')).reduce((a,p)=>a+p.valor,0);
@@ -1544,13 +1559,12 @@ function marcarInadimplente(nomeCliente, pagId) {
   if (c.obs) c.obs += ` | Marcado inadimplente em ${new Date().toLocaleDateString('pt-BR')}.`;
   else c.obs = `Marcado inadimplente em ${new Date().toLocaleDateString('pt-BR')}.`;
   dispensarAlerta(pagId);
-  persist();
+  await persist('clientes', c);
   renderDash();
   toast(`${nomeCliente} marcado como inadimplente`, 3000);
 }
 
 // ══════════════════════════════════ INIT ═════════════════════════════════════
-checkAuth();
 window.addEventListener('DOMContentLoaded', () => {
   if (checkAuth()) {
     loadAll();
