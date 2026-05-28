@@ -1056,7 +1056,7 @@ function openModalPossivel(id) {
 }
 function editarPossivel(id) { openModalPossivel(id); }
 
-function salvarPossivel() {
+async function salvarPossivel() {
   const id = document.getElementById('pos-id').value;
   const nome = document.getElementById('pos-nome').value.trim();
   if (!nome) { alert('Nome é obrigatório'); return; }
@@ -1087,7 +1087,7 @@ function deletarPossivel(id) {
   persist('possiveis', obj, true); renderClientes(); toast('Removido');
 }
 
-function converterParaAtivo(id) {
+async function converterParaAtivo(id) {
   const p = possiveis.find(x=>x.id===id); if(!p) return;
   if (!confirm(`Converter "${p.nome}" em cliente ativo?`)) return;
   const svcArr = p.servicos ? p.servicos.split(/[,\s]+/).filter(Boolean) : [];
@@ -1151,7 +1151,7 @@ function openModalPagamento(id) {
 }
 function editarPagamento(id) { openModalPagamento(id); }
 
-function salvarPagamento() {
+async function salvarPagamento() {
   const id = document.getElementById('pag-id').value;
   const obj = {
     id:id||uid(),
@@ -1238,7 +1238,7 @@ function openModalPostagem(nomeCliente) {
   openModal('modal-postagem');
 }
 
-function salvarPostagem() {
+async function salvarPostagem() {
   const cliente=document.getElementById('post-cliente-sel').value;
   const mes=document.getElementById('post-mes-sel').value;
   const qtd=parseInt(document.getElementById('post-qtd').value)||0;
@@ -1294,7 +1294,7 @@ function openModalRanking(id) {
 }
 function editarRanking(id) { openModalRanking(id); }
 
-function salvarRanking() {
+async function salvarRanking() {
   const id=document.getElementById('rank-id').value;
   const termo=document.getElementById('rank-termo').value.trim();
   if (!termo) { alert('Termo é obrigatório'); return; }
@@ -1467,7 +1467,7 @@ function openModalAvulso(id) {
   openModal('modal-avulso');
 }
 
-function salvarAvulso() {
+async function salvarAvulso() {
   const id = document.getElementById('av-id').value;
   const cliente = document.getElementById('av-cliente').value.trim();
   const descricao = document.getElementById('av-descricao').value.trim();
@@ -1510,7 +1510,7 @@ function exportarJSON() {
   URL.revokeObjectURL(url); toast('Backup exportado!');
 }
 function importarJSON() { document.getElementById('import-file').click(); }
-function lerImport(e) {
+async function lerImport(e) {
   const file=e.target.files[0]; if(!file) return;
   const reader=new FileReader();
   reader.onload=(ev)=>{
