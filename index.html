@@ -806,6 +806,15 @@ async function loadAll() {
     setSaved('Sincronizado · ' + new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}));
   } catch(e) {
     console.error('Supabase erro:', e);
+    // Se for erro de autenticação, limpa tudo e vai pro login
+    if (e.message.includes('401') || e.message.includes('JWT') || e.message.includes('Unauthorized')) {
+      localStorage.removeItem('gc_session');
+      localStorage.removeItem('gc_cache');
+      SB_TOKEN = null;
+      fecharApp();
+      toast('Sessão expirada. Faça login novamente.', 3000);
+      return;
+    }
     // mostra erro visível na tela
     const errDiv = document.getElementById('conn-error');
     if (errDiv) errDiv.innerHTML = `<div class="alert alert-red" style="margin-bottom:14px"><i class="ti ti-wifi-off"></i> <span><b>Erro de conexão:</b> ${e.message}</span></div>`;
