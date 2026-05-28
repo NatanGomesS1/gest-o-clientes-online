@@ -372,6 +372,11 @@ tr:hover td { background: rgba(0,0,0,0.02); }
       </div>
     </div>
     <div class="form-group"><label>Observações</label><textarea id="cli-obs" rows="2" placeholder="Notas internas..."></textarea></div>
+    <div class="form-group">
+      <label>Links <span style="font-weight:400;text-transform:none;letter-spacing:0">(site, GMN, Instagram, etc)</span></label>
+      <div id="cli-links-list"></div>
+      <button type="button" class="add-btn" style="margin-top:6px;padding:6px 10px;font-size:12px" onclick="adicionarLinkCli()"><i class="ti ti-plus"></i> Adicionar link</button>
+    </div>
     <div class="modal-footer">
       <button class="btn" onclick="closeModal('modal-cliente')">Cancelar</button>
       <button class="btn btn-primary" onclick="salvarCliente()">Salvar</button>
@@ -778,7 +783,8 @@ function toRow(table, o) {
     id:o.id, nome:o.nome, status:o.status, servicos:o.servicos||[],
     valor:o.valor||0, venc:o.venc||null, contato:o.contato||'',
     inicio:o.inicio||null, site:o.site||'', plataforma:o.plataforma||'',
-    contrato:o.contrato||'', obs:o.obs||'', debito:o.debito||0
+    contrato:o.contrato||'', obs:o.obs||'', debito:o.debito||0,
+    links:o.links||[]
   };
   if (table === 'pagamentos') return {
     id:o.id, cliente:o.cliente, mes:o.mes, servico:o.servico, valor:o.valor||0,
@@ -1024,6 +1030,7 @@ function renderClientes() {
   document.getElementById('clientes-ativos-list').innerHTML = ativos.length ? ativos.map(c => {
     const svcTags = (c.servicos||[]).map(s=>`<span class="stag">${s}</span>`).join('');
     const siteHtml = c.site ? `<span class="info-item"><i class="ti ti-external-link"></i><a href="${c.site}" target="_blank">${c.plataforma||'Site'}</a></span>` : '';
+    const linksHtml = renderLinksNoCard(c.links);
     const contatoHtml = c.contato ? `<span class="info-item"><i class="ti ti-phone"></i>${c.contato}</span>` : '';
     const vencHtml = c.venc ? `<span class="info-item"><i class="ti ti-calendar"></i>Vence dia ${c.venc}</span>` : '';
     const inadBanner = c.status==='Inadimplente' ? `<div class="alert alert-red" style="margin-top:10px;margin-bottom:0"><i class="ti ti-alert-triangle"></i> <b>Inadimplente</b> — cobrar débitos pendentes antes de retomar serviços${c.debito?' — Débito: '+fmtBRL(c.debito):''}</div>` : '';
@@ -1037,6 +1044,7 @@ function renderClientes() {
         </div>
       </div>
       <div class="info-row">${svcTags}<span class="info-item"><i class="ti ti-currency-dollar"></i>${fmtBRL(c.valor)}/mês</span>${contatoHtml}${vencHtml}${siteHtml}</div>
+      ${linksHtml}
       ${c.obs?`<div style="font-size:12px;color:var(--text2);margin-top:8px"><i class="ti ti-note"></i> ${c.obs}</div>`:''}
       ${inadBanner}
     </div>`;
@@ -1091,6 +1099,7 @@ function openModalCliente() {
   document.getElementById('cli-contrato').value='OK';
   document.getElementById('cli-inicio').value=new Date().toISOString().slice(0,10);
   document.querySelectorAll('#modal-cliente .checkbox-group input').forEach(cb=>cb.checked=false);
+  document.getElementById('cli-links-list').innerHTML = '';
   openModal('modal-cliente');
 }
 
@@ -1109,6 +1118,10 @@ function editarCliente(id) {
   document.getElementById('cli-contrato').value=c.contrato||'OK';
   document.getElementById('cli-obs').value=c.obs||'';
   document.querySelectorAll('#modal-cliente .checkbox-group input').forEach(cb=>cb.checked=(c.servicos||[]).includes(cb.value));
+  // carrega links
+  const linksContainer = document.getElementById('cli-links-list');
+  linksContainer.innerHTML = '';
+  (c.links||[]).forEach(l => adicionarLinkCli(l.nome, l.url));
   openModal('modal-cliente');
 }
 
@@ -1130,6 +1143,7 @@ async function salvarCliente() {
     contrato: document.getElementById('cli-contrato').value,
     obs: document.getElementById('cli-obs').value.trim(),
     debito: 0,
+    links: getLinksFromModal(),
   };
   const clienteAnterior = clientes.find(c=>c.id===obj.id);
   if (id) clientes = clientes.map(c=>c.id===id?obj:c);
@@ -1743,6 +1757,12 @@ function renderHistorico() {
       const isAuto = h.auto || h.tipo==='auto';
       const icon = isAuto ? 'ti-refresh' : 'ti-pencil';
       const cor = isAuto ? 'var(--blue)' : 'var(--text2)';
+      const acoes = isAuto
+        ? `<button class="btn btn-icon btn-sm btn-danger" onclick="deletarHistorico('${h.id}')" style="flex-shrink:0"><i class="ti ti-trash"></i></button>`
+        : `<div style="display:flex;gap:4px;flex-shrink:0">
+            <button class="btn btn-icon btn-sm" onclick="editarHistorico('${h.id}')" title="Editar"><i class="ti ti-edit"></i></button>
+            <button class="btn btn-icon btn-sm btn-danger" onclick="deletarHistorico('${h.id}')"><i class="ti ti-trash"></i></button>
+           </div>`;
       return `<div style="display:flex;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border)">
         <div style="flex-shrink:0;width:32px;height:32px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center">
           <i class="ti ${icon}" style="font-size:14px;color:${cor}"></i>
@@ -1751,7 +1771,7 @@ function renderHistorico() {
           <div style="font-size:13px;color:var(--text)">${h.texto}</div>
           <div style="font-size:11px;color:var(--text3);margin-top:3px">${fmtDate(h.data)} ${isAuto?'<span style="background:var(--blue-bg);color:var(--blue);padding:1px 6px;border-radius:4px;font-size:10px">automático</span>':''}</div>
         </div>
-        <button class="btn btn-icon btn-sm btn-danger" onclick="deletarHistorico('${h.id}')" style="flex-shrink:0"><i class="ti ti-trash"></i></button>
+        ${acoes}
       </div>`;
     }).join('');
     return `<div class="card" style="margin-bottom:10px">
@@ -1783,6 +1803,48 @@ function initHistSelector() {
   if (sel) sel.innerHTML = clientes.map(c=>`<option value="${c.nome}">${c.nome}</option>`).join('');
   const dataEl = document.getElementById('hist-data-input');
   if (dataEl && !dataEl.value) dataEl.value = new Date().toISOString().slice(0,10);
+}
+
+async function editarHistorico(id) {
+  const h = historico.find(x=>x.id===id); if(!h) return;
+  const novoTexto = prompt('Editar anotação:', h.texto);
+  if (novoTexto === null) return;
+  const novaData = prompt('Editar data (AAAA-MM-DD):', h.data);
+  if (novaData === null) return;
+  h.texto = novoTexto.trim() || h.texto;
+  h.data = novaData.trim() || h.data;
+  await persist('historico', h);
+  renderHistorico();
+  toast('Histórico atualizado!');
+}
+
+// ══════════════════════════════════ LINKS DO CLIENTE ═════════════════════════
+function adicionarLinkCli(nome='', url='') {
+  const container = document.getElementById('cli-links-list');
+  const div = document.createElement('div');
+  div.style.cssText = 'display:grid;grid-template-columns:130px 1fr auto;gap:6px;margin-bottom:6px;align-items:center';
+  div.innerHTML = `
+    <input placeholder="Ex: GMN, Site, Insta" value="${nome}" style="padding:7px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:13px;font-family:inherit" class="link-nome">
+    <input placeholder="https://..." value="${url}" style="padding:7px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:13px;font-family:inherit" class="link-url">
+    <button type="button" class="btn btn-icon btn-sm btn-danger" onclick="this.parentElement.remove()"><i class="ti ti-trash"></i></button>`;
+  container.appendChild(div);
+}
+
+function getLinksFromModal() {
+  const links = [];
+  document.querySelectorAll('#cli-links-list > div').forEach(div => {
+    const nome = div.querySelector('.link-nome').value.trim();
+    const url = div.querySelector('.link-url').value.trim();
+    if (nome && url) links.push({nome, url});
+  });
+  return links;
+}
+
+function renderLinksNoCard(links) {
+  if (!links || !links.length) return '';
+  return `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">` +
+    links.map(l=>`<a href="${l.url}" target="_blank" class="stag" style="display:inline-flex;align-items:center;gap:4px;text-decoration:none"><i class="ti ti-external-link" style="font-size:11px"></i>${l.nome}</a>`).join('') +
+    `</div>`;
 }
 
 // ══════════════════════════════════ INIT ═════════════════════════════════════
