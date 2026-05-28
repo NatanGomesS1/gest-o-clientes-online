@@ -176,16 +176,18 @@ tr:hover td { background: rgba(0,0,0,0.02); }
 </head>
 <body>
 
-<!-- TELA DE SENHA -->
+<!-- TELA DE LOGIN -->
 <div class="lock-screen" id="lock-screen">
   <div class="lock-box">
     <i class="ti ti-lock"></i>
     <h2>Gestão de Clientes</h2>
-    <p>Digite sua senha para acessar</p>
-    <input type="password" id="senha-input" placeholder="••••••" maxlength="20"
-      onkeydown="if(event.key==='Enter') verificarSenha()"
-      oninput="document.getElementById('senha-input').classList.remove('erro')">
-    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:10px" onclick="verificarSenha()">
+    <p>Entre com seu email e senha</p>
+    <input type="email" id="login-email" placeholder="email@exemplo.com" style="margin-bottom:8px"
+      onkeydown="if(event.key==='Enter') document.getElementById('login-senha').focus()">
+    <input type="password" id="login-senha" placeholder="••••••••" maxlength="50"
+      onkeydown="if(event.key==='Enter') fazerLogin()"
+      oninput="document.getElementById('login-senha').classList.remove('erro')">
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:10px;margin-top:4px" onclick="fazerLogin()">
       <i class="ti ti-arrow-right"></i> Entrar
     </button>
     <div class="tentativas" id="tentativas-msg"></div>
@@ -202,6 +204,7 @@ tr:hover td { background: rgba(0,0,0,0.02); }
       <button class="btn btn-sm" onclick="importarJSON()" title="Importar backup"><i class="ti ti-upload"></i> Importar</button>
       <button class="btn btn-sm" onclick="exportarJSON()" title="Exportar backup JSON"><i class="ti ti-download"></i> Exportar</button>
       <button class="btn btn-sm" onclick="window.print()" title="Imprimir/PDF"><i class="ti ti-printer"></i> Imprimir</button>
+      <button class="btn btn-sm btn-danger" onclick="fecharApp()" title="Sair"><i class="ti ti-logout"></i> Sair</button>
     </div>
   </header>
   <input type="file" id="import-file" accept=".json" style="display:none" onchange="lerImport(event)">
@@ -520,57 +523,119 @@ tr:hover td { background: rgba(0,0,0,0.02); }
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════ SENHA & RATE LIMIT ══════════════════════════
-const SENHA_HASH = '39906dabbe072628de02daef6b786e4fb437d71b'; // SHA1 de "gestao2026"
+// ═══════════════════════════════ AUTH SUPABASE ═══════════════════════════════
 const MAX_TENTATIVAS = 5;
 const BLOQUEIO_MIN = 10;
+let SB_TOKEN = null; // token JWT do usuário autenticado
 
-async function sha1(str) {
-  const buf = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-
-async function verificarSenha() {
+async function fazerLogin() {
   const bloqueioAte = parseInt(localStorage.getItem('bloqueio_ate')||'0');
   if (Date.now() < bloqueioAte) {
     const min = Math.ceil((bloqueioAte - Date.now()) / 60000);
-    document.getElementById('tentativas-msg').textContent = `Bloqueado por ${min} min. Tente novamente mais tarde.`;
+    document.getElementById('tentativas-msg').textContent = `Bloqueado por ${min} min.`;
     return;
   }
 
-  const input = document.getElementById('senha-input');
-  const hash = await sha1(input.value);
-  if (hash === SENHA_HASH) {
-    localStorage.setItem('gc_auth', Date.now() + 8*3600000);
-    localStorage.removeItem('tentativas_senha');
-    document.getElementById('lock-screen').style.display = 'none';
-    document.getElementById('app-container').style.display = 'block';
-    loadAll();
-  } else {
-    input.value = '';
-    input.classList.add('erro');
-    let tent = parseInt(localStorage.getItem('tentativas_senha')||'0') + 1;
-    localStorage.setItem('tentativas_senha', tent);
-    const restam = MAX_TENTATIVAS - tent;
-    if (restam <= 0) {
-      localStorage.setItem('bloqueio_ate', Date.now() + BLOQUEIO_MIN*60000);
-      localStorage.setItem('tentativas_senha', '0');
-      document.getElementById('tentativas-msg').textContent = `Bloqueado por ${BLOQUEIO_MIN} minutos.`;
+  const email = document.getElementById('login-email').value.trim();
+  const senha = document.getElementById('login-senha').value;
+  if (!email || !senha) { document.getElementById('tentativas-msg').textContent = 'Preencha email e senha.'; return; }
+
+  const msgEl = document.getElementById('tentativas-msg');
+  msgEl.textContent = 'Entrando...';
+
+  try {
+    const r = await fetch(`${SB_URL}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'apikey': SB_KEY },
+      body: JSON.stringify({ email, password: senha })
+    });
+    const data = await r.json();
+
+    if (r.ok && data.access_token) {
+      SB_TOKEN = data.access_token;
+      // salva sessão com expiração
+      localStorage.setItem('gc_session', JSON.stringify({
+        token: SB_TOKEN,
+        refresh: data.refresh_token,
+        expires: Date.now() + (data.expires_in * 1000)
+      }));
+      localStorage.removeItem('tentativas_senha');
+      localStorage.removeItem('bloqueio_ate');
+      abrirApp();
+      loadAll();
     } else {
-      document.getElementById('tentativas-msg').textContent = `Senha incorreta. ${restam} tentativa${restam>1?'s':''} restante${restam>1?'s':''}.`;
+      document.getElementById('login-senha').value = '';
+      document.getElementById('login-senha').classList.add('erro');
+      let tent = parseInt(localStorage.getItem('tentativas_senha')||'0') + 1;
+      localStorage.setItem('tentativas_senha', tent);
+      const restam = MAX_TENTATIVAS - tent;
+      if (restam <= 0) {
+        localStorage.setItem('bloqueio_ate', Date.now() + BLOQUEIO_MIN*60000);
+        localStorage.setItem('tentativas_senha', '0');
+        msgEl.textContent = `Bloqueado por ${BLOQUEIO_MIN} minutos.`;
+      } else {
+        msgEl.textContent = `Email ou senha incorretos. ${restam} tentativa${restam>1?'s':''} restante${restam>1?'s':''}.`;
+      }
     }
+  } catch(e) {
+    document.getElementById('tentativas-msg').textContent = 'Erro de conexão. Tente novamente.';
   }
 }
 
-function checkAuth() {
-  const auth = parseInt(localStorage.getItem('gc_auth')||'0');
-  if (Date.now() < auth) {
-    document.getElementById('lock-screen').style.display = 'none';
-    document.getElementById('app-container').style.display = 'block';
+async function refreshToken() {
+  const sess = JSON.parse(localStorage.getItem('gc_session')||'null');
+  if (!sess || !sess.refresh) return false;
+  try {
+    const r = await fetch(`${SB_URL}/auth/v1/token?grant_type=refresh_token`, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'apikey': SB_KEY },
+      body: JSON.stringify({ refresh_token: sess.refresh })
+    });
+    const data = await r.json();
+    if (r.ok && data.access_token) {
+      SB_TOKEN = data.access_token;
+      localStorage.setItem('gc_session', JSON.stringify({
+        token: SB_TOKEN,
+        refresh: data.refresh_token,
+        expires: Date.now() + (data.expires_in * 1000)
+      }));
+      return true;
+    }
+  } catch(e) {}
+  return false;
+}
+
+function abrirApp() {
+  document.getElementById('lock-screen').style.display = 'none';
+  document.getElementById('app-container').style.display = 'block';
+}
+
+function fecharApp() {
+  SB_TOKEN = null;
+  localStorage.removeItem('gc_session');
+  document.getElementById('lock-screen').style.display = 'flex';
+  document.getElementById('app-container').style.display = 'none';
+  document.getElementById('login-email').value = '';
+  document.getElementById('login-senha').value = '';
+  document.getElementById('tentativas-msg').textContent = '';
+  setTimeout(() => document.getElementById('login-email').focus(), 100);
+}
+
+async function checkAuth() {
+  const sess = JSON.parse(localStorage.getItem('gc_session')||'null');
+  if (!sess) { setTimeout(() => document.getElementById('login-email').focus(), 100); return false; }
+  // token ainda válido
+  if (Date.now() < sess.expires - 60000) {
+    SB_TOKEN = sess.token;
+    abrirApp();
     return true;
   }
-  // foco automático no campo de senha
-  setTimeout(() => document.getElementById('senha-input').focus(), 100);
+  // tenta renovar
+  const ok = await refreshToken();
+  if (ok) { abrirApp(); return true; }
+  // sessão expirada
+  localStorage.removeItem('gc_session');
+  setTimeout(() => document.getElementById('login-email').focus(), 100);
   return false;
 }
 
@@ -643,11 +708,15 @@ const DEFAULT = {
 // ═══════════════════════════════ SUPABASE ════════════════════════════════════
 const SB_URL = 'https://bwksrusclhxnxuvdului.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3a3NydXNjbGh4bnh1dmR1bHVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4NDU3ODEsImV4cCI6MjA5NTQyMTc4MX0.OTLUT7tN43C1GneAlyya3MlR7G1QIyOAEK9YhaxtlsY';
-const SB_HEADERS = { 'Content-Type':'application/json', 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY };
+
+function sbHeaders() {
+  const token = SB_TOKEN || SB_KEY;
+  return { 'Content-Type':'application/json', 'apikey': SB_KEY, 'Authorization': 'Bearer ' + token };
+}
 
 async function sbGet(table) {
   if (!rateLimitOk()) throw new Error('Rate limit atingido');
-  const r = await fetch(`${SB_URL}/rest/v1/${table}?select=*&order=created_at.asc`, { headers: SB_HEADERS });
+  const r = await fetch(`${SB_URL}/rest/v1/${table}?select=*&order=created_at.asc`, { headers: sbHeaders() });
   if (!r.ok) throw new Error(`Erro ao buscar ${table}: ${r.status}`);
   return r.json();
 }
@@ -655,14 +724,14 @@ async function sbUpsert(table, obj) {
   if (!rateLimitOk()) throw new Error('Rate limit atingido');
   const r = await fetch(`${SB_URL}/rest/v1/${table}`, {
     method: 'POST',
-    headers: { ...SB_HEADERS, 'Prefer': 'resolution=merge-duplicates' },
+    headers: { ...sbHeaders(), 'Prefer': 'resolution=merge-duplicates' },
     body: JSON.stringify(obj)
   });
   if (!r.ok) { const t = await r.text(); throw new Error(`Erro ao salvar em ${table}: ${t}`); }
 }
 async function sbDelete(table, id) {
   if (!rateLimitOk()) throw new Error('Rate limit atingido');
-  const r = await fetch(`${SB_URL}/rest/v1/${table}?id=eq.${id}`, { method: 'DELETE', headers: SB_HEADERS });
+  const r = await fetch(`${SB_URL}/rest/v1/${table}?id=eq.${id}`, { method: 'DELETE', headers: sbHeaders() });
   if (!r.ok) throw new Error(`Erro ao deletar de ${table}`);
 }
 
@@ -712,7 +781,7 @@ async function loadAll() {
   showLoader(true);
   try {
     // teste rápido de conexão
-    const teste = await fetch(`${SB_URL}/rest/v1/clientes?select=id&limit=1`, { headers: SB_HEADERS });
+    const teste = await fetch(`${SB_URL}/rest/v1/clientes?select=id&limit=1`, { headers: sbHeaders() });
     if (!teste.ok) {
       const txt = await teste.text();
       throw new Error(`HTTP ${teste.status}: ${txt}`);
@@ -1569,10 +1638,9 @@ async function marcarInadimplente(nomeCliente, pagId) {
 }
 
 // ══════════════════════════════════ INIT ═════════════════════════════════════
-window.addEventListener('DOMContentLoaded', () => {
-  if (checkAuth()) {
-    loadAll();
-  }
+window.addEventListener('DOMContentLoaded', async () => {
+  const autenticado = await checkAuth();
+  if (autenticado) loadAll();
 });
 </script>
 </body>
