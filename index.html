@@ -217,6 +217,7 @@ tr:hover td { background: rgba(0,0,0,0.02); }
   <div class="nav">
     <button class="active" onclick="show('dash',this)"><i class="ti ti-chart-bar"></i> Dashboard</button>
     <button onclick="show('clientes',this)"><i class="ti ti-users"></i> Clientes</button>
+    <button onclick="show('historico',this)"><i class="ti ti-history"></i> Histórico</button>
     <button onclick="show('mensalidades',this)"><i class="ti ti-currency-dollar"></i> Mensalidades</button>
     <button onclick="show('postagens',this)"><i class="ti ti-calendar"></i> Postagens</button>
     <button onclick="show('avulsos',this)"><i class="ti ti-tool"></i> Serviços Avulsos</button>
@@ -237,6 +238,18 @@ tr:hover td { background: rgba(0,0,0,0.02); }
 
   <!-- ═══════════════════════════════ CLIENTES ════════════════════════════════ -->
   <div id="clientes" class="section">
+    <!-- Registro rápido de histórico -->
+    <div class="card" style="margin-bottom:14px;background:var(--surface2);border-style:dashed">
+      <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px"><i class="ti ti-history"></i> Registrar no histórico</div>
+      <div style="display:grid;grid-template-columns:1fr 140px;gap:8px;margin-bottom:8px">
+        <select id="hist-cliente-sel" style="padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:13px;font-family:inherit;background:var(--surface);color:var(--text)"></select>
+        <input type="date" id="hist-data-input" style="padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:13px;font-family:inherit">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:8px">
+        <input id="hist-texto-input" placeholder="O que foi feito? Ex: Respondidos 4 comentários, atualizado endereço..." style="padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:13px;font-family:inherit">
+        <button class="btn btn-primary btn-sm" onclick="salvarHistoricoRapido()"><i class="ti ti-plus"></i> Salvar</button>
+      </div>
+    </div>
     <div class="filter-bar" id="cli-filter"></div>
     <div id="clientes-ativos-list"></div>
     <div class="divider-label" style="margin-top:22px">
@@ -244,6 +257,19 @@ tr:hover td { background: rgba(0,0,0,0.02); }
       <button class="btn btn-sm btn-primary" onclick="openModalPossivel()"><i class="ti ti-plus"></i> Adicionar</button>
     </div>
     <div id="possiveis-list"></div>
+  </div>
+
+  <!-- ═══════════════════════════════ HISTÓRICO ═══════════════════════════════ -->
+  <div id="historico" class="section">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+      <select id="hist-filtro-cliente" onchange="renderHistorico()" style="padding:8px 12px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:13px;font-family:inherit;min-width:200px"></select>
+      <div style="display:flex;gap:6px">
+        <input type="date" id="hist-filtro-de" onchange="renderHistorico()" style="padding:7px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:13px;font-family:inherit">
+        <input type="date" id="hist-filtro-ate" onchange="renderHistorico()" style="padding:7px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:13px;font-family:inherit">
+        <button class="btn btn-sm" onclick="limparFiltrosHistorico()"><i class="ti ti-x"></i></button>
+      </div>
+    </div>
+    <div id="historico-list"></div>
   </div>
 
   <!-- ═══════════════════════════════ MENSALIDADES ════════════════════════════ -->
@@ -760,16 +786,18 @@ function toRow(table, o) {
   };
   if (table === 'postagens') return { id:o.id, cliente:o.cliente, mes:o.mes, qtd:o.qtd||0, obs:o.obs||'' };
   if (table === 'ranking') return { id:o.id, termo:o.termo, clientes:o.clientes||[], data:o.data||null };
+  if (table === 'historico') return { id:o.id, cliente:o.cliente, data:o.data, texto:o.texto, tipo:o.tipo||'manual', auto:o.auto||false };
   return o;
 }
 // converte linha do Supabase → objeto JS
 function fromRow(table, r) {
   if (table === 'possiveis') return { ...r, followupData:r.followup_data, followupTipo:r.followup_tipo, followupObs:r.followup_obs };
   if (table === 'avulsos') return { ...r, dataPedido:r.data_pedido, dataEntrega:r.data_entrega };
+  if (table === 'historico') return { ...r };
   return r;
 }
 
-let clientes=[], possiveis=[], pagamentos=[], postagens=[], ranking=[], avulsos=[];
+let clientes=[], possiveis=[], pagamentos=[], postagens=[], ranking=[], avulsos=[], historico=[];
 let _loading = false;
 
 function setSaved(txt) { const el = document.getElementById('last-saved'); if(el) el.textContent = txt; }
@@ -787,16 +815,17 @@ async function loadAll() {
       throw new Error(`HTTP ${teste.status}: ${txt}`);
     }
 
-    const [c,p,pg,po,rk,av] = await Promise.all([
+    const [c,p,pg,po,rk,av,hi] = await Promise.allSettled([
       sbGet('clientes'), sbGet('possiveis'), sbGet('pagamentos'),
-      sbGet('postagens'), sbGet('ranking'), sbGet('avulsos')
+      sbGet('postagens'), sbGet('ranking'), sbGet('avulsos'), sbGet('historico')
     ]);
-    clientes   = c.map(r=>fromRow('clientes',r));
-    possiveis  = p.map(r=>fromRow('possiveis',r));
-    pagamentos = pg.map(r=>fromRow('pagamentos',r));
-    postagens  = po.map(r=>fromRow('postagens',r));
-    ranking    = rk.map(r=>fromRow('ranking',r));
-    avulsos    = av.map(r=>fromRow('avulsos',r));
+    clientes   = c.status==='fulfilled'  ? c.value.map(r=>fromRow('clientes',r))   : clientes;
+    possiveis  = p.status==='fulfilled'  ? p.value.map(r=>fromRow('possiveis',r))  : possiveis;
+    pagamentos = pg.status==='fulfilled' ? pg.value.map(r=>fromRow('pagamentos',r)): pagamentos;
+    postagens  = po.status==='fulfilled' ? po.value.map(r=>fromRow('postagens',r)) : postagens;
+    ranking    = rk.status==='fulfilled' ? rk.value.map(r=>fromRow('ranking',r))   : ranking;
+    avulsos    = av.status==='fulfilled' ? av.value.map(r=>fromRow('avulsos',r))   : avulsos;
+    historico  = hi.status==='fulfilled' ? hi.value.map(r=>fromRow('historico',r)) : historico;
 
     // Se banco vazio, popula com dados iniciais
     if (!clientes.length && !pagamentos.length) {
@@ -830,17 +859,18 @@ async function loadAll() {
 
 // cache local de emergência
 function saveCache() {
-  try { localStorage.setItem('gc_cache', JSON.stringify({clientes,possiveis,pagamentos,postagens,ranking,avulsos})); } catch(e){}
+  try { localStorage.setItem('gc_cache', JSON.stringify({clientes,possiveis,pagamentos,postagens,ranking,avulsos,historico})); } catch(e){}
 }
 function loadFromCache() {
   try {
     const d = JSON.parse(localStorage.getItem('gc_cache')||'{}');
-    if(d.clientes) clientes=d.clientes;
+    if(d.clientes)  clientes=d.clientes;
     if(d.possiveis) possiveis=d.possiveis;
     if(d.pagamentos) pagamentos=d.pagamentos;
     if(d.postagens) postagens=d.postagens;
-    if(d.ranking) ranking=d.ranking;
-    if(d.avulsos) avulsos=d.avulsos;
+    if(d.ranking)   ranking=d.ranking;
+    if(d.avulsos)   avulsos=d.avulsos;
+    if(d.historico) historico=d.historico;
   } catch(e) {}
 }
 
@@ -884,7 +914,7 @@ function show(id, btn) {
   document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   btn.classList.add('active');
-  const renders = {dash:renderDash, clientes:renderClientes, mensalidades:renderMensalidades, postagens:renderPostagens, avulsos:renderAvulsos, ranking:renderRanking, relatorio:renderRelatorio};
+  const renders = {dash:renderDash, clientes:()=>{renderClientes();initHistSelector();}, mensalidades:renderMensalidades, postagens:renderPostagens, avulsos:renderAvulsos, historico:renderHistorico, ranking:renderRanking, relatorio:renderRelatorio};
   if (renders[id]) renders[id]();
 }
 function openModal(id) { document.getElementById(id).classList.add('open'); }
@@ -1101,9 +1131,16 @@ async function salvarCliente() {
     obs: document.getElementById('cli-obs').value.trim(),
     debito: 0,
   };
+  const clienteAnterior = clientes.find(c=>c.id===obj.id);
   if (id) clientes = clientes.map(c=>c.id===id?obj:c);
   else clientes.push(obj);
   closeModal('modal-cliente'); renderClientes();
+  // entrada automática no histórico se status mudou
+  if (clienteAnterior && clienteAnterior.status !== obj.status) {
+    await registrarHistoricoAuto(obj.nome, `Status alterado: ${clienteAnterior.status} → ${obj.status}`);
+  } else if (!clienteAnterior) {
+    await registrarHistoricoAuto(obj.nome, `Cliente cadastrado como ${obj.status}`);
+  }
   await persist('clientes', obj); toast('Cliente salvo!');
 }
 
@@ -1213,7 +1250,7 @@ function openModalPagamento(id) {
   document.getElementById('pag-id').value=p?p.id:'';
   document.getElementById('modal-pag-title').textContent=p?'Editar pagamento':'Novo pagamento';
   const sel = document.getElementById('pag-cliente');
-  sel.innerHTML = clientes.map(c=>`<option>${c.nome}</option>`).join('');
+  sel.innerHTML = clientes.filter(c=>c.status!=='Inativo').map(c=>`<option>${c.nome}</option>`).join('');
   if (p) sel.value=p.cliente;
   const mSel = document.getElementById('pag-mes');
   mSel.innerHTML = MESES.map(m=>`<option>${m}</option>`).join('');
@@ -1642,8 +1679,110 @@ async function marcarInadimplente(nomeCliente, pagId) {
   else c.obs = `Marcado inadimplente em ${new Date().toLocaleDateString('pt-BR')}.`;
   dispensarAlerta(pagId);
   await persist('clientes', c);
+  await registrarHistoricoAuto(nomeCliente, `Marcado como Inadimplente. Débito: R$ ${debitoTotal}`);
   renderDash();
   toast(`${nomeCliente} marcado como inadimplente`, 3000);
+}
+
+// ══════════════════════════════════ HISTÓRICO ════════════════════════════════
+async function registrarHistoricoAuto(cliente, texto) {
+  const entry = { id:uid(), cliente, data:new Date().toISOString().slice(0,10), texto, tipo:'auto', auto:true };
+  historico.push(entry);
+  await persist('historico', entry);
+}
+
+async function salvarHistoricoRapido() {
+  const cliente = document.getElementById('hist-cliente-sel').value;
+  const data = document.getElementById('hist-data-input').value;
+  const texto = document.getElementById('hist-texto-input').value.trim();
+  if (!cliente || !data || !texto) { toast('Preencha cliente, data e texto'); return; }
+  const entry = { id:uid(), cliente, data, texto, tipo:'manual', auto:false };
+  historico.push(entry);
+  document.getElementById('hist-texto-input').value = '';
+  await persist('historico', entry);
+  toast('Registrado no histórico!');
+  // se histórico estiver aberto, atualiza
+  if (document.getElementById('historico').classList.contains('active')) renderHistorico();
+}
+
+function renderHistorico() {
+  // popula selector de cliente
+  const sel = document.getElementById('hist-filtro-cliente');
+  const todosNomes = [...new Set(historico.map(h=>h.cliente))].sort();
+  const current = sel.value;
+  sel.innerHTML = `<option value="">— Todos os clientes —</option>` +
+    [...new Set([...clientes.map(c=>c.nome), ...todosNomes])].sort().map(n=>`<option value="${n}" ${n===current?'selected':''}>${n}</option>`).join('');
+
+  // popula selector rápido na aba clientes também
+  const selRapido = document.getElementById('hist-cliente-sel');
+  if (selRapido) {
+    selRapido.innerHTML = clientes.map(c=>`<option value="${c.nome}">${c.nome}</option>`).join('');
+  }
+
+  const filtroCliente = document.getElementById('hist-filtro-cliente').value;
+  const filtroDe = document.getElementById('hist-filtro-de').value;
+  const filtroAte = document.getElementById('hist-filtro-ate').value;
+
+  let dados = [...historico].sort((a,b)=>b.data.localeCompare(a.data));
+  if (filtroCliente) dados = dados.filter(h=>h.cliente===filtroCliente);
+  if (filtroDe) dados = dados.filter(h=>h.data>=filtroDe);
+  if (filtroAte) dados = dados.filter(h=>h.data<=filtroAte);
+
+  const list = document.getElementById('historico-list');
+  if (!dados.length) {
+    list.innerHTML = `<div class="empty-state"><i class="ti ti-history"></i>Nenhum registro encontrado</div>`;
+    return;
+  }
+
+  // agrupa por cliente
+  const porCliente = {};
+  dados.forEach(h => { if(!porCliente[h.cliente]) porCliente[h.cliente]=[]; porCliente[h.cliente].push(h); });
+
+  list.innerHTML = Object.entries(porCliente).map(([nome, entradas])=>{
+    const timeline = entradas.map(h=>{
+      const isAuto = h.auto || h.tipo==='auto';
+      const icon = isAuto ? 'ti-refresh' : 'ti-pencil';
+      const cor = isAuto ? 'var(--blue)' : 'var(--text2)';
+      return `<div style="display:flex;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border)">
+        <div style="flex-shrink:0;width:32px;height:32px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center">
+          <i class="ti ${icon}" style="font-size:14px;color:${cor}"></i>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:13px;color:var(--text)">${h.texto}</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:3px">${fmtDate(h.data)} ${isAuto?'<span style="background:var(--blue-bg);color:var(--blue);padding:1px 6px;border-radius:4px;font-size:10px">automático</span>':''}</div>
+        </div>
+        <button class="btn btn-icon btn-sm btn-danger" onclick="deletarHistorico('${h.id}')" style="flex-shrink:0"><i class="ti ti-trash"></i></button>
+      </div>`;
+    }).join('');
+    return `<div class="card" style="margin-bottom:10px">
+      <div class="card-header"><span class="card-title">${nome}</span><span style="font-size:12px;color:var(--text3)">${entradas.length} registro${entradas.length!==1?'s':''}</span></div>
+      ${timeline}
+    </div>`;
+  }).join('');
+}
+
+function limparFiltrosHistorico() {
+  document.getElementById('hist-filtro-cliente').value='';
+  document.getElementById('hist-filtro-de').value='';
+  document.getElementById('hist-filtro-ate').value='';
+  renderHistorico();
+}
+
+async function deletarHistorico(id) {
+  if (!confirm('Excluir este registro do histórico?')) return;
+  const obj = historico.find(h=>h.id===id);
+  historico = historico.filter(h=>h.id!==id);
+  await persist('historico', obj, true);
+  renderHistorico();
+  toast('Registro removido');
+}
+
+// popula selector rápido quando aba clientes carrega
+function initHistSelector() {
+  const sel = document.getElementById('hist-cliente-sel');
+  if (sel) sel.innerHTML = clientes.map(c=>`<option value="${c.nome}">${c.nome}</option>`).join('');
+  const dataEl = document.getElementById('hist-data-input');
+  if (dataEl && !dataEl.value) dataEl.value = new Date().toISOString().slice(0,10);
 }
 
 // ══════════════════════════════════ INIT ═════════════════════════════════════
