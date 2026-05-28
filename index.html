@@ -541,7 +541,7 @@ async function verificarSenha() {
   const input = document.getElementById('senha-input');
   const hash = await sha1(input.value);
   if (hash === SENHA_HASH) {
-    localStorage.setItem('gc_auth', Date.now() + 8*3600000); // sessão 8h
+    localStorage.setItem('gc_auth', Date.now() + 8*3600000);
     localStorage.removeItem('tentativas_senha');
     document.getElementById('lock-screen').style.display = 'none';
     document.getElementById('app-container').style.display = 'block';
@@ -703,7 +703,7 @@ function fromRow(table, r) {
 let clientes=[], possiveis=[], pagamentos=[], postagens=[], ranking=[], avulsos=[];
 let _loading = false;
 
-function setSaved(txt) { document.getElementById('last-saved').textContent = txt; }
+function setSaved(txt) { const el = document.getElementById('last-saved'); if(el) el.textContent = txt; }
 
 async function loadAll() {
   if (_loading) return;
