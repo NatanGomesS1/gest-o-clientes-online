@@ -1510,7 +1510,7 @@ function exportarJSON() {
   URL.revokeObjectURL(url); toast('Backup exportado!');
 }
 function importarJSON() { document.getElementById('import-file').click(); }
-async function lerImport(e) {
+function lerImport(e) {
   const file=e.target.files[0]; if(!file) return;
   const reader=new FileReader();
   reader.onload=(ev)=>{
@@ -1523,13 +1523,7 @@ async function lerImport(e) {
       if(d.postagens) postagens=d.postagens;
       if(d.ranking) ranking=d.ranking;
       if(d.avulsos) avulsos=d.avulsos;
-      // re-seed tudo no Supabase
-      for(const obj of clientes) await persist('clientes', obj);
-      for(const obj of possiveis) await persist('possiveis', obj);
-      for(const obj of pagamentos) await persist('pagamentos', obj);
-      for(const obj of postagens) await persist('postagens', obj);
-      for(const obj of ranking) await persist('ranking', obj);
-      for(const obj of avulsos) await persist('avulsos', obj);
+      _importarParaSupabase();
       const active=document.querySelector('.nav button.active');
       if(active) active.click();
       toast('Backup importado com sucesso!');
@@ -1537,6 +1531,16 @@ async function lerImport(e) {
   };
   reader.readAsText(file);
   e.target.value='';
+}
+
+async function _importarParaSupabase() {
+  for(const obj of clientes)   await persist('clientes', obj);
+  for(const obj of possiveis)  await persist('possiveis', obj);
+  for(const obj of pagamentos) await persist('pagamentos', obj);
+  for(const obj of postagens)  await persist('postagens', obj);
+  for(const obj of ranking)    await persist('ranking', obj);
+  for(const obj of avulsos)    await persist('avulsos', obj);
+  toast('Dados sincronizados com Supabase!');
 }
 
 // ══════════════════════════════════ INADIMPLENTE / ALERTAS ═══════════════════
