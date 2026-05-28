@@ -1551,6 +1551,11 @@ function marcarInadimplente(nomeCliente, pagId) {
 
 // ══════════════════════════════════ INIT ═════════════════════════════════════
 checkAuth();
+window.addEventListener('DOMContentLoaded', () => {
+  if (checkAuth()) {
+    loadAll();
+  }
+});
 </script>
 </body>
 </html>
