@@ -191,6 +191,40 @@ tr:hover td { background: rgba(0,0,0,0.02); }
       <i class="ti ti-arrow-right"></i> Entrar
     </button>
     <div class="tentativas" id="tentativas-msg"></div>
+    <button onclick="mostrarEsqueciSenha()" style="background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;margin-top:10px;text-decoration:underline">Esqueci minha senha</button>
+  </div>
+</div>
+
+<!-- TELA ESQUECI SENHA -->
+<div class="lock-screen" id="esqueci-screen" style="display:none">
+  <div class="lock-box">
+    <i class="ti ti-mail"></i>
+    <h2>Recuperar senha</h2>
+    <p>Digite seu email para receber o link de redefinição</p>
+    <input type="email" id="esqueci-email" placeholder="email@exemplo.com" style="margin-bottom:8px"
+      onkeydown="if(event.key==='Enter') enviarRecuperacao()">
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:10px;margin-top:4px" onclick="enviarRecuperacao()">
+      <i class="ti ti-send"></i> Enviar link
+    </button>
+    <div class="tentativas" id="esqueci-msg"></div>
+    <button onclick="voltarLogin()" style="background:none;border:none;color:var(--text3);font-size:12px;cursor:pointer;margin-top:10px;text-decoration:underline">← Voltar ao login</button>
+  </div>
+</div>
+
+<!-- TELA REDEFINIR SENHA -->
+<div class="lock-screen" id="reset-screen" style="display:none">
+  <div class="lock-box">
+    <i class="ti ti-key"></i>
+    <h2>Nova senha</h2>
+    <p>Digite sua nova senha</p>
+    <input type="password" id="reset-senha1" placeholder="Nova senha" maxlength="50" style="margin-bottom:8px"
+      onkeydown="if(event.key==='Enter') document.getElementById('reset-senha2').focus()">
+    <input type="password" id="reset-senha2" placeholder="Confirmar nova senha" maxlength="50"
+      onkeydown="if(event.key==='Enter') redefinirSenha()">
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:10px;margin-top:8px" onclick="redefinirSenha()">
+      <i class="ti ti-check"></i> Salvar nova senha
+    </button>
+    <div class="tentativas" id="reset-msg"></div>
   </div>
 </div>
 
@@ -558,6 +592,92 @@ tr:hover td { background: rgba(0,0,0,0.02); }
 const MAX_TENTATIVAS = 5;
 const BLOQUEIO_MIN = 10;
 let SB_TOKEN = null; // token JWT do usuário autenticado
+
+function mostrarEsqueciSenha() {
+  document.getElementById('lock-screen').style.display = 'none';
+  document.getElementById('esqueci-screen').style.display = 'flex';
+  const email = document.getElementById('login-email').value;
+  if (email) document.getElementById('esqueci-email').value = email;
+  setTimeout(() => document.getElementById('esqueci-email').focus(), 100);
+}
+
+function voltarLogin() {
+  document.getElementById('esqueci-screen').style.display = 'none';
+  document.getElementById('reset-screen').style.display = 'none';
+  document.getElementById('lock-screen').style.display = 'flex';
+  setTimeout(() => document.getElementById('login-email').focus(), 100);
+}
+
+async function enviarRecuperacao() {
+  const email = document.getElementById('esqueci-email').value.trim();
+  const msgEl = document.getElementById('esqueci-msg');
+  if (!email) { msgEl.textContent = 'Digite seu email.'; return; }
+  msgEl.textContent = 'Enviando...';
+  try {
+    const r = await fetch(`${SB_URL}/auth/v1/recover`, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'apikey': SB_KEY },
+      body: JSON.stringify({ email, redirect_to: window.location.origin + window.location.pathname })
+    });
+    if (r.ok) {
+      msgEl.style.color = 'var(--green)';
+      msgEl.textContent = '✓ Link enviado! Verifique seu email.';
+    } else {
+      msgEl.textContent = 'Erro ao enviar. Tente novamente.';
+    }
+  } catch(e) {
+    msgEl.textContent = 'Erro de conexão.';
+  }
+}
+
+async function redefinirSenha() {
+  const senha1 = document.getElementById('reset-senha1').value;
+  const senha2 = document.getElementById('reset-senha2').value;
+  const msgEl = document.getElementById('reset-msg');
+  if (!senha1 || !senha2) { msgEl.textContent = 'Preencha os dois campos.'; return; }
+  if (senha1 !== senha2) { msgEl.textContent = 'As senhas não coincidem.'; return; }
+  if (senha1.length < 6) { msgEl.textContent = 'Senha deve ter pelo menos 6 caracteres.'; return; }
+  msgEl.textContent = 'Salvando...';
+  try {
+    const r = await fetch(`${SB_URL}/auth/v1/user`, {
+      method: 'PUT',
+      headers: { 'Content-Type':'application/json', 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_TOKEN },
+      body: JSON.stringify({ password: senha1 })
+    });
+    if (r.ok) {
+      msgEl.style.color = 'var(--green)';
+      msgEl.textContent = '✓ Senha redefinida com sucesso!';
+      setTimeout(() => {
+        document.getElementById('reset-screen').style.display = 'none';
+        document.getElementById('lock-screen').style.display = 'flex';
+        // limpa token de recuperação da URL
+        history.replaceState(null, '', window.location.pathname);
+      }, 2000);
+    } else {
+      const d = await r.json();
+      msgEl.textContent = 'Erro: ' + (d.message || 'Tente novamente.');
+    }
+  } catch(e) {
+    msgEl.textContent = 'Erro de conexão.';
+  }
+}
+
+function checkResetToken() {
+  // verifica se há token de recuperação na URL (#access_token=...&type=recovery)
+  const hash = window.location.hash;
+  if (!hash) return false;
+  const params = new URLSearchParams(hash.slice(1));
+  const type = params.get('type');
+  const token = params.get('access_token');
+  if (type === 'recovery' && token) {
+    SB_TOKEN = token;
+    document.getElementById('lock-screen').style.display = 'none';
+    document.getElementById('reset-screen').style.display = 'flex';
+    setTimeout(() => document.getElementById('reset-senha1').focus(), 100);
+    return true;
+  }
+  return false;
+}
 
 async function fazerLogin() {
   const bloqueioAte = parseInt(localStorage.getItem('bloqueio_ate')||'0');
@@ -1849,6 +1969,9 @@ function renderLinksNoCard(links) {
 
 // ══════════════════════════════════ INIT ═════════════════════════════════════
 window.addEventListener('DOMContentLoaded', async () => {
+  // verifica se é um link de recuperação de senha
+  if (checkResetToken()) return;
+  // verifica sessão normal
   const autenticado = await checkAuth();
   if (autenticado) loadAll();
 });
