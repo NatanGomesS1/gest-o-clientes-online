@@ -27,11 +27,31 @@ header h1 { font-size: 18px; font-weight: 600; }
 header p { font-size: 12px; color: var(--text2); margin-top: 2px; }
 .header-actions { display: flex; gap: 6px; flex-wrap: wrap; }
 
-/* NAV */
-.nav { display: flex; gap: 3px; margin-bottom: 22px; background: var(--surface2); border-radius: var(--radius-lg); padding: 4px; border: 0.5px solid var(--border); overflow-x: auto; }
-.nav button { display: flex; align-items: center; gap: 5px; padding: 7px 13px; border: none; border-radius: var(--radius); background: transparent; cursor: pointer; font-size: 13px; color: var(--text2); transition: all 0.12s; white-space: nowrap; }
-.nav button.active { background: var(--surface); color: var(--text); font-weight: 500; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
-.nav button:hover:not(.active) { background: rgba(0,0,0,0.04); color: var(--text); }
+/* NAV (menu lateral) */
+.nav { position: fixed; top: 0; bottom: 0; left: 0; width: 232px; background: var(--surface); border-right: 0.5px solid var(--border); padding: 18px 10px 14px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; z-index: 150; }
+.nav-brand { font-size: 12px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; padding: 4px 12px 12px; }
+.nav button { display: flex; align-items: center; gap: 11px; width: 100%; min-height: 42px; padding: 0 12px; border: none; border-radius: var(--radius); background: transparent; cursor: pointer; font-size: 14px; font-family: inherit; color: var(--text); text-align: left; transition: background 0.12s; }
+.nav button i { font-size: 18px; color: var(--text2); }
+.nav button.active { background: var(--blue-bg); color: var(--blue); font-weight: 600; }
+.nav button.active i { color: var(--blue); }
+.nav button:hover:not(.active) { background: rgba(0,0,0,0.04); }
+.nav .nav-chev { margin-left: auto; font-size: 16px; transition: transform 0.15s; }
+.nav-group.open .nav-chev { transform: rotate(180deg); }
+.nav-sub { display: none; flex-direction: column; gap: 2px; margin: 0 0 4px 21px; padding-left: 9px; border-left: 1px solid var(--surface3); }
+.nav-group.open + .nav-sub { display: flex; }
+.nav-sub button { min-height: 38px; font-size: 13px; color: var(--text2); }
+.nav-scrim { display: none; }
+.menu-btn { display: none; align-items: center; justify-content: center; width: 44px; height: 44px; flex: none; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--surface); color: var(--text); cursor: pointer; font-size: 20px; }
+@media (min-width: 900px) { .container { margin: 0 0 0 232px; max-width: 980px; padding-left: 28px; padding-right: 24px; } }
+@media (max-width: 899px) {
+  .menu-btn { display: inline-flex; }
+  header .header-actions { flex-basis: 100%; }
+  .nav { width: min(84vw, 300px); transform: translateX(-102%); transition: transform 0.2s ease; }
+  .nav button { min-height: 46px; font-size: 15px; }
+  .nav-sub button { min-height: 44px; font-size: 14px; }
+  body.menu-open .nav { transform: none; box-shadow: 0 0 40px rgba(0,0,0,0.18); }
+  body.menu-open .nav-scrim { display: block; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 140; }
+}
 
 .section { display: none; }
 .section.active { display: block; animation: fadeIn 0.14s ease; }
@@ -168,8 +188,9 @@ tr:hover td { background: rgba(0,0,0,0.02); }
 
 
 @media print {
-  .nav, .header-actions, .btn, .add-btn, .filter-bar, .modal-overlay, .toast { display: none !important; }
+  .nav, .nav-scrim, .menu-btn, .header-actions, .btn, .add-btn, .filter-bar, .modal-overlay, .toast { display: none !important; }
   .section { display: block !important; }
+  .container { margin: 0 auto !important; }
   .card { break-inside: avoid; }
 }
 </style>
@@ -230,7 +251,8 @@ tr:hover td { background: rgba(0,0,0,0.02); }
 
 <div class="container" id="app-container" style="display:none">
   <header>
-    <div>
+    <button class="menu-btn" onclick="toggleMenu()" aria-label="Abrir menu"><i class="ti ti-menu-2"></i></button>
+    <div style="flex:1;min-width:0">
       <h1><i class="ti ti-briefcase" style="font-size:17px;vertical-align:-2px;margin-right:6px"></i>Gestão de Clientes</h1>
       <p id="last-saved">Dados salvos automaticamente</p>
     </div>
@@ -247,17 +269,23 @@ tr:hover td { background: rgba(0,0,0,0.02); }
   <div id="conn-error"></div>
   <div id="alertas-container"></div>
 
-  <!-- NAV -->
-  <div class="nav">
-    <button class="active" onclick="show('dash',this)"><i class="ti ti-chart-bar"></i> Dashboard</button>
+  <!-- NAV (menu lateral) -->
+  <div class="nav-scrim" onclick="toggleMenu(false)"></div>
+  <nav class="nav" id="sidenav" aria-label="Menu principal">
+    <div class="nav-brand">NS Agência</div>
+    <button class="active" onclick="show('dash',this)"><i class="ti ti-home"></i> Início</button>
+    <button class="nav-group open" onclick="toggleGrupo(this)" aria-expanded="true"><i class="ti ti-checklist"></i> Trabalho <i class="ti ti-chevron-down nav-chev"></i></button>
+    <div class="nav-sub">
+      <button onclick="show('postagens',this)">Postagens</button>
+      <button onclick="show('ranking',this)">Ranking Google</button>
+      <button onclick="show('avulsos',this)">Serviços Avulsos</button>
+      <button onclick="show('historico',this)">Histórico</button>
+    </div>
     <button onclick="show('clientes',this)"><i class="ti ti-users"></i> Clientes</button>
-    <button onclick="show('historico',this)"><i class="ti ti-history"></i> Histórico</button>
-    <button onclick="show('mensalidades',this)"><i class="ti ti-currency-dollar"></i> Mensalidades</button>
-    <button onclick="show('postagens',this)"><i class="ti ti-calendar"></i> Postagens</button>
-    <button onclick="show('avulsos',this)"><i class="ti ti-tool"></i> Serviços Avulsos</button>
-    <button onclick="show('ranking',this)"><i class="ti ti-trending-up"></i> Ranking Google</button>
-    <button onclick="show('relatorio',this)"><i class="ti ti-file-text"></i> Relatório</button>
-  </div>
+    <button onclick="show('comercial',this)"><i class="ti ti-briefcase"></i> Comercial</button>
+    <button onclick="show('mensalidades',this)"><i class="ti ti-wallet"></i> Financeiro</button>
+    <button onclick="show('relatorio',this)"><i class="ti ti-file-text"></i> Relatórios</button>
+  </nav>
 
   <!-- ═══════════════════════════════ DASHBOARD ═══════════════════════════════ -->
   <div id="dash" class="section active">
@@ -286,7 +314,11 @@ tr:hover td { background: rgba(0,0,0,0.02); }
     </div>
     <div class="filter-bar" id="cli-filter"></div>
     <div id="clientes-ativos-list"></div>
-    <div class="divider-label" style="margin-top:22px">
+  </div>
+
+  <!-- ═══════════════════════════════ COMERCIAL ═══════════════════════════════ -->
+  <div id="comercial" class="section">
+    <div class="divider-label">
       <span>Possíveis clientes</span>
       <button class="btn btn-sm btn-primary" onclick="openModalPossivel()"><i class="ti ti-plus"></i> Adicionar</button>
     </div>
@@ -1040,9 +1072,12 @@ function show(id, btn) {
   document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   btn.classList.add('active');
-  const renders = {dash:renderDash, clientes:()=>{renderClientes();initHistSelector();}, mensalidades:renderMensalidades, postagens:renderPostagens, avulsos:renderAvulsos, historico:renderHistorico, ranking:renderRanking, relatorio:renderRelatorio};
+  document.body.classList.remove('menu-open');
+  const renders = {dash:renderDash, clientes:()=>{renderClientes();initHistSelector();}, mensalidades:renderMensalidades, postagens:renderPostagens, avulsos:renderAvulsos, historico:renderHistorico, ranking:renderRanking, relatorio:renderRelatorio, comercial:renderClientes};
   if (renders[id]) renders[id]();
 }
+function toggleMenu(on) { document.body.classList.toggle('menu-open', on); }
+function toggleGrupo(btn) { btn.setAttribute('aria-expanded', btn.classList.toggle('open')); }
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); }));
