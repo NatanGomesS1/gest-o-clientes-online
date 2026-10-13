@@ -239,6 +239,15 @@ details.card[open] > summary { margin-bottom: 12px; }
 .checkbox-group label:has(input:checked) { background: var(--green-bg); border-color: var(--green); color: var(--green-d); }
 .checkbox-group input { width: auto; min-height: 0; margin: 0; }
 .bloco { background: var(--bg); border-radius: 12px; padding: 12px 14px; margin-bottom: 13px; }
+.fatos { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
+.fatos b { color: var(--text); font-weight: 600; }
+.fatos .alerta { color: var(--red); font-weight: 600; } .fatos .perto { color: var(--amber); font-weight: 600; }
+.av-info { background: var(--blue-bg); border: 1px solid #BCD3EC; color: #174C86; }
+.tempo { display: inline-block; margin-left: 6px; padding: 1px 8px; border-radius: 999px; background: var(--grey-bg); font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--text); white-space: nowrap; }
+.sql { width: 100%; min-height: 250px; padding: 12px; border: 1px solid var(--ink3); border-radius: 10px; background: var(--ink); color: #E6EEE9; font-family: var(--mono); font-size: 12px; line-height: 1.5; resize: vertical; white-space: pre; overflow: auto; }
+.sobra { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; padding: 12px 14px; border-radius: 12px; background: var(--bg); }
+.sobra b { font-family: var(--disp); font-size: 21px; font-weight: 700; }
+.passos { margin: 0 0 12px 20px; font-size: 14px; display: flex; flex-direction: column; gap: 4px; }
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(90px); background: var(--ink); color: #fff; padding: 11px 20px; border-radius: 999px; font-size: 13px; z-index: 300; transition: transform 0.22s; pointer-events: none; max-width: 92vw; text-align: center; }
 .toast.show { transform: translateX(-50%) translateY(0); }
 
@@ -420,6 +429,10 @@ details.card[open] > summary { margin-bottom: 12px; }
       <div class="barra-reg no-print">
         <select id="hist-cliente-sel" class="campo" aria-label="Cliente" style="flex:1 1 170px;min-width:0"></select>
         <input id="hist-texto-input" class="campo claro" aria-label="O que foi feito" placeholder="O que foi feito? Ex.: respondi 4 avaliações" style="flex:4 1 240px;min-width:0" onkeydown="if(event.key==='Enter') salvarHistoricoRapido()">
+        <span id="hist-tempo-campos" style="display:none;flex:1 1 250px;gap:10px;min-width:0">
+          <select id="hist-etapa-sel" class="campo" aria-label="Tipo de trabalho" style="flex:1 1 150px;min-width:0"></select>
+          <input type="number" id="hist-min-input" class="campo" aria-label="Minutos gastos" placeholder="min" min="0" max="1440" style="flex:0 0 84px;min-width:0" onkeydown="if(event.key==='Enter') salvarHistoricoRapido()">
+        </span>
         <input type="date" id="hist-data-input" class="campo" aria-label="Data" style="flex:0 1 150px;min-width:0">
         <button class="btn btn-mint" onclick="salvarHistoricoRapido()">Registrar</button>
       </div>
@@ -436,6 +449,7 @@ details.card[open] > summary { margin-bottom: 12px; }
         <div class="card g1" id="rel-fech" style="flex-basis:400px"></div>
         <div class="card g1" style="flex-basis:400px"><div class="eyebrow">Receita dos últimos 6 meses</div><div style="margin-top:12px"><canvas id="chart-receita" height="210"></canvas></div><div class="sub" id="rel-receita-txt" style="margin-top:8px"></div></div>
       </div>
+      <div class="cols" id="rel-extra"></div>
       <div id="relatorio-content"></div>
     </section>
   </main>
@@ -472,6 +486,33 @@ details.card[open] > summary { margin-bottom: 12px; }
       <select id="cli-plataforma"><option value="">—</option><option>Github</option><option>Netlify</option><option>Vercel</option><option>WordPress</option><option>Wix</option><option>Outro</option></select></div>
     <div class="form-group"><label for="cli-contrato">Contrato</label>
       <select id="cli-contrato"><option>OK</option><option>Em Teste</option><option>Pendente</option><option>Sem contrato</option></select></div>
+  </div>
+  <div id="cli-extra-wrap" style="display:none">
+    <div class="bloco">
+      <div class="eyebrow" style="margin-bottom:8px">Preço e anúncios</div>
+      <div class="form-row">
+        <div class="form-group" style="margin-bottom:0"><label for="cli-reajuste">Próxima revisão de preço</label><input id="cli-reajuste" type="date"></div>
+        <div class="form-group" style="margin-bottom:0"><label for="cli-verba">Verba de Ads do cliente (R$/mês)</label><input id="cli-verba" type="number" min="0" placeholder="0"></div>
+      </div>
+      <div class="sub" style="margin-top:8px">Em branco, a revisão vale 1 ano depois do início do contrato. Ao mudar o valor mensal, ela vai sozinha para daqui a 12 meses.</div>
+    </div>
+    <div class="bloco">
+      <div class="eyebrow" style="margin-bottom:8px">Site: vencimentos</div>
+      <div class="form-row">
+        <div class="form-group" style="margin-bottom:0"><label for="cli-dominio-venc">Domínio vence em</label><input id="cli-dominio-venc" type="date"></div>
+        <div class="form-group" style="margin-bottom:0"><label for="cli-hosp-venc">Hospedagem vence em</label><input id="cli-hosp-venc" type="date"></div>
+      </div>
+      <div class="sub" style="margin-top:8px">Avisa no Início 30 dias antes.</div>
+    </div>
+    <div class="bloco">
+      <div class="eyebrow" style="margin-bottom:8px">Próxima proposta para este cliente</div>
+      <div class="form-row">
+        <div class="form-group" style="margin-bottom:0"><label for="cli-prop-data">Quando</label><input id="cli-prop-data" type="date"></div>
+        <div class="form-group" style="margin-bottom:0"><label for="cli-prop-txt">O que propor</label><input id="cli-prop-txt" list="cli-prop-list" placeholder="Ex: aumentar a verba">
+          <datalist id="cli-prop-list"><option value="Propor Google Ads"><option value="Propor aumento de verba"><option value="Propor site"><option value="Propor manutenção do site"></datalist></div>
+      </div>
+      <div class="sub" style="margin-top:8px">No dia marcado, sobe para o Início.</div>
+    </div>
   </div>
   <div class="form-group"><label for="cli-obs">Observações</label><textarea id="cli-obs" rows="2" placeholder="Notas internas..."></textarea></div>
   <div class="form-group"><label>Outros links (GMN, Instagram, etc.)</label>
@@ -555,6 +596,7 @@ details.card[open] > summary { margin-bottom: 12px; }
       <div class="form-group" style="margin-bottom:0"><label for="post-data">Data do post</label><input id="post-data" type="date"></div>
       <div class="form-group" style="margin-bottom:0"><label for="post-desc">Link ou descrição (opcional)</label><input id="post-desc" placeholder="https://... ou tema do post"></div>
     </div>
+    <div class="form-group" id="post-min-wrap" style="margin:8px 0 0;display:none"><label for="post-min">Minutos gastos (opcional)</label><input id="post-min" type="number" min="0" max="1440" placeholder="Ex: 20"></div>
   </div>
   <div class="modal-footer">
     <button class="btn" onclick="closeModal('modal-post')">Fechar</button>
@@ -569,6 +611,7 @@ details.card[open] > summary { margin-bottom: 12px; }
   <div class="form-group"><label for="rank-termo">Termo de pesquisa</label><input id="rank-termo" placeholder="Ex: reboque em campos"></div>
   <div id="rank-clientes-campos"></div>
   <div class="form-group"><label for="rank-data">Data da verificação</label><input id="rank-data" type="date"></div>
+  <div class="form-group" id="rank-min-wrap" style="display:none"><label for="rank-min">Minutos gastos nesta medição (opcional)</label><input id="rank-min" type="number" min="0" max="1440" placeholder="Ex: 15"></div>
   <div class="modal-footer">
     <button class="btn" onclick="closeModal('modal-ranking')">Cancelar</button>
     <button class="btn btn-pri" onclick="salvarRanking()">Salvar</button>
@@ -602,16 +645,53 @@ details.card[open] > summary { margin-bottom: 12px; }
 </div></div>
 
 <div class="modal-overlay" id="modal-historico"><div class="modal">
-  <h2>Editar registro</h2>
+  <h2 id="modal-hist-title">Editar registro</h2>
   <input type="hidden" id="hist-id">
   <div class="form-row">
     <div class="form-group"><label for="hist-edit-cliente">Cliente</label><input id="hist-edit-cliente" disabled></div>
     <div class="form-group"><label for="hist-edit-data">Data</label><input id="hist-edit-data" type="date"></div>
   </div>
   <div class="form-group"><label for="hist-edit-texto">O que foi feito</label><textarea id="hist-edit-texto" rows="3"></textarea></div>
+  <div class="form-row" id="hist-edit-tempo" style="display:none">
+    <div class="form-group"><label for="hist-edit-etapa">Tipo de trabalho</label><select id="hist-edit-etapa"></select></div>
+    <div class="form-group"><label for="hist-edit-min">Minutos gastos</label><input id="hist-edit-min" type="number" min="0" max="1440" placeholder="0"></div>
+  </div>
   <div class="modal-footer">
     <button class="btn" onclick="closeModal('modal-historico')">Cancelar</button>
     <button class="btn btn-pri" onclick="salvarHistoricoEdit()">Salvar</button>
+  </div>
+</div></div>
+
+<div class="modal-overlay" id="modal-custo"><div class="modal">
+  <h2 id="modal-custo-title">Custo fixo</h2>
+  <input type="hidden" id="cst-id">
+  <div class="form-group"><label for="cst-nome">O que é</label><input id="cst-nome" placeholder="Ex: ferramenta, hospedagem, domínio"></div>
+  <div class="form-row">
+    <div class="form-group"><label for="cst-valor">Valor (R$)</label><input id="cst-valor" type="number" min="0" step="0.01" placeholder="0"></div>
+    <div class="form-group"><label for="cst-ciclo">Cobrança</label><select id="cst-ciclo"><option value="mensal">Todo mês</option><option value="anual">Uma vez por ano</option></select></div>
+  </div>
+  <div class="sub">Custo anual entra dividido por 12 na conta do mês.</div>
+  <div class="modal-footer">
+    <button class="btn btn-red esq" id="cst-excluir" onclick="deletarCusto()">Excluir</button>
+    <button class="btn" onclick="closeModal('modal-custo')">Cancelar</button>
+    <button class="btn btn-pri" onclick="salvarCusto()">Salvar</button>
+  </div>
+</div></div>
+
+<div class="modal-overlay" id="modal-sql"><div class="modal" style="max-width:640px">
+  <h2>Ligar os recursos novos no banco</h2>
+  <p class="sub" style="margin:-8px 0 12px" id="sql-falta"></p>
+  <ol class="passos">
+    <li>Abra o Supabase, no projeto deste sistema, e entre em <b>SQL Editor</b>.</li>
+    <li>Cole o comando abaixo e clique em <b>Run</b>.</li>
+    <li>Volte aqui e clique em “Já rodei”.</li>
+  </ol>
+  <textarea class="sql" id="sql-txt" readonly aria-label="Comando SQL" spellcheck="false"></textarea>
+  <p class="sub" style="margin-top:8px">O comando só acrescenta colunas e uma tabela. Não apaga nem altera nenhum dado que já existe, e pode ser rodado mais de uma vez.</p>
+  <div class="modal-footer">
+    <button class="btn esq" onclick="copiarSQL()">Copiar comando</button>
+    <button class="btn" onclick="closeModal('modal-sql')">Fechar</button>
+    <button class="btn btn-pri" onclick="closeModal('modal-sql');loadAll()">Já rodei: recarregar</button>
   </div>
 </div></div>
 
@@ -821,6 +901,7 @@ async function checkAuth() {
 }
 
 
+
 // ═══════════════════════════════ RATE LIMIT (cliente) ════════════════════════
 const RL = { calls: [], max: 120, window: 60000 }; // 120 req/min
 function rateLimitOk() {
@@ -921,6 +1002,9 @@ async function sbDelete(table, id) {
 
 // A meta de posts por cliente só é gravada se a coluna meta_posts existir no banco
 let TEM_META = false;
+// Recursos que dependem de colunas novas no banco. Sem elas, os campos ficam escondidos e nada quebra.
+let TEM_EXTRA = false, TEM_TEMPO = false, TEM_AJUSTES = false, _sondado = false;
+let ajustes = []; // tabela "ajustes": uma linha por assunto (hoje, os custos fixos)
 
 // converte objeto JS → linha do Supabase
 function toRow(table, o) {
@@ -944,6 +1028,7 @@ function toRow(table, o) {
       links:o.links||[]
     };
     if (TEM_META) r.meta_posts = o.meta_posts || null;
+    if (TEM_EXTRA) r.extra = o.extra || {};
     return r;
   }
   if (table === 'pagamentos') return {
@@ -952,7 +1037,12 @@ function toRow(table, o) {
   };
   if (table === 'postagens') return { id:o.id, cliente:o.cliente, mes:refLabel(o.ref), qtd:o.qtd||0, obs:o.obs||'' };
   if (table === 'ranking') return { id:o.id, termo:o.termo, clientes:o.clientes||[], data:o.data||null };
-  if (table === 'historico') return { id:o.id, cliente:o.cliente, data:o.data, texto:o.texto, tipo:o.tipo||'manual', auto:o.auto||false };
+  if (table === 'historico') {
+    const r = { id:o.id, cliente:o.cliente, data:o.data, texto:o.texto, tipo:o.tipo||'manual', auto:o.auto||false };
+    if (TEM_TEMPO) { r.minutos = +o.minutos || null; r.etapa = o.etapa || null; }
+    return r;
+  }
+  if (table === 'ajustes') return { id:o.id, dados:o.dados || {} };
   return o;
 }
 // converte linha do Supabase (ou registro de backup/cache) → objeto JS
@@ -966,7 +1056,7 @@ function fromRow(table, r) {
     dataEntrega: r.dataEntrega !== undefined ? r.dataEntrega : r.data_entrega };
   if (table === 'pagamentos') { const ref = r.ref || mesParaRef(r.mes, [r.venc, r.data, r.created_at]); return { ...r, valor:+r.valor||0, ref, mes:refLabel(ref) }; }
   if (table === 'postagens')  { const ref = r.ref || mesParaRef(r.mes, [r.created_at]); return { ...r, qtd:+r.qtd||0, ref, mes:refLabel(ref) }; }
-  if (table === 'clientes') return { ...r, valor:+r.valor||0 };
+  if (table === 'clientes') return { ...r, valor:+r.valor||0, extra:(r.extra && typeof r.extra === 'object' && !Array.isArray(r.extra)) ? r.extra : {} };
   return { ...r };
 }
 
@@ -996,13 +1086,18 @@ async function loadAll() {
     const teste = await sbFetch('/rest/v1/clientes?select=id&limit=1');
     if (!teste.ok) { const txt = await teste.text(); throw new Error(`HTTP ${teste.status}: ${txt}`); }
 
+    // sonda as colunas novas: cada resposta liga (ou não) um grupo de recursos
+    const sondas = await Promise.all(['clientes?select=extra', 'historico?select=minutos,etapa', 'ajustes?select=id', 'clientes?select=meta_posts']
+      .map(q => sbFetch('/rest/v1/' + q + '&limit=1').then(r => r.ok, () => false)));
+    [TEM_EXTRA, TEM_TEMPO, TEM_AJUSTES, TEM_META] = sondas; _sondado = true;
+
     const res = await Promise.allSettled(TABELAS.map(t => sbGet(t)));
     const falharam = [];
     res.forEach((r, i) => {
       if (r.status === 'fulfilled') setDados(TABELAS[i], r.value.map(x => fromRow(TABELAS[i], x)));
       else falharam.push(TABELAS[i]);
     });
-    if (!falharam.includes('clientes')) TEM_META = clientes.length > 0 && Object.prototype.hasOwnProperty.call(clientes[0], 'meta_posts');
+    if (TEM_AJUSTES) { try { ajustes = await sbGet('ajustes'); } catch(e) { falharam.push('ajustes'); } } else ajustes = [];
     document.getElementById('conn-error').innerHTML = falharam.length
       ? `<div class="aviso av-amb"><span>Não consegui carregar: <b>${esc(falharam.join(', '))}</b>. Recarregue a página.</span></div>` : '';
     setSaved('Sincronizado às ' + horaAgora());
@@ -1035,12 +1130,14 @@ async function loadAll() {
 
 // cache local de emergência
 function saveCache() {
-  try { localStorage.setItem('gc_cache', JSON.stringify({clientes,possiveis,pagamentos,postagens,ranking,avulsos,historico})); } catch(e){}
+  try { localStorage.setItem('gc_cache', JSON.stringify({clientes,possiveis,pagamentos,postagens,ranking,avulsos,historico,ajustes,_tem:[TEM_EXTRA,TEM_TEMPO,TEM_AJUSTES,TEM_META]})); } catch(e){}
 }
 function loadFromCache() {
   try {
     const d = JSON.parse(localStorage.getItem('gc_cache') || '{}');
     TABELAS.forEach(t => { if (Array.isArray(d[t])) setDados(t, d[t].map(x => fromRow(t, x))); });
+    if (Array.isArray(d.ajustes)) ajustes = d.ajustes;
+    if (Array.isArray(d._tem)) [TEM_EXTRA, TEM_TEMPO, TEM_AJUSTES, TEM_META] = d._tem;
   } catch(e) {}
 }
 
@@ -1159,6 +1256,172 @@ async function gerarRecorrencia() {
   }
 }
 
+// ═════════════ TEMPO, REVISÃO DE PREÇO, VENCIMENTOS, PROPOSTA E CUSTOS ═══════════════
+// Os dados por cliente ficam em clientes.extra (JSON): reajuste, verbaAds, dominioVenc, hospVenc, propostaData, propostaTxt.
+const ex = c => (c && c.extra) || {};
+function addMeses(iso, n) { const d = String(iso).slice(0,10), ref = refAdd(d.slice(0,7), n); return ref + '-' + pad2(Math.min(+d.slice(8,10) || 1, ultimoDia(ref))); }
+function tempoDesde(iso) {
+  const h = hojeISO(); iso = String(iso).slice(0,10);
+  let m = (+h.slice(0,4) - +iso.slice(0,4)) * 12 + (+h.slice(5,7) - +iso.slice(5,7)); if (+h.slice(8,10) < +iso.slice(8,10)) m--;
+  const a = Math.floor(m / 12), r = m % 12;
+  return [a > 0 ? plural(a, 'ano', 'anos') : '', r > 0 ? plural(r, 'mês', 'meses') : ''].filter(Boolean).join(' e ') || 'menos de 1 mês';
+}
+
+// Tipos de trabalho: são as etapas que a tela de Preços vai somar por serviço
+const ETAPAS = [
+  ['posts','Posts','GMN'], ['avaliacoes','Avaliações e atualizações do perfil','GMN'], ['ranking','Medição do ranking','GMN'],
+  ['campanhas','Acompanhar campanhas','ADS'], ['ajustes_ads','Ajustes nos anúncios','ADS'],
+  ['site_manut','Site: hospedagem e atualizações','Site'], ['site_ajustes','Site: ajustes pedidos','Site'],
+  ['relatorio','Relatório do mês',''], ['atendimento','Atendimento ao cliente',''], ['estudo','Estudo e análise',''], ['outro','Outro','']
+];
+const ETAPA_ROT = Object.fromEntries(ETAPAS.map(e => [e[0], e[1]]));
+const INTERNO = 'Agência (interno)';
+function fmtMin(m) { m = Math.round(+m || 0); if (m < 60) return m + ' min'; const h = Math.floor(m / 60), r = m % 60; return h + ' h' + (r ? ' ' + pad2(r) : ''); }
+function lerMin(id) { const v = parseInt(document.getElementById(id).value); return v > 0 ? Math.min(v, 1440) : 0; }
+function optsEtapa(sel) { return `<option value="">Tipo de trabalho</option>` + ETAPAS.map(([k, r]) => `<option value="${k}" ${k === sel ? 'selected' : ''}>${r}</option>`).join(''); }
+function noMes(h, ref) { return String(h.data).slice(0,7) === ref; }
+function minutosDe(nome, ref) { return historico.reduce((a, h) => a + (h.cliente === nome && noMes(h, ref) ? (+h.minutos || 0) : 0), 0); }
+function minutosMes(ref) { return historico.reduce((a, h) => a + (noMes(h, ref) ? (+h.minutos || 0) : 0), 0); }
+function valorNoMes(c, ref) { const p = pagDe(c.nome, ref); return p ? (previsto(p) ? (+p.valor || 0) : 0) : (+c.valor || 0); }
+function porHora(valor, min) { return fmtBRL(Math.round(valor / (min / 60))); }
+
+// Revisão de preço: a data marcada no cadastro ou, sem ela, 1 ano depois do início do contrato
+function revisaoDe(c) {
+  if (!TEM_EXTRA || c.status !== 'Ativo' || !(c.valor > 0)) return null;
+  if (ex(c).reajuste) return { data: ex(c).reajuste, marcada: true };
+  if (c.inicio) return { data: addMeses(c.inicio, 12), marcada: false };
+  return null;
+}
+const VENCS = [['dominioVenc','Domínio'],['hospVenc','Hospedagem']];
+function avisosCarteira() {
+  if (!TEM_EXTRA) return [];
+  const hoje = hojeISO(), lim = addDias(hoje, 30), out = [];
+  const quando = d => d === hoje ? 'hoje' : d < hoje ? 'era ' + fmtDia(d) : 'em ' + fmtDia(d) + ' (' + plural(diasEntre(hoje, d), 'dia', 'dias') + ')';
+  clientes.filter(c => c.status !== 'Inativo').forEach(c => {
+    const e = ex(c), cid = esc(c.id), nome = `<b>${esc(c.nome)}</b>`;
+    const abrir = `<button class="btn btn-sm" onclick="editarCliente('${cid}')">Abrir</button>`;
+    VENCS.forEach(([k, rot]) => {
+      const d = e[k]; if (!d || d > lim) return;
+      out.push({ d, cls: d <= addDias(hoje, 7) ? 'av-red' : 'av-amb',
+        html: `<span>${rot} de ${nome} ${d < hoje ? 'venceu em ' + fmtDia(d) : d === hoje ? 'vence hoje' : 'vence ' + quando(d)}.</span><button class="btn btn-sm" onclick="renovarVenc('${cid}','${k}')">Renovei: +1 ano</button>${abrir}` });
+    });
+    if (e.propostaData && e.propostaData <= hoje) out.push({ d: e.propostaData, cls: 'av-amb',
+      html: `<span>Proposta: ${nome} — ${esc(e.propostaTxt || 'conversar sobre o próximo passo')} (${quando(e.propostaData)})</span><button class="btn btn-sm" onclick="propostaFeita('${cid}')">Já propus</button>${abrir}` });
+    const rv = revisaoDe(c);
+    if (rv && rv.data <= lim) out.push({ d: rv.data, cls: 'av-amb',
+      html: `<span>Revisão de preço: ${nome} paga ${fmtBRL(c.valor)}${rv.marcada ? ', revisão ' + quando(rv.data) : rv.data <= hoje ? ' há ' + tempoDesde(c.inicio) + ' sem revisão' : ' e completa 1 ano ' + quando(rv.data)}.</span><button class="btn btn-sm" onclick="manterPreco('${cid}')">Mantive o preço</button>${abrir}` });
+  });
+  return out.sort((a, b) => a.d.localeCompare(b.d));
+}
+async function salvarExtra(c, mud, textoHist) {
+  const e = { ...ex(c), ...mud }; Object.keys(e).forEach(k => { if (e[k] === '' || e[k] == null) delete e[k]; });
+  c.extra = e; renderAtual();
+  const ok = await persist('clientes', c);
+  if (textoHist) await registrarHistoricoAuto(c.nome, textoHist);
+  renderAtual();
+  return ok;
+}
+async function renovarVenc(id, campo) {
+  const c = clientes.find(x => x.id === id), atual = c && ex(c)[campo]; if (!atual) return;
+  const rot = campo === 'dominioVenc' ? 'Domínio' : 'Hospedagem', hoje = hojeISO();
+  let novo = addMeses(atual, 12); while (novo <= hoje) novo = addMeses(novo, 12);
+  if (!confirm(`${rot} de "${c.nome}" renovado?\n\nO próximo vencimento passa para ${fmtDate(novo)}.`)) return;
+  if (await salvarExtra(c, { [campo]: novo }, `${rot} renovado até ${fmtDate(novo)}`)) toast(`${rot} de ${c.nome}: próximo vencimento em ${fmtDate(novo)}`, 3500);
+}
+async function propostaFeita(id) {
+  const c = clientes.find(x => x.id === id); if (!c) return;
+  const txt = ex(c).propostaTxt || 'próximo passo';
+  if (await salvarExtra(c, { propostaData: '', propostaTxt: '' }, 'Proposta feita ao cliente: ' + txt)) toast('Registrado no histórico. Quando souber a resposta, marque a próxima em Editar.', 4500);
+}
+async function manterPreco(id) {
+  const c = clientes.find(x => x.id === id); if (!c) return;
+  const novo = addMeses(hojeISO(), 12);
+  if (!confirm(`Manter ${fmtBRL(c.valor)} por mês para "${c.nome}"?\n\nA próxima revisão de preço fica para ${fmtDate(novo)}. Para mudar o valor, use Abrir.`)) return;
+  if (await salvarExtra(c, { reajuste: novo }, `Preço revisto e mantido em ${fmtBRL(c.valor)}. Próxima revisão em ${fmtDate(novo)}`)) toast(`Próxima revisão de ${c.nome} em ${fmtDate(novo)}`, 3500);
+}
+
+// Custos fixos: ficam na linha "custos" da tabela ajustes
+function custos() { const r = ajustes.find(a => a.id === 'custos'); return (r && r.dados && Array.isArray(r.dados.itens)) ? r.dados.itens : []; }
+function custoMes(i) { const v = +i.valor || 0; return i.ciclo === 'anual' ? v / 12 : v; }
+function totalCustos() { return custos().reduce((a, i) => a + custoMes(i), 0); }
+function recebidoNoMes(ref) {
+  return soma(pagamentos.filter(p => p.ref === ref && p.status === 'Pago')) +
+    soma(avulsos.filter(a => AV_RECEBIDO.includes(a.status) && String(a.dataEntrega || a.dataPedido || '').slice(0,7) === ref));
+}
+async function gravarCustos(itens) {
+  let r = ajustes.find(a => a.id === 'custos');
+  if (!r) { r = { id:'custos', dados:{} }; ajustes.push(r); }
+  r.dados = { ...(r.dados || {}), itens };
+  renderAtual();
+  return persist('ajustes', r);
+}
+function openModalCusto(id) {
+  const i = id ? custos().find(x => x.id === id) : null;
+  document.getElementById('cst-id').value = i ? i.id : '';
+  document.getElementById('modal-custo-title').textContent = i ? 'Editar custo fixo' : 'Novo custo fixo';
+  document.getElementById('cst-excluir').style.display = i ? '' : 'none';
+  document.getElementById('cst-nome').value = i ? i.nome : '';
+  document.getElementById('cst-valor').value = i ? i.valor : '';
+  document.getElementById('cst-ciclo').value = i && i.ciclo === 'anual' ? 'anual' : 'mensal';
+  openModal('modal-custo');
+}
+async function salvarCusto() {
+  const id = document.getElementById('cst-id').value, nome = document.getElementById('cst-nome').value.trim();
+  const valor = parseFloat(document.getElementById('cst-valor').value) || 0;
+  if (!nome || !(valor > 0)) { alert('Preencha o nome e o valor do custo'); return; }
+  const item = { id: id || uid(), nome, valor, ciclo: document.getElementById('cst-ciclo').value };
+  const itens = id ? custos().map(x => x.id === id ? item : x) : [...custos(), item];
+  closeModal('modal-custo');
+  if (await gravarCustos(itens)) toast('Custo salvo!');
+}
+async function deletarCusto() {
+  const id = document.getElementById('cst-id').value, i = custos().find(x => x.id === id); if (!i) return;
+  if (!confirm(`Excluir o custo "${i.nome}"?`)) return;
+  closeModal('modal-custo');
+  if (await gravarCustos(custos().filter(x => x.id !== id))) toast('Custo removido');
+}
+
+// Comando que liga os recursos novos no banco (o usuário roda uma vez no SQL Editor do Supabase)
+const SQL_NOVO = `-- NS Agência: liga tempo gasto, revisão de preço, vencimentos,
+-- verba de Ads, próxima proposta, custos fixos e meta de posts.
+-- Só acrescenta. Não apaga nem altera dados. Pode rodar mais de uma vez.
+
+alter table clientes  add column if not exists extra jsonb not null default '{}'::jsonb;
+alter table clientes  add column if not exists meta_posts integer;
+alter table historico add column if not exists minutos integer;
+alter table historico add column if not exists etapa text;
+
+create table if not exists ajustes (
+  id text primary key,
+  dados jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);
+alter table ajustes enable row level security;
+drop policy if exists "ajustes_so_logado" on ajustes;
+create policy "ajustes_so_logado" on ajustes
+  for all to authenticated using (true) with check (true);
+
+notify pgrst, 'reload schema';`;
+function faltaNoBanco() {
+  const f = [];
+  if (!TEM_TEMPO) f.push('tempo gasto');
+  if (!TEM_EXTRA) f.push('revisão de preço, vencimentos, verba de Ads e próxima proposta');
+  if (!TEM_AJUSTES) f.push('custos fixos');
+  if (!TEM_META) f.push('meta de posts por cliente');
+  return f;
+}
+function abrirSQL() {
+  document.getElementById('sql-txt').value = SQL_NOVO;
+  const f = faltaNoBanco();
+  document.getElementById('sql-falta').textContent = f.length ? 'Falta ligar: ' + listaE(f) + '.' : 'Tudo já está ligado neste banco. O comando fica aqui só para consulta.';
+  openModal('modal-sql');
+}
+async function copiarSQL() {
+  const t = document.getElementById('sql-txt');
+  try { await navigator.clipboard.writeText(t.value); toast('Comando copiado'); }
+  catch(e) { t.focus(); t.select(); toast('Selecionei o comando. Copie com Ctrl+C.', 3500); }
+}
+
 // ═══════════════════════════════ UI HELPERS ══════════════════════════════════
 const RENDERS = {
   dash: () => renderDash(), clientes: () => renderClientes(), comercial: () => renderComercial(),
@@ -1204,7 +1467,7 @@ function toast(msg, dur) {
   _toastT = setTimeout(() => t.classList.remove('show'), dur || 2400);
 }
 
-function fmtBRL(n) { n = +n || 0; const cent = Math.round(n * 100) % 100 !== 0; return 'R$ ' + n.toLocaleString('pt-BR',{minimumFractionDigits:cent?2:0,maximumFractionDigits:cent?2:0}); }
+function fmtBRL(n) { n = +n || 0; const neg = n < 0; n = Math.abs(n); const cent = Math.round(n * 100) % 100 !== 0; return (neg ? '−' : '') + 'R$ ' + n.toLocaleString('pt-BR',{minimumFractionDigits:cent?2:0,maximumFractionDigits:cent?2:0}); }
 function fmtDate(s) { if (!s) return '—'; const d = new Date(String(s).slice(0,10) + 'T12:00:00'); if (isNaN(d)) return esc(s); return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'}); }
 function fmtDia(s) { if (!s) return '—'; const d = new Date(String(s).slice(0,10) + 'T12:00:00'); if (isNaN(d)) return esc(s); return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}); }
 function pillStatus(s) {
@@ -1284,10 +1547,24 @@ function renderDash() {
     avisos += `<div class="aviso av-amb"><span>Retorno: <b>${esc(p.nome)}</b> — ${esc(p.followupTipo || 'retomar contato')} (${p.followupData === hoje ? 'hoje' : 'era ' + fmtDia(p.followupData)})${p.followupObs ? ' · ' + esc(p.followupObs) : ''}</span><button class="btn btn-sm" onclick="abrirPossivel('${esc(p.id)}')">Abrir</button></div>`;
   });
   if (rk && rk.dias > 30) avisos += `<div class="aviso av-amb"><span>Ranking sem medir há ${rk.dias} dias.</span><button class="btn btn-sm" onclick="irPara('ranking')">Medir</button></div>`;
+  const avC = avisosCarteira();
+  avC.slice(0, 6).forEach(a => { avisos += `<div class="aviso ${a.cls}">${a.html}</div>`; });
+  if (avC.length > 6) avisos += `<div class="aviso av-amb"><span>Mais ${plural(avC.length - 6, 'aviso', 'avisos')} da carteira.</span><button class="btn btn-sm" onclick="irPara('clientes')">Ver clientes</button></div>`;
+  const falta = _sondado ? faltaNoBanco() : [];
+  if (falta.length) avisos += `<div class="aviso av-info"><span>Falta um passo no banco para ligar: ${esc(listaE(falta))}.</span><button class="btn btn-sm" onclick="abrirSQL()">Ver o comando</button></div>`;
+  let extras = '';
+  if (TEM_TEMPO) {
+    const min = minutosMes(atual), base = soma(prev);
+    extras += `<button class="resumo" onclick="irPara('relatorio')"><span class="eyebrow">Tempo em ${esc(mes)}</span><b>${min ? fmtMin(min) : 'Sem registro'}</b><span class="sub">${min ? (base ? porHora(base, min) + ' por hora sobre o previsto do mês' : 'registrados no mês') : 'Informe os minutos ao marcar post, medir ranking ou registrar no Histórico'}</span></button>`;
+  }
+  if (TEM_AJUSTES) {
+    const tem = custos().length > 0, ct = totalCustos(), rec = recebidoNoMes(atual);
+    extras += `<button class="resumo" onclick="irPara('relatorio')"><span class="eyebrow">Sobra de ${esc(mes)}</span><b>${tem ? fmtBRL(rec - ct) : 'Sem custos'}</b><span class="sub">${tem ? `${fmtBRL(rec)} recebidos − ${fmtBRL(ct)} de custos fixos` : 'Cadastre os custos fixos em Relatórios'}</span></button>`;
+  }
   document.getElementById('dash-lado').innerHTML = avisos + `
     <button class="resumo" onclick="irPara('clientes')"><span class="eyebrow">Carteira</span><b>${plural(ativos.length, 'ativo', 'ativos')}</b><span class="sub">${emTeste.length} em teste · ${fmtBRL(soma(ativos))} fixos por mês</span></button>
     <button class="resumo" onclick="irPara('comercial')"><span class="eyebrow">Comercial</span><b>${plural(abertos.length, 'possível', 'possíveis')}</b><span class="sub">potencial de ${fmtBRL(soma(abertos))} por mês</span></button>
-    <button class="resumo" onclick="irPara('avulsos')"><span class="eyebrow">Avulsos</span><b>${avAbertos.length} em aberto</b><span class="sub">${avReceber ? fmtBRL(avReceber) + ' a receber · ' : ''}${fmtBRL(avRec)} já recebidos</span></button>`;
+    <button class="resumo" onclick="irPara('avulsos')"><span class="eyebrow">Avulsos</span><b>${avAbertos.length} em aberto</b><span class="sub">${avReceber ? fmtBRL(avReceber) + ' a receber · ' : ''}${fmtBRL(avRec)} já recebidos</span></button>` + extras;
 }
 function abrirFinanceiro(pagId) {
   if (pagId) { const p = pagamentos.find(x => x.id === pagId); if (p) { finSel = pagId; finBase = p.ref > refAtual() ? p.ref : (p.ref < refAdd(refAtual(), -3) ? refAdd(p.ref, 3) : null); } }
@@ -1545,11 +1822,25 @@ function renderClientesLista() {
       meio = `<div class="tira">${refs.map((r,i) => `<span title="${refLabel(r)}: ${ps[i] ? SIT[sitPag(ps[i])].rot : 'sem lançamento'}">${nomeMes(r).slice(0,3).toLowerCase()}${ps[i] ? lamp(sitPag(ps[i])) : '<i class="lamp l-nada"></i>'}</span>`).join('')}${fim}</div>` +
         (c.status === 'Inadimplente' ? `<div class="aviso av-red" style="padding:10px 12px;font-size:13px"><span>Inadimplente: mensalidades pausadas${deb ? ' · débito de ' + fmtBRL(deb) : ''}. Volte para Ativo quando acertar.</span></div>` : '');
     }
+    const fatos = [];
+    if (TEM_EXTRA && c.status !== 'Inativo') {
+      const e = ex(c), hoje = hojeISO(), lim = addDias(hoje, 30), rv = revisaoDe(c);
+      const cls = d => d <= hoje ? 'alerta' : d <= lim ? 'perto' : '';
+      if (rv) fatos.push(`<span class="${cls(rv.data)}">${rv.data <= hoje ? (rv.marcada ? 'Revisão de preço vencida em ' + fmtDate(rv.data) : 'Sem revisão de preço há ' + tempoDesde(c.inicio)) : 'Revisão de preço em ' + fmtDate(rv.data)}</span>`);
+      if (e.verbaAds) fatos.push(`<span>Verba de Ads: <b>${fmtBRL(e.verbaAds)}</b> por mês</span>`);
+      VENCS.forEach(([k, rot]) => { if (e[k]) fatos.push(`<span class="${cls(e[k])}">${rot} ${e[k] < hoje ? 'venceu em' : 'vence em'} ${fmtDate(e[k])}</span>`); });
+      if (e.propostaData) fatos.push(`<span class="${e.propostaData <= hoje ? 'perto' : ''}">Propor em ${fmtDate(e.propostaData)}: ${esc(e.propostaTxt || 'próximo passo')}</span>`);
+    }
+    if (TEM_TEMPO && c.status !== 'Inativo') {
+      const min = minutosDe(c.nome, refAtual()), v = valorNoMes(c, refAtual());
+      if (min) fatos.push(`<span>${fmtMin(min)} de trabalho neste mês${v ? ' · <b>' + porHora(v, min) + '</b> por hora' : ''}</span>`);
+    }
     return `<article class="card cli ${c.status === 'Em Teste' ? 'teste' : c.status === 'Inadimplente' ? 'inad' : c.status === 'Inativo' ? 'inat' : ''}">
       <div class="cli-h"><h2>${esc(c.nome)}</h2>${pillStatus(c.status)}</div>
       <div class="acoes" style="gap:6px">${chips}${links}</div>
       <div class="cli-v"><b>${fmtBRL(c.valor)}<small>/mês</small></b><span class="sub">${c.venc ? 'vence dia ' + esc(c.venc) : 'sem dia de vencimento'}</span></div>
       ${meio}
+      ${fatos.length ? `<div class="fatos">${fatos.join('')}</div>` : ''}
       ${c.obs ? `<div class="sub">${esc(c.obs)}</div>` : ''}
       <div class="acoes">${acoes}</div>
     </article>`;
@@ -1560,7 +1851,8 @@ function openModalCliente() {
   document.getElementById('cli-id').value = '';
   document.getElementById('modal-cli-title').textContent = 'Novo cliente';
   document.getElementById('cli-excluir').style.display = 'none';
-  ['cli-nome','cli-contato','cli-site','cli-obs','cli-valor','cli-venc','cli-meta'].forEach(id => document.getElementById(id).value = '');
+  ['cli-nome','cli-contato','cli-site','cli-obs','cli-valor','cli-venc','cli-meta','cli-reajuste','cli-verba','cli-dominio-venc','cli-hosp-venc','cli-prop-data','cli-prop-txt'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('cli-extra-wrap').style.display = TEM_EXTRA ? '' : 'none';
   document.getElementById('cli-status').value = 'Ativo';
   document.getElementById('cli-plataforma').value = '';
   document.getElementById('cli-contrato').value = 'OK';
@@ -1587,6 +1879,14 @@ function editarCliente(id) {
   document.getElementById('cli-obs').value = c.obs || '';
   document.getElementById('cli-meta').value = c.meta_posts || '';
   document.getElementById('cli-meta-wrap').style.display = TEM_META ? '' : 'none';
+  const e = ex(c);
+  document.getElementById('cli-extra-wrap').style.display = TEM_EXTRA ? '' : 'none';
+  document.getElementById('cli-reajuste').value = e.reajuste || '';
+  document.getElementById('cli-verba').value = e.verbaAds || '';
+  document.getElementById('cli-dominio-venc').value = e.dominioVenc || '';
+  document.getElementById('cli-hosp-venc').value = e.hospVenc || '';
+  document.getElementById('cli-prop-data').value = e.propostaData || '';
+  document.getElementById('cli-prop-txt').value = e.propostaTxt || '';
   document.querySelectorAll('#modal-cliente .checkbox-group input').forEach(cb => cb.checked = (c.servicos || []).includes(cb.value));
   document.getElementById('cli-links-list').innerHTML = '';
   (c.links || []).forEach(l => adicionarLinkCli(l.nome, l.url));
@@ -1614,6 +1914,21 @@ async function salvarCliente() {
     links: getLinksFromModal(),
   };
   if (TEM_META) obj.meta_posts = parseInt(document.getElementById('cli-meta').value) || null;
+  const mudouValor = !!anterior && (+anterior.valor || 0) !== obj.valor;
+  let revisaoAuto = '';
+  if (TEM_EXTRA) {
+    const e = { ...ex(anterior) }, campo = (k, v) => { if (v) e[k] = v; else delete e[k]; };
+    const rj = document.getElementById('cli-reajuste').value;
+    campo('reajuste', rj);
+    campo('verbaAds', parseFloat(document.getElementById('cli-verba').value) || 0);
+    campo('dominioVenc', document.getElementById('cli-dominio-venc').value);
+    campo('hospVenc', document.getElementById('cli-hosp-venc').value);
+    campo('propostaData', document.getElementById('cli-prop-data').value);
+    campo('propostaTxt', document.getElementById('cli-prop-txt').value.trim());
+    // mudou o valor e não mexeu na data: a próxima revisão vai para daqui a 12 meses
+    if (mudouValor && obj.valor > 0 && rj === (ex(anterior).reajuste || '')) { e.reajuste = addMeses(hojeISO(), 12); revisaoAuto = e.reajuste; }
+    obj.extra = e;
+  }
   if (anterior) clientes = clientes.map(c => c.id === id ? obj : c);
   else clientes.push(obj);
   closeModal('modal-cliente'); renderAtual();
@@ -1622,9 +1937,22 @@ async function salvarCliente() {
   await persist('clientes', obj);
   if (anterior && anterior.status !== obj.status) await registrarHistoricoAuto(obj.nome, `Status alterado: ${anterior.status} → ${obj.status}`);
   else if (!anterior) await registrarHistoricoAuto(obj.nome, `Cliente cadastrado como ${obj.status}`);
+  if (mudouValor) {
+    await registrarHistoricoAuto(obj.nome, `Valor mensal alterado: ${fmtBRL(anterior.valor)} → ${fmtBRL(obj.valor)}`);
+    // a mensalidade que já entrou sozinha com o valor antigo e ainda não foi confirmada
+    const pend = pagamentos.filter(p => p.cliente === obj.nome && p.status === 'Pendente' && p.ref >= refAtual() && (+p.valor || 0) === (+anterior.valor || 0));
+    if (pend.length && confirm(`A mensalidade de ${listaE(pend.map(p => nomeMes(p.ref).toLowerCase()))} de "${obj.nome}" ainda está a confirmar com o valor antigo (${fmtBRL(anterior.valor)}).\n\nAtualizar para ${fmtBRL(obj.valor)}?`)) {
+      pend.forEach(p => { p.valor = obj.valor; });
+      await persistMuitos('pagamentos', pend);
+    }
+  }
   const n = await gerarRecorrencia(); // cliente novo ou que voltou a ser ativo já ganha a mensalidade do mês
   renderAtual();
-  if (!_falhas.length) toast(n ? `Cliente salvo. ${plural(n, 'mensalidade entrou', 'mensalidades entraram')} para confirmar.` : 'Cliente salvo!', n ? 3500 : 0);
+  if (!_falhas.length) {
+    if (n) toast(`Cliente salvo. ${plural(n, 'mensalidade entrou', 'mensalidades entraram')} para confirmar.`, 3500);
+    else if (revisaoAuto) toast(`Cliente salvo. Próxima revisão de preço em ${fmtDate(revisaoAuto)}.`, 3500);
+    else toast('Cliente salvo!');
+  }
 }
 // o vínculo é pelo nome: ao renomear, leva junto pagamentos, postagens, avulsos, histórico e ranking
 async function renomearCliente(antigo, novo) {
@@ -1794,7 +2122,7 @@ function renderPostagens() {
   setTopo('Postagens · ' + refLabel(postRef), lista.length ? `${feitos} de ${meta} posts marcados` : 'Nenhum cliente com GMN ou Social', tresMeses(postRef, 'setPostRef'));
   document.getElementById('post-meta-nota').innerHTML = `<div class="eyebrow">Meta por cliente</div><p style="margin-top:6px">${TEM_META
     ? 'A meta fica no cadastro de cada cliente (campo “Meta de posts por mês”). Sem valor, vale 4.'
-    : 'Hoje a meta é 4 posts por mês para todos. Para ter meta por cliente, falta uma coluna no banco; o comando está no resumo que acompanha esta versão.'} Quem não tem GMN nem Social não aparece aqui.</p>`;
+    : 'Hoje a meta é 4 posts por mês para todos. Para ter meta por cliente, falta uma coluna no banco.'} Quem não tem GMN nem Social não aparece aqui.</p>${TEM_META ? '' : `<button class="btn btn-sm no-print" style="margin-top:8px" onclick="abrirSQL()">Ver o comando</button>`}`;
   const cab = [1,2,3,4].map(s => { const [a,b] = limSemana(postRef, s); return `<th class="${s === semHoje ? 'esta' : ''}">${s === semHoje ? 'Esta semana' : 'Semana ' + s}<br>${a} a ${b}</th>`; }).join('');
   document.getElementById('post-grade').innerHTML = `<thead><tr><th>Cliente</th>${cab}<th>No mês</th></tr></thead><tbody>` +
     (lista.length ? lista.map(c => {
@@ -1821,12 +2149,14 @@ function openModalPost(clienteId, semana) {
   document.getElementById('modal-post-title').textContent = `${c.nome} · ${a} a ${b} de ${nomeMes(postRef).toLowerCase()}`;
   const daSem = postsDe(c.nome, postRef).filter(h => semanaDe(h.data) === semana);
   document.getElementById('post-existentes').innerHTML = daSem.length ? `<div class="form-group"><label>Já marcados nesta semana</label>${daSem.map(h =>
-    `<div class="fila-l" style="padding:8px 0"><div class="quem"><b>${fmtDia(h.data)}</b><span class="sub">${esc(h.texto)}</span></div><button class="btn btn-sm btn-red" onclick="removerPost('${esc(h.id)}')">Remover</button></div>`).join('')}</div>` : '';
+    `<div class="fila-l" style="padding:8px 0"><div class="quem"><b>${fmtDia(h.data)}${h.minutos ? `<span class="tempo">${fmtMin(h.minutos)}</span>` : ''}</b><span class="sub">${esc(h.texto)}</span></div><button class="btn btn-sm btn-red" onclick="removerPost('${esc(h.id)}')">Remover</button></div>`).join('')}</div>` : '';
   const dentro = hoje.slice(0,7) === postRef && +hoje.slice(8) >= a && +hoje.slice(8) <= b;
   const inp = document.getElementById('post-data');
   inp.value = dentro ? hoje : postRef + '-' + pad2(a);
   inp.min = postRef + '-01'; inp.max = postRef + '-' + pad2(ultimoDia(postRef));
   document.getElementById('post-desc').value = '';
+  document.getElementById('post-min').value = '';
+  document.getElementById('post-min-wrap').style.display = TEM_TEMPO ? '' : 'none';
   openModal('modal-post');
 }
 async function salvarPost() {
@@ -1835,6 +2165,7 @@ async function salvarPost() {
   if (!data) { alert('Escolha a data do post'); return; }
   const ref = data.slice(0,7);
   const h = { id:uid(), cliente:c.nome, data, texto:'Post publicado' + (desc ? ': ' + desc : ''), tipo:'post', auto:true };
+  if (TEM_TEMPO) { h.minutos = lerMin('post-min'); h.etapa = 'posts'; }
   historico.push(h);
   let reg = postagens.find(p => p.cliente === c.nome && p.ref === ref);
   if (reg) reg.qtd = (reg.qtd || 0) + 1;
@@ -1894,6 +2225,8 @@ function openModalRanking(id, nova) {
     : 'Corrige a medição atual, sem criar histórico.';
   document.getElementById('rank-termo').value = r ? r.termo : '';
   document.getElementById('rank-data').value = (r && !_rankNova) ? r.data || '' : hojeISO();
+  document.getElementById('rank-min').value = '';
+  document.getElementById('rank-min-wrap').style.display = TEM_TEMPO ? '' : 'none';
   const nomes = [...new Set([
     ...(r ? (r.clientes || []).map(cp => cp.nome) : []),
     ...clientes.filter(c => c.status === 'Ativo' || c.status === 'Em Teste').map(c => c.nome),
@@ -1916,7 +2249,7 @@ async function salvarRanking() {
   if (!termo) { alert('Termo é obrigatório'); return; }
   const anterior = id ? ranking.find(r => r.id === id) : null;
   const data = document.getElementById('rank-data').value || hojeISO();
-  const posClientes = [];
+  const posClientes = [], medidos = [];
   document.querySelectorAll('#rank-pos-rows input').forEach(inp => {
     const nome = inp.dataset.nome;
     const velho = anterior ? (anterior.clientes || []).find(x => x.nome === nome) : null;
@@ -1924,12 +2257,23 @@ async function salvarRanking() {
     if (!inp.value) { if (velho && _rankNova) posClientes.push(velho); return; } // nova verificação sem posição: mantém a anterior
     if (velho && _rankNova) hist = [...hist, { data: anterior.data || '', pos: velho.pos }].slice(-12);
     posClientes.push({ nome, pos: parseInt(inp.value), hist });
+    if (clientes.some(c => c.nome === nome)) medidos.push({ nome, pos: parseInt(inp.value) });
   });
+  const min = TEM_TEMPO ? lerMin('rank-min') : 0;
   const obj = { ...(anterior || {}), id: id || uid(), termo, clientes: posClientes, data };
   if (anterior) ranking = ranking.map(r => r.id === id ? obj : r);
   else ranking.push(obj);
   closeModal('modal-ranking'); renderAtual();
-  if (await persist('ranking', obj)) toast('Ranking salvo!');
+  const ok = await persist('ranking', obj);
+  if (min) { // divide o tempo entre os clientes medidos; sem cliente da carteira, fica como tempo interno
+    const alvo = medidos.length ? medidos : [{ nome: INTERNO, pos: null }];
+    const cada = Math.floor(min / alvo.length); let resto = min - cada * alvo.length;
+    const novos = alvo.map(x => ({ id:uid(), cliente:x.nome, data, texto:`Ranking medido: “${termo}”` + (x.pos ? ` em ${x.pos}º` : ''), tipo:'auto', auto:true, etapa:'ranking', minutos: cada + (resto-- > 0 ? 1 : 0) }));
+    historico.push(...novos);
+    await persistMuitos('historico', novos);
+    renderAtual();
+  }
+  if (ok) toast(min ? `Ranking salvo, com ${fmtMin(min)} de trabalho registrados` : 'Ranking salvo!', min ? 3500 : 0);
 }
 function deletarRanking(id) {
   const obj = ranking.find(r => r.id === id); if (!obj) return;
@@ -2055,8 +2399,10 @@ async function salvarHistoricoRapido() {
   const texto = document.getElementById('hist-texto-input').value.trim();
   if (!cliente || !data || !texto) { toast('Preencha cliente, data e o que foi feito'); return; }
   const entry = { id:uid(), cliente, data, texto, tipo:'manual', auto:false };
+  if (TEM_TEMPO) { entry.minutos = lerMin('hist-min-input'); entry.etapa = document.getElementById('hist-etapa-sel').value || null; }
   historico.push(entry);
   document.getElementById('hist-texto-input').value = '';
+  document.getElementById('hist-min-input').value = '';
   renderHistorico();
   if (await persist('historico', entry)) toast('Registrado no histórico!');
 }
@@ -2075,6 +2421,9 @@ function renderHistorico() {
   sel.value = nomes.includes(atual) ? atual : '';
   const selR = document.getElementById('hist-cliente-sel'), atualR = selR.value;
   const nomesR = clientes.filter(c => c.status !== 'Inativo' || c.nome === atualR).map(c => c.nome).sort((a,b) => a.localeCompare(b));
+  if (TEM_TEMPO) nomesR.push(INTERNO); // estudo e organização que não são de um cliente só
+  document.getElementById('hist-tempo-campos').style.display = TEM_TEMPO ? 'flex' : 'none';
+  const etSel = document.getElementById('hist-etapa-sel'); if (!etSel.options.length) etSel.innerHTML = optsEtapa('');
   selR.innerHTML = nomesR.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('');
   if (nomesR.includes(atualR)) selR.value = atualR;
   const dataEl = document.getElementById('hist-data-input'); if (!dataEl.value) dataEl.value = hojeISO();
@@ -2094,8 +2443,9 @@ function renderHistorico() {
       <div class="tl-r"><i class="${temManual ? '' : 'auto'}"></i>${i < porDia.length - 1 ? '<span></span>' : ''}</div>
       <div class="tl-c">${g.itens.map(h => {
         const hid = esc(h.id), auto = ehAuto(h);
-        return `<article class="tl-e"><div><b>${esc(h.cliente)}</b> · ${esc(h.texto)}<small class="${auto ? 'auto' : ''}">${h.tipo === 'post' ? 'post marcado' : auto ? 'automático' : 'escrito por você'}</small></div>
-          <div class="acoes no-print">${auto ? '' : `<button class="btn btn-sm" onclick="editarHistorico('${hid}')">Editar</button>`}<button class="btn btn-sm btn-red" onclick="deletarHistorico('${hid}')">Excluir</button></div></article>`;
+        const et = h.etapa && ETAPA_ROT[h.etapa] && h.tipo !== 'post' ? ' · ' + ETAPA_ROT[h.etapa].toLowerCase() : '';
+        return `<article class="tl-e"><div><b>${esc(h.cliente)}</b> · ${esc(h.texto)}${+h.minutos ? `<span class="tempo">${fmtMin(h.minutos)}</span>` : ''}<small class="${auto ? 'auto' : ''}">${(h.tipo === 'post' ? 'post marcado' : auto ? 'automático' : 'escrito por você') + et}</small></div>
+          <div class="acoes no-print">${auto ? (TEM_TEMPO ? `<button class="btn btn-sm" onclick="editarHistorico('${hid}')">Tempo</button>` : '') : `<button class="btn btn-sm" onclick="editarHistorico('${hid}')">Editar</button>`}<button class="btn btn-sm btn-red" onclick="deletarHistorico('${hid}')">Excluir</button></div></article>`;
       }).join('')}</div></div>`;
   }).join('') + (dados.length > visiveis.length ? `<button class="btn" onclick="histLimite+=60;renderHistorico()">Mostrar mais (${dados.length - visiveis.length} mais antigos)</button>` : '');
 }
@@ -2113,13 +2463,23 @@ function editarHistorico(id) {
   document.getElementById('hist-edit-cliente').value = h.cliente;
   document.getElementById('hist-edit-data').value = String(h.data || '').slice(0,10);
   document.getElementById('hist-edit-texto').value = h.texto;
+  // registro automático: o texto e a data não mudam, só o tempo gasto
+  const auto = ehAuto(h);
+  document.getElementById('modal-hist-title').textContent = auto ? 'Tempo gasto neste registro' : 'Editar registro';
+  document.getElementById('hist-edit-texto').disabled = auto; document.getElementById('hist-edit-data').disabled = auto;
+  document.getElementById('hist-edit-tempo').style.display = TEM_TEMPO ? '' : 'none';
+  document.getElementById('hist-edit-etapa').innerHTML = optsEtapa(h.etapa || (h.tipo === 'post' ? 'posts' : ''));
+  document.getElementById('hist-edit-min').value = +h.minutos || '';
   openModal('modal-historico');
 }
 async function salvarHistoricoEdit() {
   const h = historico.find(x => x.id === document.getElementById('hist-id').value); if (!h) return;
   const texto = document.getElementById('hist-edit-texto').value.trim(), data = document.getElementById('hist-edit-data').value;
-  if (!texto || !data) { alert('Preencha a data e o texto'); return; }
-  h.texto = texto; h.data = data;
+  if (!ehAuto(h)) {
+    if (!texto || !data) { alert('Preencha a data e o texto'); return; }
+    h.texto = texto; h.data = data;
+  }
+  if (TEM_TEMPO) { h.minutos = lerMin('hist-edit-min'); h.etapa = document.getElementById('hist-edit-etapa').value || null; }
   closeModal('modal-historico'); renderAtual();
   if (await persist('historico', h)) toast('Histórico atualizado!');
 }
@@ -2169,7 +2529,31 @@ function renderRelatorio() {
     });
   }
 
+  let extra = '';
+  if (TEM_TEMPO) {
+    const comTempo = historico.filter(h => noMes(h, relRef) && +h.minutos > 0), tot = minutosMes(relRef), base = soma(prev);
+    const linhas = [...new Set(comTempo.map(h => h.cliente))].sort((a,b) => minutosDe(b, relRef) - minutosDe(a, relRef)).map(n => {
+      const min = minutosDe(n, relRef), c = clientes.find(x => x.nome === n), v = c ? valorNoMes(c, relRef) : 0, porEt = {};
+      comTempo.forEach(h => { if (h.cliente === n) { const k = ETAPA_ROT[h.etapa] ? h.etapa : 'outro'; porEt[k] = (porEt[k] || 0) + +h.minutos; } });
+      const onde = Object.entries(porEt).sort((a,b) => b[1] - a[1]).slice(0, 3).map(([k, m]) => ETAPA_ROT[k].toLowerCase() + ' ' + fmtMin(m)).join(' · ');
+      return `<tr><td><b>${esc(n)}</b><div class="sub">${esc(onde)}</div></td><td class="tr mono" style="white-space:nowrap">${fmtMin(min)}</td><td class="tr mono" style="white-space:nowrap">${v ? fmtBRL(v) : '—'}</td><td class="tr mono" style="white-space:nowrap">${v ? porHora(v, min) : '—'}</td></tr>`;
+    });
+    extra += `<div class="card g1" style="flex-basis:400px"><div class="card-h"><h2>Tempo gasto em ${esc(mes.toLowerCase())}</h2><span class="sub">${tot ? fmtMin(tot) + ' no total' : ''}</span></div>` +
+      (tot ? `<div class="scroll-x"><table><thead><tr><th>Cliente</th><th class="tr">Tempo</th><th class="tr">Mensalidade</th><th class="tr">R$ por hora</th></tr></thead><tbody>${linhas.join('')}</tbody></table></div>
+        ${base ? `<div class="sobra" style="margin-top:12px"><span>No mês inteiro</span><b>${porHora(base, tot)} por hora</b><span class="sub">${fmtBRL(base)} previstos ÷ ${fmtMin(tot)}</span></div>` : ''}`
+      : `<div class="empty">Nenhum minuto registrado neste mês. O campo de minutos aparece ao marcar post, medir ranking e registrar no Histórico.</div>`) + `</div>`;
+  }
+  if (TEM_AJUSTES) {
+    const its = custos(), ct = totalCustos(), rec = recMens[5] + recAv[5];
+    extra += `<div class="card g1" style="flex-basis:400px"><div class="card-h"><h2>Custos fixos e sobra</h2><button class="btn btn-sm no-print" onclick="openModalCusto()">Novo custo</button></div>` +
+      (its.length ? its.map(i => `<div class="fila-l"><div class="quem"><b>${esc(i.nome)}</b><span class="sub">${i.ciclo === 'anual' ? fmtBRL(i.valor) + ' por ano' : 'todo mês'}</span></div><div class="val">${fmtBRL(custoMes(i))}</div><button class="btn btn-sm no-print" onclick="openModalCusto('${esc(i.id)}')">Editar</button></div>`).join('') +
+        `<div class="sobra" style="margin-top:12px"><span>Sobra de ${esc(mes.toLowerCase())}</span><b style="color:${rec - ct < 0 ? 'var(--red)' : 'var(--green-d)'}">${fmtBRL(rec - ct)}</b><span class="sub">${fmtBRL(rec)} recebidos − ${fmtBRL(ct)} de custos (valores de hoje)</span></div>`
+      : `<div class="empty">Nenhum custo cadastrado. Coloque aqui o que a agência paga todo mês ou todo ano: ferramentas, hospedagem, domínios.</div>`) + `</div>`;
+  }
+  const relExtra = document.getElementById('rel-extra'); relExtra.innerHTML = extra; relExtra.style.display = extra ? '' : 'none';
+
   const naoInativos = clientes.filter(c => c.status !== 'Inativo'), abertos = possiveis.filter(p => p.status !== 'Perdido');
+  const verbaTot = TEM_EXTRA ? naoInativos.reduce((a, c) => a + (+ex(c).verbaAds || 0), 0) : 0;
   const vazio = n => `<tr><td colspan="${n}" class="sub" style="text-align:center">Nenhum</td></tr>`;
   document.getElementById('relatorio-content').innerHTML = `
     <div class="card"><div class="card-h"><h2>Mensalidades de ${esc(refLabel(relRef))}</h2><span class="sub">${fmtBRL(soma(pagos))} recebidos de ${fmtBRL(soma(prev))}</span></div>
@@ -2178,9 +2562,9 @@ function renderRelatorio() {
     <div class="card" style="margin-top:18px"><div class="card-h"><h2>Postagens de ${esc(refLabel(relRef))}</h2><span class="sub">${feitos} de ${meta}</span></div>
       <div class="scroll-x"><table><thead><tr><th>Cliente</th><th>Posts</th><th>Datas</th></tr></thead>
       <tbody>${cliPost.map(c => { const ps = postsDe(c.nome, relRef), t = totalPosts(c.nome, relRef); return `<tr><td><b>${esc(c.nome)}</b></td><td class="mono">${t} de ${metaDe(c)}</td><td class="sub">${ps.map(h => fmtDia(h.data)).join(', ') || (t ? 'sem data registrada' : '—')}</td></tr>`; }).join('') || vazio(3)}</tbody></table></div></div>
-    <div class="card" style="margin-top:18px"><div class="card-h"><h2>Carteira</h2><span class="sub">${fmtBRL(soma(clientes.filter(c => c.status === 'Ativo')))} fixos por mês</span></div>
-      <div class="scroll-x"><table><thead><tr><th>Cliente</th><th>Serviços</th><th class="tr">Valor/mês</th><th>Status</th><th>Contrato</th></tr></thead>
-      <tbody>${naoInativos.map(c => `<tr><td><b>${esc(c.nome)}</b></td><td>${esc((c.servicos || []).join(', '))}</td><td class="tr mono">${fmtBRL(c.valor)}</td><td>${pillStatus(c.status)}</td><td>${pillStatus(c.contrato || 'OK')}</td></tr>`).join('') || vazio(5)}</tbody></table></div></div>
+    <div class="card" style="margin-top:18px"><div class="card-h"><h2>Carteira</h2><span class="sub">${fmtBRL(soma(clientes.filter(c => c.status === 'Ativo')))} fixos por mês${verbaTot ? ' · ' + fmtBRL(verbaTot) + ' de verba de Ads sob gestão' : ''}</span></div>
+      <div class="scroll-x"><table><thead><tr><th>Cliente</th><th>Serviços</th><th class="tr">Valor/mês</th>${TEM_EXTRA ? '<th class="tr">Verba Ads</th><th>Revisão de preço</th>' : ''}<th>Status</th><th>Contrato</th></tr></thead>
+      <tbody>${naoInativos.map(c => { const rv = revisaoDe(c); return `<tr><td><b>${esc(c.nome)}</b></td><td>${esc((c.servicos || []).join(', '))}</td><td class="tr mono">${fmtBRL(c.valor)}</td>${TEM_EXTRA ? `<td class="tr mono">${ex(c).verbaAds ? fmtBRL(ex(c).verbaAds) : '—'}</td><td>${rv ? (rv.data <= hojeISO() ? '<span style="color:var(--red);font-weight:600">vencida · ' + fmtDate(rv.data) + '</span>' : fmtDate(rv.data)) : '—'}</td>` : ''}<td>${pillStatus(c.status)}</td><td>${pillStatus(c.contrato || 'OK')}</td></tr>`; }).join('') || vazio(TEM_EXTRA ? 7 : 5)}</tbody></table></div></div>
     <div class="card" style="margin-top:18px"><div class="card-h"><h2>Funil comercial</h2><span class="sub">${fmtBRL(soma(abertos))} por mês em jogo</span></div>
       <div class="scroll-x"><table><thead><tr><th>Nome</th><th>Interesse</th><th class="tr">Valor est.</th><th>Etapa</th><th>Retorno</th></tr></thead>
       <tbody>${abertos.map(p => `<tr><td><b>${esc(p.nome)}</b></td><td>${esc(p.servicos || '—')}</td><td class="tr mono">${p.valor ? fmtBRL(p.valor) : '—'}</td><td>${pillStatus(p.status)}</td><td>${p.followupData ? fmtDate(p.followupData) : '—'}</td></tr>`).join('') || vazio(5)}</tbody></table></div></div>`;
@@ -2189,7 +2573,7 @@ function renderRelatorio() {
 // ══════════════════════════════════ BACKUP ═══════════════════════════════════
 function exportarJSON() {
   toggleMenu(false);
-  const data = { clientes, possiveis, pagamentos, postagens, ranking, avulsos, historico, exportado: new Date().toISOString() };
+  const data = { clientes, possiveis, pagamentos, postagens, ranking, avulsos, historico, ajustes, exportado: new Date().toISOString() };
   const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a'); a.href = url; a.download = 'gestao_clientes_backup_' + hojeISO() + '.json'; a.click();
@@ -2202,7 +2586,7 @@ function lerImport(e) {
   reader.onload = async (ev) => {
     let d;
     try { d = JSON.parse(ev.target.result); } catch(err) { alert('Arquivo inválido: não é um backup em JSON.'); return; }
-    const tabelas = TABELAS.filter(t => Array.isArray(d[t]) && d[t].length);
+    const tabelas = [...TABELAS, ...(TEM_AJUSTES ? ['ajustes'] : [])].filter(t => Array.isArray(d[t]) && d[t].length);
     if (!tabelas.length) { alert('Esse arquivo não tem dados de backup.'); return; }
     const resumo = tabelas.map(t => `• ${t}: ${d[t].length}`).join('\n');
     if (!confirm(`Importar backup?\n\n${resumo}\n\nOs registros do arquivo são adicionados ou atualizados. O que existe hoje e não está no arquivo continua como está (nada é apagado).`)) return;
