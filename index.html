@@ -240,6 +240,37 @@ details.card[open] > summary { margin-bottom: 12px; }
 .checkbox-group input { width: auto; min-height: 0; margin: 0; }
 .bloco { background: var(--bg); border-radius: 12px; padding: 12px 14px; margin-bottom: 13px; }
 
+
+/* Preços e Ficha */
+.tab-precos td { vertical-align: middle; } .tab-precos tr.sem-linha td { border-bottom: 0; }
+.inclui { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: var(--muted); } .inclui .campo { width: 100%; font-weight: 400; }
+.panel label.mini .campo { flex: none; height: 40px; }
+.campo.num { width: 96px; text-align: right; font-family: var(--mono); font-weight: 600; }
+.portes { display: flex; flex-wrap: wrap; gap: 12px; } .portes label { display: flex; align-items: center; gap: 8px; font-size: 14px; } .portes .campo.num { width: 76px; }
+.lin-sel { cursor: pointer; } .lin-sel:hover td { background: var(--bg); } .lin-sel.sel td { background: var(--amber-bg); } .lin-sel:focus { outline: 2px solid var(--green); outline-offset: -2px; }
+.panel .btn-linha.on { background: var(--mint); border: 1px solid var(--mint); color: var(--ink); font-weight: 600; }
+.panel .linha { flex-wrap: wrap; }
+.panel label.mini { flex: 1 1 110px; display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--nav-txt); }
+.degrau { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: var(--ink2); border-radius: 12px; }
+.degrau .n { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--mint); color: var(--ink); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 13px; font-weight: 600; }
+.degrau.fut .n { background: none; border: 1.5px solid #4A5F56; color: #fff; }
+.prova { margin: 0 0 0 18px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; color: var(--nav-txt); }
+.panel .big { font-family: var(--disp); font-size: 38px; font-weight: 700; letter-spacing: -0.02em; }
+.sim-nao { display: flex; gap: 8px; } .sim-nao button { flex: 1; min-height: 44px; border: 1px solid var(--line2); border-radius: 11px; background: var(--surface); color: var(--text); font-weight: 600; cursor: pointer; }
+.sim-nao button.on-sim { background: var(--green-bg); border-color: var(--green); color: var(--green-d); } .sim-nao button.on-nao { background: var(--text); border-color: var(--text); color: #fff; }
+.tiles-p { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.tile-p { background: var(--bg); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.tile-p .eyebrow { font-size: 10px; } .tile-p b { font-family: var(--disp); font-size: 24px; } .tile-p b.r { color: var(--red); }
+.aud-it { display: flex; align-items: flex-start; gap: 12px; width: 100%; padding: 10px 8px; border: 0; border-bottom: 1px solid var(--soft); border-radius: 10px; background: none; color: var(--text); text-align: left; cursor: pointer; }
+.aud-it:last-child { border-bottom: 0; } .aud-it:hover { background: var(--bg); }
+.aud-it b { display: block; font-size: 14px; font-weight: 600; } .aud-it small { display: block; font-size: 12px; color: var(--muted); }
+.aud-ck { flex: none; width: 22px; height: 22px; margin-top: 1px; border: 2px solid var(--line2); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; background: #fff; }
+.aud-it.problema { background: var(--red-bg); } .aud-it.problema b { color: var(--red); } .aud-it.problema .aud-ck { background: var(--red); border-color: var(--red); } .aud-it.problema .aud-ck::after { content: '!'; }
+.aud-it.ok { background: var(--green-bg); } .aud-it.ok b { color: var(--green-d); } .aud-it.ok .aud-ck { background: var(--green); border-color: var(--green); } .aud-it.ok .aud-ck::after { content: '✓'; }
+.msg-box { background: var(--bg); border: 1px dashed var(--line2); border-radius: 12px; padding: 14px 16px; font-size: 14px; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
+.onb-it { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 8px 4px; border-bottom: 1px solid var(--soft); cursor: pointer; }
+.onb-it:last-child { border-bottom: 0; } .onb-it input { flex: none; width: 20px; height: 20px; accent-color: var(--green); }
+.onb-it b { display: block; font-size: 14px; font-weight: 600; } .onb-it small { display: block; font-size: 12px; color: var(--green-d); } .onb-it.feito b { color: var(--muted); text-decoration: line-through; }
 /* Gestão */
 .ges-data { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 13px; color: var(--nav-txt); white-space: nowrap; }
 .ges-data .campo { flex: 1; min-width: 0; }
@@ -276,6 +307,16 @@ details.card[open] > summary { margin-bottom: 12px; }
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(90px); background: var(--ink); color: #fff; padding: 11px 20px; border-radius: 999px; font-size: 13px; z-index: 300; transition: transform 0.22s; pointer-events: none; max-width: 92vw; text-align: center; }
 .toast.show { transform: translateX(-50%) translateY(0); }
 
+
+/* V2.3.1 · Início orientado à execução */
+#dash-foco{margin-bottom:14px} #dash-proximas{margin-bottom:14px} #dash-alertas{margin-bottom:14px}
+.dash-admin{margin-top:16px}.dash-admin>summary{cursor:pointer;font-family:var(--disp);font-weight:700;padding:14px 0;border-top:1px solid var(--soft)}
+.prox-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.prox-card{padding:14px;border:1px solid var(--soft);border-radius:12px;background:var(--card)}
+.prox-card b{display:block;margin:5px 0}.alertas-v231 .aviso{margin-bottom:8px}.crit-v231{border:2px solid var(--red)!important;background:var(--red-bg)!important}
+@media(max-width:850px){.prox-grid{grid-template-columns:1fr}}
+/* V2.2 · foco, automação e rotinas */
+.foco-v21{border:2px solid var(--green);background:var(--green-bg);padding:18px}.foco-v21 .foco-score{font-family:var(--disp);font-size:34px;font-weight:700}.prio-score{font-family:var(--mono);font-weight:700}.op-exec{background:var(--green-bg);color:var(--green-d)}.op-wait{background:var(--amber-bg);color:var(--amber)}.op-done{background:var(--grey-bg);color:var(--muted)}
+
 /* LOGIN */
 .lock-screen { position: fixed; inset: 0; background: var(--ink); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px; }
 .lock-box { background: var(--surface); border-radius: 20px; padding: 32px 28px; width: 100%; max-width: 370px; text-align: center; }
@@ -307,6 +348,18 @@ details.card[open] > summary { margin-bottom: 12px; }
   .app { display: block; } .main { max-width: none; padding: 0; } body { background: #fff; }
   .card { break-inside: avoid; }
 }
+
+/* V2.2 · automação, obrigações e atenção por cliente */
+.v22-rotina{border-left:4px solid var(--mint)}
+.v22-atraso{color:var(--red);font-weight:700}
+.v22-atencao{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.v22-origem{font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+
+/* V2.3.2 consolidação */
+.prio-score{cursor:pointer}.fila-l .acoes{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}@media(max-width:800px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* V2.3.4 · dados integrados */
+.integracao-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}.metricas-v233{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}.metricas-v233>div{padding:10px;border:1px solid var(--soft);border-radius:10px}.metricas-v233 small{display:block;text-transform:capitalize;color:var(--muted);font-size:11px}.metricas-v233 b{display:block;margin-top:4px;font-size:18px}.faixa-ok{border-color:#b9e8cf;background:#effbf5}@media(max-width:800px){.integracao-grid,.metricas-v233{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -358,12 +411,14 @@ details.card[open] > summary { margin-bottom: 12px; }
     <button data-tela="mensalidades" onclick="show('mensalidades')">Financeiro <span class="conta" id="nav-conta" style="display:none"></span></button>
     <button data-tela="clientes" onclick="show('clientes')">Clientes</button>
     <button data-tela="comercial" onclick="show('comercial')">Comercial</button>
+    <button data-tela="precos" onclick="show('precos')">Preços</button>
     <div class="nav-sec">TRABALHO</div>
-    <button data-tela="gestao" onclick="abrirGestao('')">Gestão <span class="conta" id="nav-ges" style="display:none"></span></button>
+    <button data-tela="gestao" onclick="abrirGestao('')">Central de Trabalho <span class="conta" id="nav-ges" style="display:none"></span></button>
     <button data-tela="postagens" onclick="show('postagens')">Postagens</button>
     <button data-tela="ranking" onclick="show('ranking')">Ranking Google</button>
     <button data-tela="avulsos" onclick="show('avulsos')">Serviços avulsos</button>
     <button data-tela="historico" onclick="show('historico')">Histórico</button>
+    <button data-tela="ferramentas" onclick="show('ferramentas')">Sites e Ferramentas</button>
     <div class="nav-sec">FECHAMENTO</div>
     <button data-tela="relatorio" onclick="show('relatorio')">Relatórios</button>
     <div class="nav-foot">
@@ -385,12 +440,22 @@ details.card[open] > summary { margin-bottom: 12px; }
     <div id="conn-error"></div>
     <div id="save-error"></div>
 
+    <section id="ferramentas" class="section">
+      <div id="ferramentas-conteudo"></div>
+    </section>
+
     <section id="dash" class="section active">
-      <div id="dash-hero"></div>
-      <div class="cols">
-        <div class="card g3" id="dash-fila"></div>
-        <aside class="g1 lado" id="dash-lado"></aside>
-      </div>
+      <div id="dash-foco"></div>
+      <div id="dash-proximas"></div>
+      <div id="dash-alertas"></div>
+      <details class="dash-admin">
+        <summary>Financeiro e visão da agência</summary>
+        <div id="dash-hero"></div>
+        <div class="cols">
+          <div class="card g3" id="dash-fila"></div>
+          <aside class="g1 lado" id="dash-lado"></aside>
+        </div>
+      </details>
     </section>
 
     <section id="mensalidades" class="section">
@@ -483,6 +548,16 @@ details.card[open] > summary { margin-bottom: 12px; }
       </div>
       <div class="pills no-print" id="ges-filtros"></div>
       <div id="ges-conteudo" style="display:flex;flex-direction:column;gap:18px"></div>
+    </section>
+
+    <section id="precos" class="section">
+      <div class="pills no-print" id="pre-abas"></div>
+      <div id="pre-conteudo" style="display:flex;flex-direction:column;gap:18px"></div>
+    </section>
+
+    <section id="ficha" class="section">
+      <div class="pills no-print" id="fic-abas"></div>
+      <div id="fic-conteudo" style="display:flex;flex-direction:column;gap:18px"></div>
     </section>
 
     <section id="relatorio" class="section">
@@ -796,6 +871,12 @@ details.card[open] > summary { margin-bottom: 12px; }
     <div class="form-group"><label for="acao-status">Situação</label><select id="acao-status"><option value="aberto">Em aberto</option><option value="fechado">Fechado</option></select></div>
   </div>
   <div class="form-group" id="acao-espera-wrap" style="display:none"><label for="acao-espera">Dias de espera entre mudanças</label><input id="acao-espera" type="number" min="1" max="90"></div>
+  <div class="bloco"><div class="eyebrow" style="margin-bottom:8px">V2.1 · Prioridade e execução</div>
+    <div class="form-row"><div class="form-group"><label for="acao-opstatus">Status operacional</label><select id="acao-opstatus"><option value="a_fazer">A fazer</option><option value="em_execucao">Em execução</option><option value="aguardando">Aguardando</option><option value="reavaliar">Reavaliar</option><option value="concluida">Concluída</option><option value="cancelada">Cancelada</option></select></div><div class="form-group"><label for="acao-est">Estimativa (min)</label><input id="acao-est" type="number" min="0" max="1440" placeholder="Ex: 30"></div></div>
+    <div class="form-row"><div class="form-group"><label for="acao-impacto">Impacto (1–5)</label><input id="acao-impacto" type="number" min="1" max="5" value="3"></div><div class="form-group"><label for="acao-urgencia">Urgência (1–5)</label><input id="acao-urgencia" type="number" min="1" max="5" value="3"></div></div>
+    <div class="form-row"><div class="form-group"><label for="acao-confianca">Confiança (1–3)</label><input id="acao-confianca" type="number" min="1" max="3" value="2"></div><div class="form-group"><label for="acao-esforco">Esforço (1–5)</label><input id="acao-esforco" type="number" min="1" max="5" value="3"></div></div>
+    <div class="form-group"><label for="acao-prazo">Prazo operacional</label><input id="acao-prazo" type="date"></div>
+  </div>
   <div class="bloco">
     <div class="form-row">
       <div class="form-group"><label for="acao-res">Resultado</label><select id="acao-res"><option value="">Sem resultado</option><option value="melhorou">Melhorou</option><option value="neutro">Neutro</option><option value="piorou">Piorou</option></select></div>
@@ -1216,6 +1297,7 @@ async function loadAll() {
     });
     if (TEM_AJUSTES) { try { ajustes = await sbGet('ajustes'); } catch(e) { falharam.push('ajustes'); } } else ajustes = [];
     if (TEM_ACOES) { try { gesItens = (await sbGet('acoes')).map(acaoFromRow); } catch(e) { falharam.push('acoes'); } } else gesItens = [];
+    if (TEM_ACOES && !falharam.includes('acoes') && !falharam.includes('clientes')) await gerarObrigacoesV22(true);
     document.getElementById('conn-error').innerHTML = falharam.length
       ? `<div class="aviso av-amb"><span>Não consegui carregar: <b>${esc(falharam.join(', '))}</b>. Recarregue a página.</span></div>` : '';
     setSaved('Sincronizado às ' + horaAgora());
@@ -1532,6 +1614,10 @@ drop policy if exists "acoes_so_logado" on acoes;
 create policy "acoes_so_logado" on acoes
   for all to authenticated using (true) with check (true);
 
+-- tabelas novas ficam liberadas só para quem está logado no sistema
+grant select, insert, update, delete on public.ajustes to authenticated;
+grant select, insert, update, delete on public.acoes to authenticated;
+
 notify pgrst, 'reload schema';`;
 function faltaNoBanco() {
   const f = [];
@@ -1558,7 +1644,7 @@ async function copiarSQL() {
 // Mudanças, testes, planos, problemas, espera pelo cliente e casos de suspensão.
 // Tabela "acoes": id, cliente e o resto em "dados" (JSON).
 let TEM_ACOES = false, gesItens = [], gesCliente = '', gesServ = '';
-const SERVICOS_G = [['ads','Google Ads'],['gbp','Perfil (GBP)'],['site','Site'],['geral','Geral']];
+const SERVICOS_G = [['gbp','Perfil (GBP)'],['ads','Google Ads'],['site','Site / Landing Page'],['seo','SEO'],['social','Redes sociais'],['geral','Geral / Administrativo']];
 const SERV_ROT = Object.fromEntries(SERVICOS_G);
 const TIPOS_G = {
   mudanca:   { rot:'Mudança',            cor:'p-blue', quando:'Reavaliar em',      dias:14 },
@@ -1572,11 +1658,154 @@ const TIPOS_G = {
 const RESULT_G = { melhorou:['Melhorou','p-ok'], neutro:['Neutro',''], piorou:['Piorou','p-red'] };
 const ETAPAS_SUSP = [['risco','Risco identificado'],['mudanca','Mudança feita'],['recuperacao','Pedido de recuperação enviado'],['aceito','Recuperação aceita'],['negado','Recuperação negada'],['nota','Observação']];
 const ETAPA_SUSP_ROT = Object.fromEntries(ETAPAS_SUSP);
-const TABELA_PRECO = { GMN:250, ADS:700, Site:150 };
 const SERV_PACOTE_ROT = { GMN:'Perfil (GBP)', ADS:'Google Ads (gestão)', Site:'Manutenção do site', SEO:'SEO', Social:'Redes sociais' };
 
 function acaoToRow(o) { const { id, cliente, created_at, ...dados } = o; return { id, cliente, dados }; }
-function acaoFromRow(r) { const d = (r.dados && typeof r.dados === 'object') ? r.dados : {}; return { ...d, ...r, dados: undefined, id: r.id, cliente: r.cliente }; }
+function acaoFromRow(r) { const d = (r.dados && typeof r.dados === 'object') ? r.dados : {}; return normalizarAcaoV2({ ...d, ...r, dados: undefined, id: r.id, cliente: r.cliente }); }
+
+
+// V2.3.2: schema canônico e compatibilidade com dados antigos
+const SCHEMA_V2_VERSION = 2;
+const SERVICO_ALIAS = {GMN:'gbp',GBP:'gbp',gbp:'gbp',ADS:'ads',Ads:'ads',ads:'ads',Site:'site',SITE:'site',site:'site',SEO:'seo',seo:'seo',Social:'social',SOCIAL:'social',social:'social',Geral:'geral',geral:'geral'};
+function svcCanon(v){ return SERVICO_ALIAS[String(v||'').trim()] || String(v||'geral').toLowerCase(); }
+function clienteServicosCanon(c){ return [...new Set((c&&c.servicos||[]).map(svcCanon))]; }
+function origemCanon(v){ return ['diagnostico','rotina','cliente','financeiro','comercial','manual'].includes(v)?v:'manual'; }
+function normalizarAcaoV2(a){
+  if(!a||typeof a!=='object') return a;
+  a.schemaVersion=SCHEMA_V2_VERSION; a.servico=svcCanon(a.servico); a.origem=origemCanon(a.origem);
+  if(a.status==='fechado'&&!a.statusOperacional)a.statusOperacional='concluida';
+  if(!a.statusOperacional)a.statusOperacional=a.tipo==='espera'?'aguardando':'a_fazer';
+  a.minutosAcumulados=Math.max(0,+a.minutosAcumulados||0);
+  return a;
+}
+function schemaV2JSON(){ return {schemaVersion:2,acao:{id:'string',cliente:'string',servico:'gbp|ads|site|seo|social|geral',tipo:'mudanca|teste|plano|problema|espera|contato|suspensao|diagnostico|auditoria',origem:'diagnostico|rotina|cliente|financeiro|comercial|manual',statusOperacional:'a_fazer|em_execucao|aguardando|reavaliar|concluida|cancelada',impacto:'1..5',urgencia:'1..5',confianca:'1..3',esforco:'1..5',estimativaMin:'number|null',minutosAcumulados:'number',iniciadoEm:'ISO|null',prazo:'YYYY-MM-DD|null',obrigacaoContratual:'boolean',riscoFinanceiro:'0..5',proximaAcao:'string|null'},clienteExtra:{rotinas:{'<rotinaId>':{ativo:'boolean',estimativaMin:'number|null',dia:'number|null'}}}}; }
+function baixarSchemaV2(){ const b=new Blob([JSON.stringify(schemaV2JSON(),null,2)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='ntn_schema_v2.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000); }
+
+// V2.1: camada operacional sem alterar a estrutura da tabela acoes
+function opStatus(a){ if(a.status==='fechado') return a.statusOperacional || 'concluida'; if(a.tipo==='espera') return a.statusOperacional || 'aguardando'; return a.statusOperacional || 'a_fazer'; }
+function executavel(a){ return gesAberto(a) && !['aguardando','concluida','cancelada'].includes(opStatus(a)) && !a.bloqueada && !['ficha','auditoria','contato'].includes(a.tipo); }
+function prioridadeDetalhe(a){
+  normalizarAcaoV2(a);
+  const impacto=Math.max(1,Math.min(5,+(a.impacto||3))), urg=Math.max(1,Math.min(5,+(a.urgencia||3))), conf=Math.max(1,Math.min(3,+(a.confianca||2)));
+  const esf=Math.max(1,Math.min(5,+(a.esforco||3))), risco=Math.max(0,Math.min(5,+(a.riscoFinanceiro||0)));
+  const itens=[]; let pts=0;
+  const add=(rot,v)=>{ if(v){pts+=v;itens.push([rot,v]);} };
+  add('Impacto',Math.round((impacto/5)*40)); add('Urgência',Math.round((urg/5)*20));
+  if(a.obrigacaoContratual)add('Obrigação contratual',15);
+  const da=diasSemAtencaoV22(a.cliente); add('Tempo sem atenção',da>=21?10:da>=14?7:da>=7?4:0);
+  add('Risco financeiro',Math.round((risco/5)*10)); add('Confiança',Math.round((conf/3)*5));
+  const hoje=hojeISO(), prazo=a.prazo||a.quando;
+  if(prazo){const d=diasEntre(hoje,prazo);add(d<0?'Prazo vencido':d===0?'Prazo hoje':d<=3?'Prazo próximo':'',d<0?12:d===0?9:d<=3?5:0);}
+  if(a.tipo==='suspensao')add('Criticidade: suspensão',20);
+  if(a.criticidade==='critica')add('Criticidade manual',15);
+  if(svcCanon(a.servico)==='ads'&&a.tipo==='problema')add('Ads com problema',8);
+  if(opStatus(a)==='em_execucao')add('Manter foco atual',8);
+  const penal=Math.max(0,(esf-1)*2); if(penal){pts-=penal;itens.push(['Esforço',-penal]);}
+  if(a.bloqueada||opStatus(a)==='aguardando'){pts-=20;itens.push(['Bloqueio/aguardando',-20]);}
+  if(a.origem==='diagnostico'&&!a.evidencia){pts-=15;itens.push(['Evidência insuficiente',-15]);}
+  const ba=bonusAtrasoV234(a); if(ba){pts+=ba;itens.push(['Atraso da obrigação',ba]);}
+  return {score:Math.max(0,Math.min(100,Math.round(pts))),itens};
+}
+function prioridadeAcao(a){ return prioridadeDetalhe(a).score; }
+function porquePrioridadeV232(id){ const a=gesItens.find(x=>x.id===id);if(!a)return;const d=prioridadeDetalhe(a);alert(`Prioridade ${d.score}/100\n\n`+d.itens.map(x=>`${x[1]>=0?'+':''}${x[1]} · ${x[0]}`).join('\n')); }
+function filaPrioridade(){ return gesItens.filter(executavel).sort((a,b)=>prioridadeAcao(b)-prioridadeAcao(a)||String(a.prazo||a.quando||'9999').localeCompare(String(b.prazo||b.quando||'9999'))); }
+function focoAtual(){ return gesItens.find(a=>gesAberto(a)&&opStatus(a)==='em_execucao') || filaPrioridade()[0] || null; }
+function rotOp(a){ return ({a_fazer:'A fazer',em_execucao:'Em execução',aguardando:'Aguardando',reavaliar:'Reavaliar',concluida:'Concluída',cancelada:'Cancelada'})[opStatus(a)]||'A fazer'; }
+function focoV21HTML(){ const a=focoAtual(); if(!a) return `<div class="card foco-v21"><div class="eyebrow">Foco agora</div><h2>Nenhuma tarefa executável</h2><div class="sub">Registre um plano, problema ou atividade na Central de Trabalho.</div></div>`; const exec=opStatus(a)==='em_execucao'; return `<div class="card foco-v21"><div class="card-h"><div><div class="eyebrow">${exec?'Em execução':'Próxima prioridade'}</div><h2>${esc(a.cliente)} · ${esc(SERV_ROT[a.servico]||'Geral')}</h2></div><div class="foco-score">${prioridadeAcao(a)}<span class="sub">/100</span></div></div><div class="acao-x" style="font-size:16px">${esc(a.texto)}</div><div class="sub">${a.estimativaMin?`Estimativa: ${a.estimativaMin} min · `:''}${a.minutosAcumulados?`Acumulado: ${fmtMin(a.minutosAcumulados)} · `:''}${exec&&a.iniciadoEm?`Em foco desde ${new Date(a.iniciadoEm).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})} · `:''}${a.prazo?`Prazo: ${fmtDate(a.prazo)} · `:''}${rotOp(a)}</div><div class="acoes no-print" style="margin-top:10px"><button class="btn" onclick="porquePrioridadeV232('${esc(a.id)}')">Por que esta prioridade?</button>${exec?`<button class="btn btn-pri" onclick="concluirV21('${esc(a.id)}')">Concluir</button><button class="btn" onclick="pausarV21('${esc(a.id)}')">Pausar</button><button class="btn" onclick="bloquearV21('${esc(a.id)}')">Bloquear</button>`:`<button class="btn btn-pri" onclick="comecarV21('${esc(a.id)}')">Começar</button>`}<button class="btn" onclick="editarAcao('${esc(a.id)}')">Editar</button></div></div>`; }
+// V2.2: obrigações automáticas, atenção por cliente e integração execução → histórico
+const ROTINAS_V22 = [
+  {id:'gbp_avaliacoes', servicoCliente:'gbp', servico:'gbp', cadencia:'semana', dia:4, texto:'Revisar avaliações, responder clientes e identificar oportunidades de novas avaliações', estimativaMin:20, impacto:4, urgencia:3, confianca:3, esforco:2, etapa:'avaliacoes'},
+  {id:'gbp_perfil', servicoCliente:'gbp', servico:'gbp', cadencia:'mes', dia:8, texto:'Revisar informações, categorias, serviços, horários, fotos e oportunidades do Perfil da Empresa', estimativaMin:30, impacto:4, urgencia:3, confianca:3, esforco:2, etapa:'avaliacoes'},
+  {id:'gbp_ranking', servicoCliente:'gbp', servico:'gbp', cadencia:'mes', dia:18, texto:'Medir ranking local e registrar posições principais', estimativaMin:20, impacto:4, urgencia:3, confianca:3, esforco:2, etapa:'ranking'},
+  {id:'gbp_posts', servicoCliente:'gbp', servico:'gbp', cadencia:'mes', dia:12, texto:'Revisar meta e execução de postagens do Perfil da Empresa', estimativaMin:20, impacto:3, urgencia:3, confianca:3, esforco:2, etapa:'posts'},
+  {id:'ads_termos', servicoCliente:'ads', servico:'ads', cadencia:'semana', dia:3, texto:'Revisar termos de pesquisa, negativas e desperdícios do Google Ads', estimativaMin:30, impacto:5, urgencia:4, confianca:3, esforco:2, etapa:'ajustes_ads'},
+  {id:'ads_conversoes', servicoCliente:'ads', servico:'ads', cadencia:'semana', dia:5, texto:'Validar conversões e sinais de qualidade dos leads do Google Ads', estimativaMin:20, impacto:5, urgencia:5, confianca:3, esforco:2, etapa:'campanhas'},
+  {id:'ads_orcamento', servicoCliente:'ads', servico:'ads', cadencia:'mes', dia:10, texto:'Revisar orçamento, CPL, volume, anúncios e distribuição das campanhas', estimativaMin:35, impacto:5, urgencia:4, confianca:3, esforco:2, etapa:'campanhas'},
+  {id:'ads_lp', servicoCliente:'ads', servico:'ads', cadencia:'mes', dia:17, texto:'Revisar aderência entre anúncios, termos e landing page', estimativaMin:25, impacto:4, urgencia:3, confianca:3, esforco:2, etapa:'ajustes_ads'},
+  {id:'site_disp', servicoCliente:'site', servico:'site', cadencia:'semana', dia:2, texto:'Verificar manualmente disponibilidade e funcionamento principal do site/LP', estimativaMin:10, impacto:5, urgencia:4, confianca:3, esforco:1, etapa:'site_manut'},
+  {id:'site_manut', servicoCliente:'site', servico:'site', cadencia:'mes', dia:15, texto:'Revisar manutenção, atualizações, formulários, WhatsApp, CTA e pendências do site/LP', estimativaMin:30, impacto:4, urgencia:3, confianca:3, esforco:2, etapa:'site_manut'},
+  {id:'site_conv', servicoCliente:'site', servico:'site', cadencia:'mes', dia:20, texto:'Revisar conversão, clareza da oferta, prova e experiência mobile do site/LP', estimativaMin:30, impacto:4, urgencia:3, confianca:3, esforco:2, etapa:'site_ajustes'},
+  {id:'seo_tecnico', servicoCliente:'seo', servico:'seo', cadencia:'mes', dia:7, texto:'Revisar indexação, títulos, metas, links, erros técnicos e oportunidades de SEO', estimativaMin:40, impacto:4, urgencia:3, confianca:3, esforco:3, etapa:'estudo'},
+  {id:'seo_conteudo', servicoCliente:'seo', servico:'seo', cadencia:'mes', dia:14, texto:'Revisar páginas de serviços/localidades, conteúdo e oportunidades de busca', estimativaMin:40, impacto:4, urgencia:3, confianca:3, esforco:3, etapa:'estudo'},
+  {id:'seo_resultados', servicoCliente:'seo', servico:'seo', cadencia:'mes', dia:21, texto:'Revisar evolução orgânica, consultas e páginas com ganho ou perda', estimativaMin:30, impacto:4, urgencia:3, confianca:3, esforco:2, etapa:'estudo'},
+  {id:'social_planejamento', servicoCliente:'social', servico:'social', cadencia:'mes', dia:5, texto:'Planejar pauta e entregas de redes sociais do período', estimativaMin:30, impacto:3, urgencia:3, confianca:3, esforco:2, etapa:'estudo'},
+  {id:'social_execucao', servicoCliente:'social', servico:'social', cadencia:'semana', dia:4, texto:'Revisar publicações, pendências de conteúdo e respostas nas redes sociais', estimativaMin:25, impacto:3, urgencia:3, confianca:3, esforco:2, etapa:'posts'},
+  {id:'social_resultados', servicoCliente:'social', servico:'social', cadencia:'mes', dia:22, texto:'Revisar desempenho das redes sociais e aprendizados do mês', estimativaMin:25, impacto:3, urgencia:2, confianca:3, esforco:2, etapa:'estudo'}
+];
+function inicioSemanaISO(){ const d=new Date(hojeISO()+'T12:00:00'), w=(d.getDay()+6)%7; d.setDate(d.getDate()-w); return hojeISO(d); }
+function periodoRotinaV22(r){ return r.cadencia==='semana' ? inicioSemanaISO() : refAtual(); }
+function prazoRotinaV22(r){ if(r.cadencia==='semana') return addDias(inicioSemanaISO(),Math.max(0,Math.min(6,(+r.dia||1)-1))); return refAtual()+'-'+pad2(Math.min(+r.dia||15,ultimoDia(refAtual()))); }
+function idRotinaV22(c,r){ return 'rot-'+c.id+'-'+r.id+'-'+periodoRotinaV22(r); }
+function ultimaAtencaoV22(nome){
+  const ds=[];
+  historico.filter(h=>h.cliente===nome&&h.data).forEach(h=>ds.push(String(h.data).slice(0,10)));
+  gesItens.filter(a=>a.cliente===nome&&(a.fechadoEm||a.data)).forEach(a=>{ if(a.status==='fechado') ds.push(String(a.fechadoEm||a.data).slice(0,10)); });
+  return ds.sort().pop()||null;
+}
+function diasSemAtencaoV22(nome){ const d=ultimaAtencaoV22(nome); return d?Math.max(0,diasEntre(d,hojeISO())):999; }
+function bonusAtencaoV22(a){ const c=clientes.find(x=>x.nome===a.cliente); if(!c||c.status!=='Ativo')return 0; const d=diasSemAtencaoV22(a.cliente); return d>=21?15:d>=14?10:d>=7?5:0; }
+function etapaHistoricoV22(a){ if(a.etapaTempo)return a.etapaTempo; if(a.servico==='ads')return 'ajustes_ads'; if(a.servico==='gbp')return 'avaliacoes'; if(a.servico==='site')return 'site_ajustes'; return 'outro'; }
+function rotinaAbertaV234(nome,rid){ return gesItens.find(a=>a.cliente===nome&&a.origem==='rotina'&&a.rotinaId===rid&&gesAberto(a)); }
+function concluidasRotinaV234(nome,rid){ return gesItens.filter(a=>a.cliente===nome&&a.origem==='rotina'&&a.rotinaId===rid&&a.status==='fechado'&&opStatus(a)!=='cancelada').sort((a,b)=>String(b.fechadoEm||b.data||'').localeCompare(String(a.fechadoEm||a.data||''))); }
+function addMesesISO(data,n=1){ const d=new Date((data||hojeISO())+'T12:00:00'); const dia=d.getDate(); d.setDate(1); d.setMonth(d.getMonth()+n); d.setDate(Math.min(dia,new Date(d.getFullYear(),d.getMonth()+1,0).getDate())); return hojeISO(d); }
+function proximaRotinaV234(r,ultima){
+  if(!ultima) return prazoRotinaV22(r);
+  const base=String(ultima.fechadoEm||ultima.data||hojeISO()).slice(0,10);
+  return r.cadencia==='semana'?addDias(base,7):addMesesISO(base,1);
+}
+function atrasoRotinaV234(a){ const p=a.prazo||a.quando; return p?Math.max(0,-diasEntre(hojeISO(),p)):0; }
+function situacaoRotinaV234(a){ if(opStatus(a)==='aguardando'||a.bloqueada)return 'aguardando'; const d=atrasoRotinaV234(a); if(d>0)return 'atrasada'; return 'devida'; }
+function bonusAtrasoV234(a){ if(a.origem!=='rotina')return 0; const d=atrasoRotinaV234(a); return d>30?20:d>=15?15:d>=8?10:d>=4?6:d>=1?3:0; }
+async function consolidarRotinasAntigasV234(){
+  const grupos={}; gesItens.filter(a=>gesAberto(a)&&a.origem==='rotina'&&a.rotinaId).forEach(a=>{const k=a.cliente+'|'+a.rotinaId;(grupos[k]||(grupos[k]=[])).push(a)});
+  const mud=[];
+  Object.values(grupos).forEach(xs=>{ if(xs.length<2)return; xs.sort((a,b)=>String(b.prazo||b.quando||b.data||'').localeCompare(String(a.prazo||a.quando||a.data||''))); xs.slice(1).forEach(a=>{a.status='fechado';a.statusOperacional='cancelada';a.fechadoEm=hojeISO();a.motivoCancelamento='Consolidada pela V2.3.4: rotina recorrente substituída pela pendência atual.';mud.push(a);}); });
+  if(mud.length) await persistMuitos('acoes',mud); return mud.length;
+}
+async function gerarObrigacoesV22(silencioso){
+  if(!TEM_ACOES)return {criadas:0,consolidadas:0,verificadas:0};
+  const consolidadas=await consolidarRotinasAntigasV234(), novos=[]; let verificadas=0;
+  clientes.filter(c=>c.status==='Ativo').forEach(c=>{
+    const sv=clienteServicosCanon(c);
+    ROTINAS_V22.filter(r=>sv.includes(r.servicoCliente)).forEach(r=>{
+      const cfg=(((c.extra||{}).rotinas||{})[r.id]||{}); if(cfg.ativo===false)return; verificadas++;
+      if(rotinaAbertaV234(c.nome,r.id))return;
+      const ultima=concluidasRotinaV234(c.nome,r.id)[0], prazo=proximaRotinaV234(r,ultima);
+      if(prazo>hojeISO())return;
+      novos.push({id:'rot-'+c.id+'-'+r.id+'-'+prazo+'-'+uid().slice(-5),cliente:c.nome,servico:r.servico,tipo:'plano',data:hojeISO(),quando:prazo,prazo,texto:r.texto,status:'aberto',statusOperacional:'a_fazer',impacto:r.impacto,urgencia:r.urgencia,confianca:r.confianca,esforco:r.esforco,estimativaMin:(cfg.estimativaMin||r.estimativaMin),origem:'rotina',rotinaId:r.id,obrigacaoContratual:true,etapaTempo:r.etapa,modeloRecorrencia:'substituivel'});
+    });
+    if(sv.some(x=>['gbp','ads','site','seo','social'].includes(x))){
+      const rid='relatorio', periodo=refAtual(), id='rot-'+c.id+'-relatorio-'+periodo; verificadas++;
+      const existe=gesItens.some(a=>a.id===id|| (a.cliente===c.nome&&a.rotinaId===rid&&a.periodoRotina===periodo));
+      const prazo=periodo+'-'+pad2(Math.min(ultimoDia(periodo),25));
+      if(!existe && prazo<=hojeISO()) novos.push({id,cliente:c.nome,servico:'geral',tipo:'plano',data:hojeISO(),quando:prazo,prazo,texto:'Preparar fechamento e relatório mensal do cliente',status:'aberto',statusOperacional:'a_fazer',impacto:4,urgencia:3,confianca:3,esforco:2,estimativaMin:30,origem:'rotina',rotinaId:rid,periodoRotina:periodo,obrigacaoContratual:true,etapaTempo:'relatorio',modeloRecorrencia:'acumulativa'});
+    }
+  });
+  if(novos.length){gesItens.push(...novos);await persistMuitos('acoes',novos);}
+  const res={criadas:novos.length,consolidadas,verificadas};
+  if(!silencioso) toast(novos.length||consolidadas?`Obrigações atualizadas: ${novos.length} devidas · ${consolidadas} duplicadas consolidadas.`:'Tudo atualizado. Nenhuma nova obrigação exige atenção.',4000);
+  return res;
+}
+function avisosAtencaoV22(){ return clientes.filter(c=>c.status==='Ativo').map(c=>({c,d:diasSemAtencaoV22(c.nome),ult:ultimaAtencaoV22(c.nome)})).filter(x=>x.d>=14).sort((a,b)=>b.d-a.d); }
+function painelRotinasV22(){
+  const a=avisosAtencaoV22(), rot=gesItens.filter(x=>gesAberto(x)&&x.origem==='rotina'), atr=rot.filter(x=>situacaoRotinaV234(x)==='atrasada'), ag=rot.filter(x=>situacaoRotinaV234(x)==='aguardando'), dev=rot.filter(x=>situacaoRotinaV234(x)==='devida');
+  return `<div class="card"><div class="card-h"><div><h2>Controle de obrigações recorrentes</h2><div class="sub">Uma rotina substituível permanece como uma única pendência e ganha atraso/prioridade; entregas mensais continuam por competência.</div></div><span class="pill ${atr.length?'p-red':'p-green'}">${atr.length+dev.length} precisam de atenção</span></div><div class="kpis" style="margin-top:12px"><div class="kpi"><b>${atr.length}</b><span>Atrasadas</span></div><div class="kpi"><b>${dev.length}</b><span>Devidas</span></div><div class="kpi"><b>${ag.length}</b><span>Aguardando</span></div><div class="kpi"><b>${rot.length}</b><span>Pendências recorrentes</span></div></div><div class="acoes no-print" style="margin-top:10px"><button class="btn" onclick="atualizarObrigacoesV234()">Atualizar obrigações</button></div>${a.slice(0,5).map(x=>`<div class="fila-l"><div class="quem"><b>${esc(x.c.nome)}</b><span class="sub">${x.d===999?'sem atividade registrada':x.d+' dias sem atividade concluída'}</span></div><span class="pill ${x.d>=21?'p-red':'p-amb'}">Atenção</span></div>`).join('')}</div>`;
+}
+async function atualizarObrigacoesV234(){ const r=await gerarObrigacoesV22(false); renderAtual(); }
+
+async function comecarV21(id){ const a=gesItens.find(x=>x.id===id); if(!a)return; const atual=gesItens.find(x=>x.id!==id&&gesAberto(x)&&opStatus(x)==='em_execucao'); if(atual){ const diff=prioridadeAcao(a)-prioridadeAcao(atual); if(diff<15 && a.tipo!=='suspensao'){ toast(`Finalize ou pause ${atual.cliente} primeiro. A nova tarefa não supera a atual em 15 pontos.`,4000); return; } if(!confirm(`Há uma tarefa em execução: ${atual.cliente} — ${curto(atual.texto,60)}.\n\nPausar e assumir esta prioridade?`))return; atual.statusOperacional='a_fazer'; await persist('acoes',atual); } normalizarAcaoV2(a); a.statusOperacional='em_execucao'; a.iniciadoEm=new Date().toISOString(); await gravarAcao(a); }
+async function pausarV21(id){ const a=gesItens.find(x=>x.id===id); if(!a)return; normalizarAcaoV2(a); if(a.iniciadoEm)a.minutosAcumulados+=(Math.max(0,Math.round((Date.now()-new Date(a.iniciadoEm).getTime())/60000))); a.statusOperacional='a_fazer'; a.iniciadoEm=null; await gravarAcao(a); }
+async function bloquearV21(id){ const a=gesItens.find(x=>x.id===id); if(!a)return; const m=prompt('Por que esta atividade está bloqueada?','Aguardando cliente'); if(m===null)return; a.bloqueada=true; a.motivoBloqueio=m; a.statusOperacional='aguardando'; await gravarAcao(a); }
+async function concluirV21(id){
+  const a=gesItens.find(x=>x.id===id); if(!a)return;
+  normalizarAcaoV2(a); let mins=+a.minutosAcumulados||0; if(a.iniciadoEm){ mins+=Math.max(1,Math.round((Date.now()-new Date(a.iniciadoEm).getTime())/60000)); } if(!mins) mins=+a.estimativaMin||0;
+  const x=prompt('Minutos gastos nesta atividade:',String(mins||'')); if(x===null)return; mins=Math.max(0,+x||0);
+  a.statusOperacional='concluida'; a.status='fechado'; a.fechadoEm=hojeISO(); a.minutosReal=mins; a.minutosAcumulados=mins; a.iniciadoEm=null;
+  const h={id:uid(),cliente:a.cliente,data:hojeISO(),texto:a.texto,tipo:'auto',auto:true};
+  if(TEM_TEMPO){ h.minutos=mins||null; h.etapa=etapaHistoricoV22(a); }
+  historico.push(h); await persist('historico',h);
+  await gravarAcao(a); toast('Atividade concluída, histórico atualizado e próxima prioridade recalculada.',3000);
+}
 
 function gesAberto(a) { return a.status !== 'fechado'; }
 function etapasDe(a) { return Array.isArray(a.etapas) ? a.etapas : []; }
@@ -1601,6 +1830,7 @@ function pendenciasGestao() {
       if (ult && ult.tipo === 'mudanca' && lib && lib <= hoje) out.push({ a, d: lib, txt: 'próxima mudança liberada', cls: 'av-red' });
     }
   });
+  onbAbertos().forEach(f => { const d = addDias(f.onbInicio, 7); if (d <= hoje) out.push({ a: { cliente: f.cliente, texto: `faltam ${plural(onbPendentes(f).length, 'item', 'itens')} do onboarding` }, d, txt: 'onboarding parado', cls: 'av-amb' }); });
   return out.sort((x, y) => String(x.d).localeCompare(String(y.d)));
 }
 function atualizarContaGestao() {
@@ -1648,7 +1878,7 @@ function gesTipoMudou(pref) {
 function renderGestao() {
   const off = document.getElementById('ges-off'), barra = document.getElementById('ges-barra'), cont = document.getElementById('ges-conteudo'), filt = document.getElementById('ges-filtros');
   if (!TEM_ACOES) {
-    setTopo('Gestão · mudanças, testes e pendências', 'Falta um passo no banco', '');
+    setTopo('Central de Trabalho · foco e prioridades', 'Falta um passo no banco', '');
     barra.style.display = 'none'; filt.innerHTML = ''; cont.innerHTML = '';
     off.innerHTML = `<div class="aviso av-info"><span>A Gestão guarda as mudanças, testes, planos e casos de cada cliente numa tabela nova. Rode o comando no Supabase uma vez para ligar.</span><button class="btn btn-sm" onclick="abrirSQL()">Ver o comando</button></div>`;
     return;
@@ -1665,17 +1895,18 @@ function renderGestao() {
   // filtros
   filt.innerHTML = `<span class="pills">${[['', 'Todos os serviços'], ...SERVICOS_G].map(([k, r]) => `<button class="${gesServ === k ? 'active' : ''}" ${gesServ === k ? 'aria-pressed="true"' : ''} onclick="gesFiltrar('serv','${k}')">${r}</button>`).join('')}</span>
     <select class="campo" aria-label="Cliente" style="margin-left:auto" onchange="gesFiltrar('cli', this.value)">${optsCli(gesCliente, true)}</select>`;
-  const itens = gesItens.filter(a => !gesServ || a.servico === gesServ);
+  const itens = gesItens.filter(a => a.tipo !== 'ficha' && (!gesServ || a.servico === gesServ || a.tipo === 'auditoria'));
   if (gesCliente) renderGestaoCliente(itens.filter(a => a.cliente === gesCliente), cont);
   else renderGestaoGeral(itens, cont);
 }
 
 function pillsAcao(a) {
   const t = TIPOS_G[a.tipo] || { rot: a.tipo, cor: '' };
-  let h = `<span class="pill ${t.cor}">${esc(t.rot)}</span><span class="chip">${esc(SERV_ROT[a.servico] || 'Geral')}</span>`;
+  if (a.tipo === 'auditoria') return `<span class="pill p-pur">Auditoria</span>`;
+  let h = `<span class="pill ${t.cor}">${esc(t.rot)}</span><span class="chip">${esc(SERV_ROT[svcCanon(a.servico)] || 'Geral')}</span>${a.origem==='rotina'?'<span class="chip v22-origem">Rotina</span>':''}${gesAberto(a) && !['contato','auditoria'].includes(a.tipo) ? `<span class="chip prio-score">P${prioridadeAcao(a)}</span><span class="chip ${opStatus(a)==='em_execucao'?'op-exec':opStatus(a)==='aguardando'?'op-wait':''}">${rotOp(a)}</span>` : ''}`;
   if (a.resultado && RESULT_G[a.resultado]) h += `<span class="pill ${RESULT_G[a.resultado][1]}">${RESULT_G[a.resultado][0]}</span>`;
   if (a.aprendizado) h += `<span class="pill p-ok">Aprendizado</span>`;
-  if (a.status === 'fechado' && !a.resultado && a.tipo !== 'contato') h += `<span class="pill">${a.tipo === 'plano' ? 'Feito' : a.tipo === 'espera' ? 'Recebido' : a.tipo === 'suspensao' ? 'Encerrado' : 'Resolvido'}</span>`;
+  if (a.status === 'fechado' && !a.resultado && a.tipo !== 'contato' && a.tipo !== 'auditoria') h += `<span class="pill">${a.tipo === 'plano' ? 'Feito' : a.tipo === 'espera' ? 'Recebido' : a.tipo === 'suspensao' ? 'Encerrado' : 'Resolvido'}</span>`;
   return h;
 }
 function linhaQuando(a) {
@@ -1692,17 +1923,21 @@ function linhaQuando(a) {
   return `<span class="quando ${venc ? 'venc' : ''}">${esc(t.quando.toLowerCase())} ${fmtDate(a.quando)}${a.tipo === 'espera' ? ' · esperando há ' + plural(diasEntre(a.data, hoje), 'dia', 'dias') + (a.cobrancas ? ', cobrado ' + plural(a.cobrancas, 'vez', 'vezes') : '') : ''}</span>`;
 }
 function botoesAcao(a) {
-  const id = esc(a.id), b = (txt, fn, cls) => `<button class="btn btn-sm ${cls || ''}" onclick="${fn}('${id}')">${txt}</button>`;
-  let h = '';
-  if (gesAberto(a)) {
-    if (a.tipo === 'mudanca' || a.tipo === 'teste') h += `<button class="btn btn-sm res-ok" onclick="abrirResultado('${id}','melhorou')">Melhorou</button><button class="btn btn-sm" onclick="abrirResultado('${id}','neutro')">Neutro</button><button class="btn btn-sm btn-red" onclick="abrirResultado('${id}','piorou')">Piorou</button>`;
-    else if (a.tipo === 'plano') h += b('Fiz', 'planoFeito', 'btn-pri');
-    else if (a.tipo === 'problema') h += b('Resolvido', 'fecharAcao');
-    else if (a.tipo === 'espera') h += b('Cobrei de novo', 'cobreiDeNovo') + b('Ele mandou', 'fecharAcao', 'btn-pri');
-    else if (a.tipo === 'suspensao') h += b('Registrar etapa', 'abrirEtapa', 'btn-pri');
+  const id=esc(a.id), b=(txt,fn,cls)=>`<button class="btn btn-sm ${cls||''}" onclick="${fn}('${id}')">${txt}</button>`;
+  if(a.tipo==='auditoria') return `<button class="btn btn-sm" data-n="${esc(a.cliente)}" onclick="abrirFicha(this.dataset.n,'auditoria')">Abrir auditoria</button>`;
+  let h='';
+  if(gesAberto(a)){
+    if(a.tipo==='suspensao') h+=b('Registrar etapa','abrirEtapa','btn-pri');
+    else if(a.tipo==='espera') h+=b('Cobrei de novo','cobreiDeNovo')+b('Recebido / concluir','concluirV21','btn-pri');
+    else if(a.tipo==='mudanca'||a.tipo==='teste') h+=`<button class="btn btn-sm res-ok" onclick="abrirResultado('${id}','melhorou')">Melhorou</button><button class="btn btn-sm" onclick="abrirResultado('${id}','neutro')">Neutro</button><button class="btn btn-sm btn-red" onclick="abrirResultado('${id}','piorou')">Piorou</button>`;
+    else if(opStatus(a)==='em_execucao') h+=b('Concluir','concluirV21','btn-pri')+b('Pausar','pausarV21')+b('Bloquear','bloquearV21');
+    else if(opStatus(a)==='aguardando') h+=b('Retomar','retomarV232','btn-pri');
+    else h+=b('Começar','comecarV21','btn-pri')+b('Concluir','concluirV21');
+    h+=b('Prioridade','porquePrioridadeV232');
   }
-  return h + b('Editar', 'editarAcao');
+  return h+b('Editar','editarAcao');
 }
+async function retomarV232(id){const a=gesItens.find(x=>x.id===id);if(!a)return;a.bloqueada=false;a.motivoBloqueio='';a.statusOperacional='a_fazer';await gravarAcao(a);}
 function cartaoAcao(a, comCliente) {
   const etapas = a.tipo === 'suspensao' ? `<ol class="etapas">${etapasDe(a).slice().sort((x, y) => String(x.data).localeCompare(String(y.data))).map(e => `<li class="${e.tipo}"><span class="mono">${fmtDate(e.data)}</span> ${esc(ETAPA_SUSP_ROT[e.tipo] || e.tipo)}${e.texto ? ': ' + esc(e.texto) : ''}</li>`).join('')}</ol>` : '';
   return `<article class="acao t-${esc(a.tipo)}">
@@ -1718,25 +1953,26 @@ function vazioG(t) { return `<div class="empty">${t}</div>`; }
 
 function renderGestaoGeral(itens, cont) {
   const hoje = hojeISO(), abertos = itens.filter(gesAberto), pend = pendenciasGestao();
-  setTopo('Gestão · visão geral', pend.length ? `${plural(pend.length, 'item pede', 'itens pedem')} ação hoje` : 'Nada vencido na gestão', '');
+  setTopo('Central de Trabalho · visão geral', pend.length ? `${plural(pend.length, 'item pede', 'itens pedem')} ação hoje` : 'Nada vencido na gestão', '');
   const ord = arr => arr.slice().sort((a, b) => String(a.quando || '9999').localeCompare(String(b.quando || '9999')) || String(a.data).localeCompare(String(b.data)));
   const reav = ord(abertos.filter(a => a.tipo === 'mudanca' || a.tipo === 'teste'));
   const prob = ord(abertos.filter(a => a.tipo === 'problema' || a.tipo === 'espera'));
+  const onbs = gesServ ? [] : onbAbertos();
   const casos = abertos.filter(a => a.tipo === 'suspensao');
   const planos = ord(abertos.filter(a => a.tipo === 'plano'));
   const aprend = itens.filter(a => a.aprendizado).sort((a, b) => String(b.data).localeCompare(String(a.data)));
   const testes = id => gesItens.filter(x => x.origem === id).map(x => x.cliente);
-  cont.innerHTML = `<div class="cols">
+  cont.innerHTML = focoV21HTML() + painelRotinasV22() + `<div class="cols">
     <div class="card g1"><div class="card-h"><h2>Reavaliar</h2><span class="sub">${reav.filter(a => a.quando && a.quando <= hoje).length} na data · ${reav.length} em andamento</span></div>
       <div class="pilha">${reav.map(a => cartaoAcao(a, true)).join('') || vazioG('Nenhuma mudança ou teste esperando resultado.')}</div></div>
-    <div class="card g1"><div class="card-h"><h2>Problemas e espera</h2><span class="sub">${prob.length} em aberto</span></div>
-      <div class="pilha">${prob.map(a => cartaoAcao(a, true)).join('') || vazioG('Nenhum problema aberto e nada esperando o cliente.')}</div></div>
+    <div class="card g1"><div class="card-h"><h2>Problemas e espera</h2><span class="sub">${prob.length + onbs.length} em aberto</span></div>
+      <div class="pilha">${onbs.map(f => `<article class="acao t-espera"><div class="acao-t"><span class="pill p-amb">Onboarding</span></div><button class="acao-cli" data-n="${esc(f.cliente)}" onclick="abrirGestao(this.dataset.n)">${esc(f.cliente)}</button><div class="acao-x">Faltam ${plural(onbPendentes(f).length, 'item', 'itens')} para começar a entregar</div><span class="quem quando">desde ${fmtDate(f.onbInicio)}</span><div class="acoes no-print"><button class="btn btn-sm" data-n="${esc(f.cliente)}" onclick="abrirFicha(this.dataset.n,'onboarding')">Abrir onboarding</button></div></article>`).join('')}${prob.map(a => cartaoAcao(a, true)).join('') || (onbs.length ? '' : vazioG('Nenhum problema aberto e nada esperando o cliente.'))}</div></div>
     <div class="card g1 card-escuro"><div class="card-h"><h2>Casos de suspensão</h2><span class="sub">${casos.length} aberto${casos.length === 1 ? '' : 's'}</span></div>
       <div class="pilha">${casos.map(a => cartaoAcao(a, true)).join('') || `<div class="empty">Nenhum caso aberto. Ao registrar “Risco de suspensão”, o caso aparece aqui com as etapas e a data da próxima mudança.</div>`}</div></div>
   </div>
   <div class="cols">
     <div class="card g3"><div class="card-h"><h2>Planos</h2><span class="sub">viram aviso no Início na data</span></div>
-      ${planos.map(a => `<div class="fila-l"><span class="mono" style="flex:0 0 70px">${a.quando ? fmtDia(a.quando) : 'sem data'}</span><span class="chip">${esc(SERV_ROT[a.servico] || 'Geral')}</span><div class="quem" style="font-size:14px"><b style="font-size:14px;display:inline">${esc(a.cliente)}</b> · ${esc(a.texto)}</div><div class="acoes no-print">${botoesAcao(a)}</div></div>`).join('') || vazioG('Nenhum plano. Registre com o tipo “Plano” e a data em que quer fazer.')}</div>
+      ${planos.map(a => `<div class="fila-l"><span class="mono" style="flex:0 0 70px">${a.quando ? fmtDia(a.quando) : 'sem data'}</span><span class="chip">${esc(SERV_ROT[svcCanon(a.servico)] || 'Geral')}</span><div class="quem" style="font-size:14px"><b style="font-size:14px;display:inline">${esc(a.cliente)}</b> · ${esc(a.texto)}</div><div class="acoes no-print">${botoesAcao(a)}</div></div>`).join('') || vazioG('Nenhum plano. Registre com o tipo “Plano” e a data em que quer fazer.')}</div>
     <div class="card g1 card-verde"><div class="card-h"><h2>Aprendizados</h2><span class="sub">para testar em outros clientes</span></div>
       <div class="pilha">${aprend.map(a => { const t = testes(a.id); return `<div class="aprend"><div>${esc(a.resultadoTxt || a.texto)}</div><div class="sub">de ${esc(a.cliente)} · ${fmtDate(a.data)} · ${t.length ? 'testando em ' + esc(listaE([...new Set(t)])) : 'ainda não testado em outro'}</div><button class="btn btn-sm no-print" onclick="abrirTestar('${esc(a.id)}')">Testar em outro cliente</button></div>`; }).join('') || `<div class="empty">Ao registrar o resultado de uma mudança, marque “vale testar em outros clientes” para ela aparecer aqui.</div>`}</div></div>
   </div>`;
@@ -1744,7 +1980,7 @@ function renderGestaoGeral(itens, cont) {
 
 function renderGestaoCliente(itens, cont) {
   const c = clientes.find(x => x.nome === gesCliente), abertos = itens.filter(gesAberto);
-  setTopo('Gestão · linha do tempo do cliente', `${gesCliente}: ${abertos.length ? plural(abertos.length, 'item em aberto', 'itens em aberto') : 'nada em aberto'}`, `<button class="btn" onclick="abrirGestao('')">Visão geral</button>`);
+  setTopo('Central de Trabalho · cliente', `${gesCliente}: ${abertos.length ? plural(abertos.length, 'item em aberto', 'itens em aberto') : 'nada em aberto'}`, `${(clientes.some(x => x.nome === gesCliente) || possiveis.some(x => x.nome === gesCliente)) ? `<button class="btn" data-n="${esc(gesCliente)}" onclick="abrirFicha(this.dataset.n)">Ficha</button>` : ''}<button class="btn" onclick="abrirGestao('')">Visão geral</button>`);
   const ord = itens.slice().sort((a, b) => String(b.data).localeCompare(String(a.data)) || String(b.created_at || '').localeCompare(String(a.created_at || '')));
   const porData = {}; ord.forEach(a => { (porData[a.data] = porData[a.data] || []).push(a); });
   const linha = Object.keys(porData).map(d => `<div class="tl"><div class="tl-d">${fmtDate(d)}</div><div class="tl-r"><i></i><span></span></div><div class="tl-c">${porData[d].map(a => cartaoAcao(a, false)).join('')}</div></div>`).join('');
@@ -1759,7 +1995,7 @@ function renderGestaoCliente(itens, cont) {
 // ── pacote por serviço (valor de tabela, cortesia e desconto) ──
 function pacoteDe(c) {
   const p = ex(c).pacote || {}, precos = p.precos || {};
-  const linhas = (c.servicos || []).map(s => ({ s, rot: SERV_PACOTE_ROT[s] || s, v: precos[s] != null ? +precos[s] : (TABELA_PRECO[s] != null ? TABELA_PRECO[s] : null) }));
+  const linhas = (c.servicos || []).map(s => ({ s, rot: SERV_PACOTE_ROT[s] || s, v: precos[s] != null ? +precos[s] : tabelaValor(s, c) }));
   const tabela = linhas.reduce((a, l) => a + (l.v || 0), 0);
   return { linhas, tabela, cortesia: p.cortesia || '', cortesiaValor: +p.cortesiaValor || 0, paga: +c.valor || 0 };
 }
@@ -1777,7 +2013,7 @@ function abrirPacote(id) {
   const c = clientes.find(x => x.id === id); if (!c) return; _pacoteId = id;
   const p = pacoteDe(c);
   document.getElementById('pac-titulo').textContent = 'Pacote de ' + c.nome;
-  document.getElementById('pac-linhas').innerHTML = p.linhas.map(l => `<div class="form-group"><label for="pac-${esc(l.s)}">${esc(l.rot)} (R$/mês)${TABELA_PRECO[l.s] != null ? ' · tabela ' + fmtBRL(TABELA_PRECO[l.s]) : ''}</label><input id="pac-${esc(l.s)}" data-s="${esc(l.s)}" type="number" min="0" value="${l.v == null ? '' : l.v}"></div>`).join('') || '<p class="sub">Marque os serviços no cadastro do cliente primeiro.</p>';
+  document.getElementById('pac-linhas').innerHTML = p.linhas.map(l => `<div class="form-group"><label for="pac-${esc(l.s)}">${esc(l.rot)} (R$/mês)${tabelaValor(l.s, c) != null ? ' · tabela ' + fmtBRL(tabelaValor(l.s, c)) : ''}</label><input id="pac-${esc(l.s)}" data-s="${esc(l.s)}" type="number" min="0" value="${l.v == null ? '' : l.v}"></div>`).join('') || '<p class="sub">Marque os serviços no cadastro do cliente primeiro.</p>';
   document.getElementById('pac-cortesia').value = p.cortesia;
   document.getElementById('pac-cortesia-valor').value = p.cortesiaValor || '';
   openModal('modal-pacote');
@@ -1797,7 +2033,7 @@ async function registrarAcao() {
   const cliente = document.getElementById('ges-cli').value, tipo = document.getElementById('ges-tipo').value;
   const texto = document.getElementById('ges-texto').value.trim(), data = document.getElementById('ges-data').value || hojeISO();
   if (!cliente || !texto) { toast('Escolha o cliente e escreva o que foi feito'); return; }
-  const a = { id: uid(), cliente, servico: document.getElementById('ges-serv').value, tipo, data, texto, status: tipo === 'contato' ? 'fechado' : 'aberto' };
+  const a = { id: uid(), cliente, servico: document.getElementById('ges-serv').value, tipo, data, texto, status: tipo === 'contato' ? 'fechado' : 'aberto', statusOperacional: tipo==='contato'?'concluida':tipo==='espera'?'aguardando':'a_fazer', origem:'manual', schemaVersion:2, impacto:3, urgencia:3, confianca:2, esforco:3 };
   if ((TIPOS_G[tipo] || {}).quando) a.quando = document.getElementById('ges-quando').value || null;
   if (tipo === 'suspensao') { a.etapas = [{ id: uid(), data, tipo: 'risco', texto: '' }]; a.esperaDias = 7; }
   gesItens.push(a);
@@ -1896,7 +2132,7 @@ function editarAcao(id) {
   document.getElementById('acao-res').value = a.resultado || '';
   document.getElementById('acao-res-txt').value = a.resultadoTxt || '';
   document.getElementById('acao-aprend').checked = !!a.aprendizado;
-  document.getElementById('acao-espera').value = +a.esperaDias || 7;
+  document.getElementById('acao-espera').value = +a.esperaDias || 7; document.getElementById('acao-opstatus').value=opStatus(a); document.getElementById('acao-est').value=a.estimativaMin||''; document.getElementById('acao-impacto').value=+(a.impacto||3); document.getElementById('acao-urgencia').value=+(a.urgencia||3); document.getElementById('acao-confianca').value=+(a.confianca||2); document.getElementById('acao-esforco').value=+(a.esforco||3); document.getElementById('acao-prazo').value=a.prazo||'';
   gesTipoMudou('acao');
   openModal('modal-acao');
 }
@@ -1911,7 +2147,7 @@ async function salvarAcaoEdit() {
   a.status = st;
   a.resultado = document.getElementById('acao-res').value || null;
   a.resultadoTxt = document.getElementById('acao-res-txt').value.trim();
-  a.aprendizado = document.getElementById('acao-aprend').checked;
+  a.aprendizado = document.getElementById('acao-aprend').checked; a.statusOperacional=document.getElementById('acao-opstatus').value; a.estimativaMin=+document.getElementById('acao-est').value||null; a.impacto=Math.min(5,Math.max(1,+document.getElementById('acao-impacto').value||3)); a.urgencia=Math.min(5,Math.max(1,+document.getElementById('acao-urgencia').value||3)); a.confianca=Math.min(3,Math.max(1,+document.getElementById('acao-confianca').value||2)); a.esforco=Math.min(5,Math.max(1,+document.getElementById('acao-esforco').value||3)); a.prazo=document.getElementById('acao-prazo').value||null;
   if (a.tipo === 'suspensao') { a.esperaDias = Math.max(1, parseInt(document.getElementById('acao-espera').value) || 7); if (!etapasDe(a).length) a.etapas = [{ id: uid(), data: a.data, tipo: 'risco', texto: '' }]; }
   closeModal('modal-acao');
   if (await gravarAcao(a)) toast('Salvo!');
@@ -1924,11 +2160,569 @@ async function excluirAcao() {
   if (await persist('acoes', a, true)) toast('Registro excluído');
 }
 
+// ═════════════════════════════════ PREÇOS ════════════════════════════════════
+// Tabela da agência (linha "tabela" em ajustes), lista de reajuste e orçamento de entrada.
+const TABELA_PADRAO = {
+  servicos: {
+    GMN:  { nome:'Gestão do Perfil da Empresa', valor:250, horas:4, inclui:'1 post por semana, respostas às avaliações, medição mensal do ranking, relatório do mês' },
+    ADS:  { nome:'Gestão de Google Ads',        valor:700, horas:6, inclui:'Gestão das campanhas, ajustes e termos negativos, relatório de gasto e contatos' },
+    Site: { nome:'Manutenção do site',          valor:150, horas:2, inclui:'Hospedagem, atualizações, ajustes pedidos no mês' }
+  },
+  criacao: { de:1000, ate:2000 },
+  portes: { p:60, m:80, c:100 }
+};
+const SVC_TAB = ['GMN','ADS','Site'];
+const PORTES = [['p','Pequeno'],['m','Médio'],['c','Cheio']];
+let precoAba = 'tabela', reajSel = '', reajPassos = 3, reajMeses = 3;
+let orcSel = '', orcQ = { q1:false, q2:false, q3:false }, orcPorte = 'm';
+
+function tabelaRow() { return ajustes.find(a => a.id === 'tabela'); }
+function tabela() {
+  const r = tabelaRow(), d = (r && r.dados) || {}, s = {};
+  SVC_TAB.forEach(k => { s[k] = { ...TABELA_PADRAO.servicos[k], ...(((d.servicos || {})[k]) || {}) }; });
+  return { servicos:s, criacao:{ ...TABELA_PADRAO.criacao, ...(d.criacao || {}) }, portes:{ ...TABELA_PADRAO.portes, ...(d.portes || {}) }, hist:Array.isArray(d.hist) ? d.hist : [] };
+}
+function porteDe(c) { const p = ex(c).porte; return ['p','m','c'].includes(p) ? p : 'c'; }
+function pctPorte(p) { return (+tabela().portes[p] || 100) / 100; }
+function tabelaValor(s, c) { const t = tabela().servicos[s]; return t ? Math.round(t.valor * (c ? pctPorte(porteDe(c)) : 1)) : null; }
+function alvoDe(c) { return pacoteDe(c).tabela; }
+function itensInclui(s) { return String(s || '').split(',').map(i => i.trim()).filter(Boolean).map(i => i[0].toUpperCase() + i.slice(1)); }
+function arred10(v) { return Math.round(v / 10) * 10; }
+function ultimoReajuste(nome) { const h = historico.filter(x => x.cliente === nome && /^Valor mensal alterado/.test(x.texto || '')).map(x => x.data).sort().pop(); return h || null; }
+
+function renderPrecos() {
+  const abas = [['tabela','Tabela da agência'],['reajuste','Reajustes'],['orcamento','Orçamento para possível cliente']];
+  document.getElementById('pre-abas').innerHTML = abas.map(([k, r]) => `<button class="${precoAba === k ? 'active' : ''}" ${precoAba === k ? 'aria-pressed="true"' : ''} onclick="precoAba='${k}';renderPrecos()">${r}</button>`).join('');
+  const el = document.getElementById('pre-conteudo');
+  if (precoAba === 'reajuste') return renderReajustes(el);
+  if (precoAba === 'orcamento') return renderOrcamento(el);
+  return renderTabela(el);
+}
+function abrirPrecos(aba, sel) { precoAba = aba || 'tabela'; if (aba === 'reajuste' && sel) reajSel = sel; if (aba === 'orcamento' && sel) { orcSel = sel; orcQ = { q1:false, q2:false, q3:false }; } show('precos'); }
+
+// ── Tabela ──
+function renderTabela(el) {
+  const t = tabela(), ativos = clientes.filter(c => c.status === 'Ativo' && c.valor > 0);
+  const hoje = soma(ativos), alvo = ativos.reduce((a, c) => a + alvoDe(c), 0);
+  setTopo('Preços · tabela da agência', 'O preço sai daqui, não da cabeça', '');
+  el.innerHTML = (TEM_AJUSTES ? '' : `<div class="aviso av-info"><span>Para salvar a tabela, falta ligar os custos no banco.</span><button class="btn btn-sm" onclick="abrirSQL()">Ver o comando</button></div>`) + `
+  <div class="cols">
+    <div class="card g3"><div class="card-h"><h2>Serviços recorrentes</h2><span class="sub">valor cheio por mês (porte 100%)</span></div>
+      <div class="scroll-x"><table class="tab-precos"><thead><tr><th>Serviço</th><th class="tr">R$ / mês</th><th class="tr">Horas / mês</th><th class="tr">R$ / hora</th></tr></thead><tbody>
+      ${SVC_TAB.map(k => { const s = t.servicos[k]; return `<tr class="sem-linha"><td><b>${esc(s.nome)}</b><div class="sub">${k}</div></td>
+        <td class="tr"><input type="number" min="0" class="campo num" id="tb-${k}-valor" value="${s.valor}" aria-label="Valor ${esc(s.nome)}"></td>
+        <td class="tr"><input type="number" min="0" step="0.5" class="campo num" id="tb-${k}-horas" value="${s.horas}" aria-label="Horas ${esc(s.nome)}"></td>
+        <td class="tr mono">${s.horas ? fmtBRL(Math.round(s.valor / s.horas)) : '—'}</td></tr>
+        <tr><td colspan="4" style="padding-top:0"><label class="inclui">O que inclui<input class="campo" id="tb-${k}-inclui" value="${esc(s.inclui)}" aria-label="O que inclui ${esc(s.nome)}"></label></td></tr>`; }).join('')}
+      <tr><td><b>Criação de site</b><div class="sub">uma vez · cobrada à parte</div></td><td class="tr" colspan="3"><span style="display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">de <input type="number" min="0" class="campo num" id="tb-cri-de" value="${t.criacao.de}" aria-label="Criação de site, de"> até <input type="number" min="0" class="campo num" id="tb-cri-ate" value="${t.criacao.ate}" aria-label="Criação de site, até"></span></td></tr>
+      </tbody></table></div>
+      <div class="eyebrow" style="margin:16px 0 8px">Porte do cliente (% do valor cheio)</div>
+      <div class="portes">${PORTES.map(([k, r]) => `<label>${r}<input type="number" min="10" max="100" class="campo num" id="tb-porte-${k}" value="${t.portes[k]}">%</label>`).join('')}</div>
+      <div class="acoes" style="margin-top:16px"><button class="btn btn-pri" onclick="salvarTabela()" ${TEM_AJUSTES ? '' : 'disabled'}>Salvar tabela</button><span class="sub" style="align-self:center">Cada alteração fica registrada com a data.</span></div>
+    </div>
+    <div class="g1 lado">
+      <div class="card"><div class="eyebrow">Carteira de clientes ativos</div>
+        <div class="sobra" style="margin-top:8px"><span>Hoje</span><b>${fmtBRL(hoje)}</b><span class="sub">por mês</span></div>
+        <div class="sobra" style="margin-top:8px"><span>Pela tabela</span><b>${fmtBRL(alvo)}</b><span class="sub">${alvo ? Math.round(hoje / alvo * 100) + '% da tabela' : ''}</span></div>
+        <button class="btn btn-fill" style="margin-top:12px" onclick="precoAba='reajuste';renderPrecos()">Ver lista de reajuste</button></div>
+      <div class="card"><div class="card-h"><h2>Alterações da tabela</h2></div>
+        ${t.hist.length ? t.hist.slice().reverse().slice(0, 15).map(h => `<div class="fila-l" style="padding:8px 0"><span class="mono" style="flex:0 0 66px">${fmtDate(h.data)}</span><div class="quem" style="font-size:14px">${esc(h.item)}: ${esc(h.de)} → <b style="display:inline;font-size:14px">${esc(h.para)}</b></div></div>`).join('') : '<div class="sub">Nenhuma alteração ainda. Ao salvar com valores diferentes, a mudança aparece aqui.</div>'}</div>
+    </div>
+  </div>`;
+}
+async function salvarTabela() {
+  const t = tabela(), hoje = hojeISO(), hist = t.hist.slice(), num = id => +document.getElementById(id).value || 0;
+  const novo = { servicos:{}, criacao:{ de:num('tb-cri-de'), ate:num('tb-cri-ate') }, portes:{} };
+  const anota = (item, de, para) => { if (String(de) !== String(para)) hist.push({ data:hoje, item, de:String(de), para:String(para) }); };
+  SVC_TAB.forEach(k => {
+    const s = t.servicos[k], v = num(`tb-${k}-valor`), h = num(`tb-${k}-horas`), inc = document.getElementById(`tb-${k}-inclui`).value.trim();
+    novo.servicos[k] = { nome:s.nome, valor:v, horas:h, inclui:inc || s.inclui };
+    anota(s.nome, fmtBRL(s.valor), fmtBRL(v)); anota(s.nome + ' (horas)', s.horas + ' h', h + ' h');
+  });
+  anota('Criação de site', `${fmtBRL(t.criacao.de)} a ${fmtBRL(t.criacao.ate)}`, `${fmtBRL(novo.criacao.de)} a ${fmtBRL(novo.criacao.ate)}`);
+  PORTES.forEach(([k, r]) => { novo.portes[k] = Math.min(100, Math.max(10, num('tb-porte-' + k) || t.portes[k])); anota('Porte ' + r.toLowerCase(), t.portes[k] + '%', novo.portes[k] + '%'); });
+  const mudou = hist.length - t.hist.length;
+  novo.hist = hist;
+  let r = tabelaRow(); if (!r) { r = { id:'tabela', dados:{} }; ajustes.push(r); }
+  r.dados = novo; renderAtual();
+  if (await persist('ajustes', r)) toast(mudou ? `Tabela salva. ${plural(mudou, 'alteração registrada', 'alterações registradas')}.` : 'Tabela salva, sem alterações de valor.', 3000);
+}
+
+// ── Reajustes ──
+function listaReajuste() {
+  return clientes.filter(c => c.status === 'Ativo' && c.valor > 0).map(c => {
+    const alvo = alvoDe(c), rv = revisaoDe(c);
+    return { c, alvo, gap: alvo - c.valor, pct: alvo ? Math.round(c.valor / alvo * 100) : 100, rev: rv ? rv.data : null, ult: ultimoReajuste(c.nome) };
+  }).sort((a, b) => (b.gap > 0) - (a.gap > 0) || String(a.rev || '9999').localeCompare(String(b.rev || '9999')) || b.gap - a.gap);
+}
+function degrausDe(c) {
+  const alvo = alvoDe(c), gap = alvo - c.valor; if (gap <= 0) return [];
+  const rv = revisaoDe(c), ini = rv && rv.data > hojeISO() ? rv.data : hojeISO(), out = [];
+  for (let i = 1; i <= reajPassos; i++) out.push({ valor: i === reajPassos ? alvo : arred10(c.valor + gap * i / reajPassos), data: addMeses(ini, reajMeses * (i - 1)) });
+  return out;
+}
+function provaDe(c) {
+  const atual = refAtual(), ini = refAdd(atual, -11), out = [];
+  if (c.inicio) out.push(`estamos juntos há ${tempoDesde(c.inicio)}`);
+  const posts = postagens.filter(p => p.cliente === c.nome && p.ref >= ini && p.ref <= atual).reduce((a, p) => a + (+p.qtd || 0), 0);
+  if (posts) out.push(`${posts} posts publicados no perfil nos últimos 12 meses`);
+  let melhor = null;
+  ranking.forEach(r => (r.clientes || []).forEach(cp => { if (cp.nome === c.nome && cp.pos && (!melhor || cp.pos < melhor.pos)) melhor = { pos: cp.pos, termo: r.termo, data: r.data }; }));
+  if (melhor) out.push(`${melhor.pos}º lugar no Google em “${melhor.termo}”${melhor.data ? ' (medido em ' + fmtDia(melhor.data) + ')' : ''}`);
+  const muds = TEM_ACOES ? gesItens.filter(a => a.cliente === c.nome && ['mudanca','teste','plano'].includes(a.tipo) && (a.tipo !== 'plano' || a.status === 'fechado') && String(a.data) >= addDias(hojeISO(), -365)).length : 0;
+  if (muds) out.push(`${muds} melhorias e testes feitos no perfil, nos anúncios e no site`);
+  const corr = itensCorrigidos(c.nome); if (corr.length) out.push(`${plural(corr.length, 'ponto corrigido', 'pontos corrigidos')} desde a primeira auditoria (${corr.slice(0, 3).map(i => i.nome.toLowerCase()).join(', ')}${corr.length > 3 ? '…' : ''})`);
+  return out;
+}
+function msgReajuste(c) {
+  const p = pacoteDe(c), deg = degrausDe(c), prova = provaDe(c);
+  const servs = p.linhas.map(l => l.rot.toLowerCase()).join(', ');
+  return `Oi, tudo bem?\n\nQueria alinhar com você o valor do nosso trabalho. Hoje você paga ${fmtBRL(c.valor)} por mês por: ${servs}.` +
+    (prova.length ? `\n\nNesse tempo:\n${prova.map(x => '• ' + x).join('\n')}` : '') +
+    `\n\nPelo valor de tabela, esse pacote fica em ${fmtBRL(p.tabela)} por mês. Para não pesar de uma vez, proponho em ${deg.length} etapas:\n${deg.map(d => `• a partir de ${fmtDate(d.data)}: ${fmtBRL(d.valor)}`).join('\n')}\n\nPodemos conversar sobre isso?`;
+}
+function renderReajustes(el) {
+  const lista = listaReajuste(), abaixo = lista.filter(x => x.gap > 0), hoje = hojeISO();
+  setTopo('Preços · reajustes', abaixo.length ? `${plural(abaixo.length, 'cliente paga', 'clientes pagam')} abaixo da tabela` : 'Todos na tabela', '');
+  if (!reajSel || !lista.some(x => x.c.id === reajSel)) reajSel = abaixo.length ? abaixo[0].c.id : (lista[0] ? lista[0].c.id : '');
+  const sel = lista.find(x => x.c.id === reajSel);
+  el.innerHTML = `<div class="cols">
+    <div class="card g3"><div class="card-h"><h2>Lista de reajuste</h2><span class="sub">em ordem da data de revisão</span></div>
+      <div class="scroll-x"><table><thead><tr><th>Cliente</th><th class="tr">Paga</th><th class="tr">Tabela</th><th class="tr">%</th><th>Revisão</th><th>Último reajuste</th></tr></thead><tbody>
+      ${lista.map(x => `<tr class="lin-sel ${x.c.id === reajSel ? 'sel' : ''}" onclick="reajSel='${esc(x.c.id)}';renderPrecos()" tabindex="0" onkeydown="if(event.key==='Enter'){reajSel='${esc(x.c.id)}';renderPrecos()}"><td><b>${esc(x.c.nome)}</b><div class="sub">${esc((x.c.servicos || []).join(', '))} · porte ${PORTES.find(p => p[0] === porteDe(x.c))[1].toLowerCase()}</div></td>
+        <td class="tr mono">${fmtBRL(x.c.valor)}</td><td class="tr mono">${fmtBRL(x.alvo)}</td><td class="tr mono" style="color:${x.pct < 60 ? 'var(--red)' : x.pct < 100 ? 'var(--amber)' : 'var(--green-d)'}">${x.pct}%</td>
+        <td>${x.rev ? `<span style="${x.rev <= hoje ? 'color:var(--red);font-weight:600' : ''}">${fmtDate(x.rev)}</span>` : '—'}</td><td>${x.ult ? fmtDate(x.ult) : '<span class="sub">nunca</span>'}</td></tr>`).join('') || vazio(6)}</tbody></table></div>
+    </div>
+    <div class="g1 lado">${sel ? painelReajuste(sel) : '<div class="empty">Nenhum cliente ativo com valor.</div>'}</div>
+  </div>`;
+}
+function painelReajuste(x) {
+  const c = x.c, deg = degrausDe(c), pc = porteDe(c);
+  return `<div class="panel">
+    <div class="eyebrow">${esc(c.nome)}</div>
+    <h3>${x.gap > 0 ? `De ${fmtBRL(c.valor)} a ${fmtBRL(x.alvo)}` : `Já paga a tabela (${fmtBRL(c.valor)})`}</h3>
+    <div class="sub">Porte do cliente</div>
+    <div class="linha">${PORTES.map(([k, r]) => `<button class="btn-linha ${pc === k ? 'on' : ''}" ${pc === k ? 'aria-pressed="true"' : ''} onclick="mudarPorte('${esc(c.id)}','${k}')">${r} · ${tabela().portes[k]}%</button>`).join('')}</div>
+    ${deg.length ? `<div class="sub" style="margin-top:6px">Etapas</div>
+      <div class="linha"><label class="mini">Quantas<input type="number" min="1" max="6" class="campo" value="${reajPassos}" onchange="reajPassos=Math.min(6,Math.max(1,+this.value||3));renderPrecos()"></label><label class="mini">Meses entre elas<input type="number" min="1" max="12" class="campo" value="${reajMeses}" onchange="reajMeses=Math.min(12,Math.max(1,+this.value||3));renderPrecos()"></label></div>
+      ${deg.map((d, i) => `<div class="degrau ${i ? 'fut' : ''}"><span class="n">${i + 1}</span><div><b class="mono">${fmtBRL(d.valor)}</b><div class="sub">a partir de ${fmtDate(d.data)}</div></div></div>`).join('')}
+      <button class="btn btn-mint" style="margin-top:6px" onclick="copiarMsgReajuste('${esc(c.id)}')">Copiar mensagem de preço novo</button>
+      <button class="btn-linha" onclick="aplicarDegrau('${esc(c.id)}')">Ele aceitou: aplicar ${fmtBRL(deg[0].valor)}</button>` : '<div class="sub">Nada a reajustar pela tabela atual.</div>'}
+    <div class="sub" style="margin-top:6px">Prova de entrega</div>
+    <ul class="prova">${provaDe(c).map(p => `<li>${esc(p)}</li>`).join('') || '<li>Ainda sem registros para mostrar.</li>'}</ul>
+    <button class="btn-linha" onclick="abrirFichaCli('${esc(c.id)}')">Abrir ficha do cliente</button>
+  </div>`;
+}
+async function mudarPorte(id, p) { const c = clientes.find(x => x.id === id); if (!c || !TEM_EXTRA) { if (!TEM_EXTRA) toast('Falta ligar os campos novos no banco.'); return; } await salvarExtra(c, { porte: p }); }
+async function copiarMsgReajuste(id) {
+  const c = clientes.find(x => x.id === id); if (!c) return;
+  const t = msgReajuste(c);
+  try { await navigator.clipboard.writeText(t); toast('Mensagem copiada'); } catch(e) { prompt('Copie a mensagem:', t); }
+}
+// troca o valor mensal: histórico + mensalidade a confirmar com o valor antigo
+async function mudarValorCliente(c, novo, extraMud) {
+  const antes = +c.valor || 0; c.valor = novo;
+  if (TEM_EXTRA && extraMud) c.extra = { ...ex(c), ...extraMud };
+  await persist('clientes', c);
+  await registrarHistoricoAuto(c.nome, `Valor mensal alterado: ${fmtBRL(antes)} → ${fmtBRL(novo)}`);
+  const pend = pagamentos.filter(p => p.cliente === c.nome && p.status === 'Pendente' && p.ref >= refAtual() && (+p.valor || 0) === antes);
+  if (pend.length && confirm(`A mensalidade de ${listaE(pend.map(p => nomeMes(p.ref).toLowerCase()))} ainda está a confirmar com o valor antigo (${fmtBRL(antes)}).\n\nAtualizar para ${fmtBRL(novo)}?`)) {
+    pend.forEach(p => { p.valor = novo; }); await persistMuitos('pagamentos', pend);
+  }
+}
+async function aplicarDegrau(id) {
+  const c = clientes.find(x => x.id === id); if (!c) return;
+  const deg = degrausDe(c); if (!deg.length) return;
+  const prox = deg[1];
+  if (!confirm(`${c.nome} aceitou ${fmtBRL(deg[0].valor)} por mês?\n\nO valor mensal muda agora${prox ? ` e a próxima revisão fica para ${fmtDate(prox.data)} (${fmtBRL(prox.valor)})` : ''}.`)) return;
+  await mudarValorCliente(c, deg[0].valor, { reajuste: prox ? prox.data : addMeses(hojeISO(), 12) });
+  renderAtual(); toast(`Novo valor de ${c.nome}: ${fmtBRL(deg[0].valor)}`, 3000);
+}
+
+// ── Orçamento para possível cliente ──
+function renderOrcamento(el) {
+  const abertos = possiveis.filter(p => p.status !== 'Perdido').sort((a, b) => a.nome.localeCompare(b.nome));
+  setTopo('Preços · orçamento para possível cliente', 'Uma oferta por vez: a entrada e o próximo passo', '');
+  if (!abertos.length) { el.innerHTML = '<div class="empty">Nenhum possível cliente em aberto. Cadastre em Comercial.</div>'; return; }
+  if (!abertos.some(p => p.id === orcSel)) orcSel = abertos[0].id;
+  const p = abertos.find(x => x.id === orcSel), t = tabela(), pct = pctPorte(orcPorte);
+  const entrada = orcQ.q1 && orcQ.q2 ? 'ADS' : 'GMN', info = t.servicos[entrada], valor = Math.round(info.valor * pct);
+  const dica = entrada === 'ADS' ? 'Já aparece bem e quer ligações agora: a entrada é o Google Ads.' + (orcQ.q3 ? '' : ' Sem página para receber o clique, combine a página depois.')
+    : orcQ.q1 ? 'Já aparece, mas o perfil precisa ser consolidado antes de anunciar: entrada pelo Perfil da Empresa.' : 'Ainda não aparece bem no Google: entrada pelo Perfil da Empresa.';
+  const prox = entrada === 'GMN'
+    ? [`Google Ads: ${fmtBRL(Math.round(t.servicos.ADS.valor * pct))}/mês, quando o relatório do perfil mostrar resultado`, ...(orcQ.q3 ? [] : [`Site: criação de ${fmtBRL(t.criacao.de)} a ${fmtBRL(t.criacao.ate)} + ${fmtBRL(Math.round(t.servicos.Site.valor * pct))}/mês de manutenção, se faltar página para o clique`])]
+    : [`Perfil da Empresa: ${fmtBRL(Math.round(t.servicos.GMN.valor * pct))}/mês`, ...(orcQ.q3 ? [] : ['Página de destino para o anúncio'])];
+  const bur = buracosDe(p.nome);
+  const sn = (k, txt) => `<div class="form-group"><label>${txt}</label><div class="sim-nao"><button class="${orcQ[k] ? 'on-sim' : ''}" ${orcQ[k] ? 'aria-pressed="true"' : ''} onclick="orcQ.${k}=true;renderPrecos()">Sim</button><button class="${!orcQ[k] ? 'on-nao' : ''}" ${!orcQ[k] ? 'aria-pressed="true"' : ''} onclick="orcQ.${k}=false;renderPrecos()">Não</button></div></div>`;
+  el.innerHTML = `<div class="cols">
+    <div class="card g1"><div class="form-group"><label for="orc-sel">Possível cliente</label><select id="orc-sel" class="campo" style="width:100%" onchange="orcSel=this.value;orcQ={q1:false,q2:false,q3:false};renderPrecos()">${abertos.map(x => `<option value="${esc(x.id)}" ${x.id === orcSel ? 'selected' : ''}>${esc(x.nome)}</option>`).join('')}</select></div>
+      ${sn('q1', 'Já aparece no Google Maps ou na busca local?')}${sn('q2', 'Já aparece bem e quer mais ligações agora?')}${sn('q3', 'Tem site ou página para receber o clique?')}
+      <div class="aviso av-ok">${esc(dica)}</div>
+      ${bur.length ? `<div class="sub" style="margin-top:10px"><b>Da auditoria:</b> ${esc(bur.slice(0, 6).map(b => b.nome).join(' · '))}</div>` : `<div class="sub" style="margin-top:10px">Sem auditoria. <button class="btn btn-sm" onclick="abrirFicha('${esc(p.nome)}','auditoria')">Fazer auditoria</button></div>`}
+    </div>
+    <div class="panel g1">
+      <div class="eyebrow">Oferta de entrada</div>
+      <h3>${esc(info.nome)}</h3>
+      <div><span class="big">${fmtBRL(valor)}</span> <span class="sub">por mês</span></div>
+      <ul class="prova">${itensInclui(info.inclui).map(i => `<li>${esc(i)}</li>`).join('')}</ul>
+      <div class="linha">${PORTES.map(([k, r]) => `<button class="btn-linha ${orcPorte === k ? 'on' : ''}" ${orcPorte === k ? 'aria-pressed="true"' : ''} onclick="orcPorte='${k}';renderPrecos()">${r} · ${t.portes[k]}%</button>`).join('')}</div>
+      <div class="sub">Tempo estimado: ${String(info.horas).replace('.', ',')} h por mês</div>
+      <div class="eyebrow" style="color:#F5B544;margin-top:6px">Guardado para depois (fora da proposta)</div>
+      <ul class="prova">${prox.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+      <button class="btn btn-mint" onclick="copiarProposta()">Copiar proposta só com esta oferta</button>
+      <button class="btn-linha" onclick="registrarProposta()">Registrar no Comercial: proposta enviada</button>
+    </div>
+  </div>`;
+}
+function dadosOrc() {
+  const p = possiveis.find(x => x.id === orcSel), t = tabela(), entrada = orcQ.q1 && orcQ.q2 ? 'ADS' : 'GMN', info = t.servicos[entrada];
+  return { p, entrada, info, valor: Math.round(info.valor * pctPorte(orcPorte)) };
+}
+function textoProposta() {
+  const { p, info, valor } = dadosOrc(), bur = buracosDe(p.nome);
+  return `Oi, tudo bem? Segue a proposta, direto ao ponto:\n\n` +
+    (bur.length ? `Pelo que vi no seu perfil hoje: ${bur.slice(0, 4).map(b => b.nome.toLowerCase()).join('; ')}.\n\n` : '') +
+    `*${info.nome}*\n${fmtBRL(valor)} por mês\n\nIncluso:\n${itensInclui(info.inclui).map(i => '• ' + i).join('\n')}\n\n` +
+    `Começamos por aqui. Quando o resultado aparecer no relatório, conversamos sobre o próximo passo.\n\nQualquer dúvida, é só responder.`;
+}
+async function copiarProposta() { const t = textoProposta(); try { await navigator.clipboard.writeText(t); toast('Proposta copiada'); } catch(e) { prompt('Copie a proposta:', t); } }
+async function registrarProposta() {
+  const { p, entrada, info, valor } = dadosOrc(); if (!p) return;
+  p.valor = valor; p.servicos = entrada;
+  p.conversa = [p.conversa, `${fmtDia(hojeISO())}: proposta enviada — ${info.nome}, ${fmtBRL(valor)}/mês`].filter(Boolean).join('\n');
+  if (!p.followupData || p.followupData < hojeISO()) { p.followupData = addDias(hojeISO(), 3); p.followupTipo = 'Tentar fechar'; }
+  if (['Prospecção','Aguardando','Dúvida'].includes(p.status)) p.status = 'Negociação';
+  renderAtual();
+  if (await persist('possiveis', p)) toast(`Registrado. Retorno marcado para ${fmtDate(p.followupData)}.`, 3500);
+}
+
+// ═════════════════════════════ FICHA DO CLIENTE ══════════════════════════════
+// Dados, auditoria e onboarding de um cliente ou possível cliente, guardados na tabela "acoes":
+// uma linha "ficha" por nome (dados + onboarding) e uma linha "auditoria" por data.
+const AUD = {
+  gbp: { rot:'Perfil (GBP)', itens:[
+    ['gbp_nao_existe','Perfil não existe','Não aparece no Maps'],
+    ['gbp_nao_reivindicado','Sem acesso ao perfil','Não reivindicado ou você não gerencia'],
+    ['gbp_categoria','Categoria errada ou incompleta','Principal e secundárias'],
+    ['gbp_descricao','Descrição fraca ou vazia','Não diz o serviço e a cidade'],
+    ['gbp_fotos','Poucas fotos ou fotos ruins','Frota, equipe, antes e depois, local'],
+    ['gbp_horario','Horário errado ou ausente','Inclui 24 h, se for o caso'],
+    ['gbp_whatsapp','Sem WhatsApp ou telefone certo','Contato quebrado'],
+    ['gbp_servicos','Serviços não listados','Lista de serviços no perfil'],
+    ['gbp_area','Área de atendimento indefinida','Cidades ou raio'],
+    ['gbp_posts','Sem posts recentes','Sinal de atividade'],
+    ['gbp_avaliacoes_qtd','Poucas avaliações','Menos de 15 a 20 no nicho local'],
+    ['gbp_avaliacoes_resp','Não responde avaliações','Ou responde mal'],
+    ['gbp_avaliacoes_nota','Nota baixa','Abaixo de 4,5'] ] },
+  ads: { rot:'Google Ads', itens:[
+    ['ads_sem_conta','Sem conta de anúncios ou sem acesso','Não existe ou você não gerencia'],
+    ['ads_sem_campanha','Sem campanha ativa','Ou pausada há tempo'],
+    ['ads_sem_conversao','Conversões não configuradas','Ligação, formulário, WhatsApp'],
+    ['ads_sem_extensao','Sem recursos úteis no anúncio','Ligação, local, links'],
+    ['ads_lp_ruim','Página de destino fraca','Lenta, ruim no celular, sem botão'],
+    ['ads_sem_lp','Sem página de destino','Anúncio sem endereço bom'],
+    ['ads_orcamento','Verba irreal ou zerada','Não sustenta um teste'],
+    ['ads_negativas','Sem palavras negativas','Gasta com busca errada'],
+    ['ads_sem_relatorio','Sem leitura de gasto × contato','Não sabe o que funciona'] ] },
+  site: { rot:'Site / LP', itens:[
+    ['site_nao_existe','Não tem site nem LP','Nada para o orgânico nem para o anúncio'],
+    ['site_nao_mobile','Ruim no celular','A maior parte do acesso local'],
+    ['site_lento','Lento','Perde clique e posição'],
+    ['site_sem_cta','Sem WhatsApp ou telefone claro','Não converte'],
+    ['site_sem_servico','Serviço e cidade pouco claros','Título e primeira dobra'],
+    ['site_sem_foto','Sem foto real','Só banco de imagem ou vazio'],
+    ['site_seo','SEO básico ausente','Título, descrição, H1'],
+    ['site_ssl_host','Sem HTTPS ou hospedagem instável','Confiança e indexação'] ] }
+};
+const AUD_ITENS = Object.fromEntries(Object.entries(AUD).flatMap(([a, g]) => g.itens.map(([id, nome, desc]) => [id, { id, nome, desc, area:a }])));
+const ONB = {
+  gbp:  { rot:'Perfil (GBP)', itens:[['on_gbp_gerente','Acesso de gerente no perfil'],['on_gbp_whatsapp','WhatsApp oficial confirmado'],['on_gbp_horario','Horário e área confirmados'],['on_gbp_servicos','Lista de serviços final']] },
+  ads:  { rot:'Google Ads', itens:[['on_ads_acesso','Acesso de administrador na conta'],['on_ads_conv','Conversões combinadas (ligação, WhatsApp)'],['on_ads_verba','Verba mensal combinada'],['on_ads_lp','Endereço de destino definido']] },
+  site: { rot:'Site / LP', itens:[['on_site_acesso','Acesso à hospedagem, domínio e painel'],['on_site_dominio','Domínio e e-mail funcionando'],['on_site_conteudo','Textos e fotos para as páginas']] },
+  mat:  { rot:'Material', itens:[['on_logo','Logo em boa qualidade'],['on_fotos','Fotos de serviço, equipe e local'],['on_tom','Tom de voz e o que não pode falar'],['on_concorrentes','2 ou 3 concorrentes de referência']] }
+};
+const ONB_ITENS = Object.fromEntries(Object.values(ONB).flatMap(g => g.itens.map(([id, nome]) => [id, nome])));
+const AREA_SERV = { gbp:'gbp', ads:'ads', site:'site' };
+let fichaNome = '', fichaAba = 'resumo', fichaChecks = null, fichaChecksDe = '';
+
+function fichaDe(nome) { return gesItens.find(a => a.tipo === 'ficha' && a.cliente === nome) || null; }
+function auditoriasDe(nome) { return gesItens.filter(a => a.tipo === 'auditoria' && a.cliente === nome).sort((a, b) => String(a.data).localeCompare(String(b.data)) || String(a.created_at || '').localeCompare(String(b.created_at || ''))); }
+function ultimaAuditoria(nome) { const l = auditoriasDe(nome); return l[l.length - 1] || null; }
+function buracosDe(nome) { const a = ultimaAuditoria(nome); return a ? Object.keys(a.checks || {}).filter(k => a.checks[k] === 'problema' && AUD_ITENS[k]).map(k => AUD_ITENS[k]) : []; }
+function contaBur(checks, area) { return AUD[area].itens.filter(([id]) => (checks || {})[id] === 'problema').length; }
+function itensCorrigidos(nome) {
+  const l = auditoriasDe(nome); if (l.length < 2) return [];
+  const pri = l[0].checks || {}, ult = l[l.length - 1].checks || {};
+  return Object.keys(pri).filter(k => pri[k] === 'problema' && ult[k] === 'ok' && AUD_ITENS[k]).map(k => AUD_ITENS[k]);
+}
+function onbPendentes(f) { const o = (f && f.onb) || {}; return Object.keys(ONB_ITENS).filter(k => !o[k]); }
+function onbAbertos() { // fichas com onboarding começado e itens faltando
+  return gesItens.filter(a => a.tipo === 'ficha' && a.onbInicio && !a.onbFim && onbPendentes(a).length && clientes.some(c => c.nome === a.cliente && c.status !== 'Inativo'));
+}
+
+function abrirFicha(nome, aba) {
+  if (!TEM_ACOES) { abrirSQL(); toast('A ficha usa a tabela da Gestão. Rode o comando no banco.', 3500); return; }
+  fichaNome = nome; fichaAba = aba || 'resumo'; fichaChecks = null; show('ficha');
+}
+function abrirFichaCli(id) { const c = clientes.find(x => x.id === id); if (c) abrirFicha(c.nome); }
+function abrirFichaPos(id) { const p = possiveis.find(x => x.id === id); if (p) abrirFicha(p.nome); }
+
+function renderFicha() {
+  const c = clientes.find(x => x.nome === fichaNome), p = possiveis.find(x => x.nome === fichaNome);
+  if (!fichaNome || (!c && !p)) { fichaNome = ''; show('clientes'); return; }
+  document.querySelectorAll('#sidenav [data-tela]').forEach(b => b.classList.toggle('active', b.dataset.tela === (c ? 'clientes' : 'comercial')));
+  const ult = ultimaAuditoria(fichaNome);
+  if (fichaChecks === null || fichaChecksDe !== fichaNome) { fichaChecks = { ...((ult && ult.checks) || {}) }; fichaChecksDe = fichaNome; }
+  const tipoTxt = c ? 'Cliente · ' + c.status : 'Possível cliente · ' + p.status;
+  setTopo('Ficha · ' + tipoTxt, fichaNome, `${p ? `<button class="btn" onclick="abrirPrecos('orcamento','${esc(p.id)}')">Orçamento</button>` : ''}<button class="btn" data-n="${esc(fichaNome)}" onclick="abrirGestao(this.dataset.n)">Gestão</button><button class="btn" onclick="irPara('${c ? 'clientes' : 'comercial'}')">Voltar</button>`);
+  const f = fichaDe(fichaNome), nb = AUD_ITENS ? Object.keys(fichaChecks).filter(k => fichaChecks[k] === 'problema').length : 0;
+  const pend = onbPendentes(f).length, tot = Object.keys(ONB_ITENS).length;
+  const diag = ultimoDiagnosticoV23(fichaNome), nd = diag ? Object.values(diag.frentes || {}).filter(x => x && x.status === 'problema').length : 0;
+  const abas = [['resumo','Resumo'],['diagnostico',`Diagnóstico 13 frentes${nd ? ' · ' + nd : ''}`],['auditoria',`Auditoria rápida${nb ? ' · ' + nb : ''}`],['plano','Plano de ação'],['resultados','Resultados'],['historico','Histórico'],['rotinas','Rotinas'],['onboarding',`Onboarding · ${tot - pend}/${tot}`]];
+  document.getElementById('fic-abas').innerHTML = abas.map(([k, r]) => `<button class="${fichaAba === k ? 'active' : ''}" ${fichaAba === k ? 'aria-pressed="true"' : ''} onclick="fichaAba='${k}';renderFicha()">${r}</button>`).join('');
+  const el = document.getElementById('fic-conteudo');
+  if (fichaAba === 'diagnostico') return renderDiagnosticoV23(el, c, p);
+  if (fichaAba === 'auditoria') return renderFichaAuditoria(el, ult);
+  if (fichaAba === 'plano') return renderPlanoV23(el);
+  if (fichaAba === 'resultados') return renderResultadosV232(el,c);
+  if (fichaAba === 'historico') return renderHistoricoFichaV232(el);
+  if (fichaAba === 'rotinas') return renderRotinasFichaV232(el,c);
+  if (fichaAba === 'onboarding') return renderFichaOnb(el, f);
+  renderFichaResumo(el, c, p, f, ult);
+}
+
+function renderFichaResumo(el, c, p, f, ult) {
+  const ch = (ult && ult.checks) || {};
+  el.innerHTML = `<div class="cols">
+    <div class="card g3"><div class="card-h"><h2>Dados para a auditoria e a proposta</h2></div>
+      <div class="form-row">
+        <div class="form-group"><label for="fic-cidade">Cidade</label><input id="fic-cidade" class="campo" style="width:100%" value="${esc((f && f.cidade) || '')}" placeholder="Ex: Campos dos Goytacazes"></div>
+        <div class="form-group"><label for="fic-serv">Serviço principal</label><input id="fic-serv" class="campo" style="width:100%" value="${esc((f && f.servPrincipal) || '')}" placeholder="Ex: reboque 24 h"></div>
+      </div>
+      <div class="form-group"><label for="fic-conc">Concorrente de referência</label><input id="fic-conc" class="campo" style="width:100%" value="${esc((f && f.concorrente) || '')}" placeholder="Quem aparece no topo do Google"></div>
+      <div class="form-group"><label for="fic-obs">Observação</label><textarea id="fic-obs" class="campo" style="width:100%;height:auto;padding:10px 13px" rows="2">${esc((f && f.obs) || '')}</textarea></div>
+      <button class="btn btn-pri" onclick="salvarFichaDados()">Salvar dados</button>
+    </div>
+    <div class="g1 lado">
+      <div class="card"><div class="card-h"><h2>Auditoria</h2><span class="sub">${ult ? 'última em ' + fmtDate(ult.data) : 'ainda não feita'}</span></div>
+        <div class="tiles-p">${Object.keys(AUD).map(a => `<div class="tile-p"><span class="eyebrow">${AUD[a].rot}</span><b class="${contaBur(ch, a) ? 'r' : ''}">${ult ? contaBur(ch, a) : '—'}</b><span class="sub">problemas</span></div>`).join('')}</div>
+        <button class="btn btn-fill" style="margin-top:12px" onclick="fichaAba='auditoria';renderFicha()">${ult ? 'Ver ou refazer' : 'Fazer auditoria'}</button></div>
+      ${c ? cartaoPacote(c) : ''}
+    </div>
+  </div>`;
+}
+async function gravarFicha(mud) {
+  let f = fichaDe(fichaNome);
+  if (!f) { f = { id: uid(), cliente: fichaNome, tipo: 'ficha', servico: 'geral', status: 'fechado', data: hojeISO(), texto: 'Ficha do cliente', onb: {} }; gesItens.push(f); }
+  Object.assign(f, mud);
+  const ok = await persist('acoes', f); renderAtual(); return ok;
+}
+async function salvarFichaDados() {
+  const v = id => document.getElementById(id).value.trim();
+  if (await gravarFicha({ cidade: v('fic-cidade'), servPrincipal: v('fic-serv'), concorrente: v('fic-conc'), obs: v('fic-obs') })) toast('Dados salvos!');
+}
+
+// ── auditoria ──
+function renderFichaAuditoria(el, ult) {
+  const lista = auditoriasDe(fichaNome), ant = lista.length ? lista[lista.length - 1] : null;
+  const mudou = ant ? Object.keys(AUD_ITENS).filter(k => (ant.checks || {})[k] !== fichaChecks[k]).length : 0;
+  const ehNovo = !ant || ant.data !== hojeISO();
+  el.innerHTML = `<div class="aviso av-amb no-print"><span>Toque no item: <b>problema</b> → <b>OK</b> → em branco. Marque só o que viu; o resto pode ficar em branco.</span></div>
+  <div class="cols">${Object.keys(AUD).map(a => `<div class="card g1"><div class="card-h"><h2>${AUD[a].rot}</h2><span class="sub">${contaBur(fichaChecks, a)} problema${contaBur(fichaChecks, a) === 1 ? '' : 's'}</span></div>
+    ${AUD[a].itens.map(([id, nome, desc]) => { const st = fichaChecks[id]; return `<button class="aud-it ${st || ''}" onclick="cicloAud('${id}')" aria-label="${esc(nome)}: ${st === 'problema' ? 'problema' : st === 'ok' ? 'ok' : 'não marcado'}"><span class="aud-ck"></span><span><b>${esc(nome)}</b><small>${esc(desc)}</small></span></button>`; }).join('')}</div>`).join('')}</div>
+  <div class="cols">
+    <div class="card g3"><div class="card-h"><h2>Mensagem de diagnóstico</h2><button class="btn btn-sm" onclick="copiarDiag()">Copiar</button></div><div class="msg-box" id="fic-diag">${esc(textoDiag())}</div></div>
+    <div class="card g1"><div class="card-h"><h2>Salvar</h2></div>
+      <p class="sub" style="margin-bottom:10px">${ant ? `Última auditoria em ${fmtDate(ant.data)}. ${mudou ? plural(mudou, 'item mudou', 'itens mudaram') + ' desde ela.' : 'Nada mudou desde ela.'}` : 'Primeira auditoria deste nome.'} Cada data fica guardada para comparar depois.</p>
+      <button class="btn btn-pri btn-fill" onclick="salvarAuditoria()">${ehNovo ? 'Salvar auditoria de hoje' : 'Atualizar auditoria de hoje'}</button>
+      <button class="btn btn-fill" style="margin-top:8px" onclick="buracosParaPlanos()">Transformar problemas em planos</button>
+      ${lista.length > 1 ? `<div class="sub" style="margin-top:12px"><b>Desde a primeira (${fmtDate(lista[0].data)}):</b> ${itensCorrigidos(fichaNome).length} corrigidos.</div>` : ''}
+      ${lista.length ? `<div class="sub" style="margin-top:8px">Auditorias: ${lista.map(a => fmtDate(a.data)).join(', ')}</div>` : ''}
+    </div>
+  </div>`;
+}
+function cicloAud(id) { const s = fichaChecks[id]; if (!s) fichaChecks[id] = 'problema'; else if (s === 'problema') fichaChecks[id] = 'ok'; else delete fichaChecks[id]; renderFicha(); }
+function textoDiag() {
+  const f = fichaDe(fichaNome) || {}, bur = Object.keys(fichaChecks).filter(k => fichaChecks[k] === 'problema' && AUD_ITENS[k]).map(k => AUD_ITENS[k]);
+  if (!bur.length) return 'Marque os problemas encontrados para montar a mensagem.';
+  return `Oi, tudo bem? Dei uma olhada em como ${fichaNome} aparece no Google${f.cidade ? ' em ' + f.cidade : ''}${f.servPrincipal ? ' para ' + f.servPrincipal : ''}.\n\nEncontrei ${plural(bur.length, 'ponto', 'pontos')} que fazem perder cliente:\n${bur.map((b, i) => `${i + 1}. ${b.nome}`).join('\n')}` +
+    (f.concorrente ? `\n\nPara comparar: ${f.concorrente} aparece melhor em vários desses pontos.` : '') + `\n\nQuer que eu te mostre por onde começar?`;
+}
+async function copiarDiag() { const t = textoDiag(); try { await navigator.clipboard.writeText(t); toast('Mensagem copiada'); } catch(e) { prompt('Copie a mensagem:', t); } }
+async function salvarAuditoria() {
+  const hoje = hojeISO(), lista = auditoriasDe(fichaNome);
+  let a = lista.find(x => x.data === hoje);
+  const resumo = Object.keys(AUD).map(k => `${AUD[k].rot} ${contaBur(fichaChecks, k)}`).join(' · ');
+  if (!a) { a = { id: uid(), cliente: fichaNome, tipo: 'auditoria', servico: 'geral', status: 'fechado', data: hoje }; gesItens.push(a); }
+  a.checks = { ...fichaChecks }; a.texto = `Auditoria: ${resumo} problemas`;
+  const ok = await persist('acoes', a);
+  if (!historico.some(h => h.cliente === fichaNome && h.data === hoje && /^Auditoria:/.test(h.texto || '')) && clientes.some(c => c.nome === fichaNome)) await registrarHistoricoAuto(fichaNome, a.texto);
+  renderAtual(); if (ok) toast('Auditoria salva!');
+}
+async function buracosParaPlanos() {
+  const bur = Object.keys(fichaChecks).filter(k => fichaChecks[k] === 'problema' && AUD_ITENS[k]).map(k => AUD_ITENS[k]);
+  if (!bur.length) { toast('Nenhum problema marcado.'); return; }
+  const ja = new Set(gesItens.filter(a => a.cliente === fichaNome && a.tipo === 'plano' && gesAberto(a)).map(a => a.texto));
+  const novos = bur.filter(b => !ja.has('Corrigir: ' + b.nome)).map(b => ({ id: uid(), cliente: fichaNome, servico: AREA_SERV[b.area], tipo: 'plano', data: hojeISO(), texto: 'Corrigir: ' + b.nome, status: 'aberto', quando: null, origemAud: b.id }));
+  if (!novos.length) { toast('Esses problemas já estão nos planos.'); return; }
+  if (!confirm(`Criar ${plural(novos.length, 'plano', 'planos')} na Gestão para ${fichaNome}?\n\n${novos.map(n => '• ' + n.texto).join('\n')}\n\nVocê põe as datas depois, na Gestão.`)) return;
+  gesItens.push(...novos); await persistMuitos('acoes', novos); renderAtual(); atualizarContaGestao();
+  toast(`${plural(novos.length, 'plano criado', 'planos criados')} na Gestão.`, 3000);
+}
+
+
+// ═════════════════════ V2.3 · DIAGNÓSTICO INTEGRADO ═════════════════════
+// Mantém o diagnóstico dentro da tabela "acoes" (JSON), sem exigir migração de banco.
+const DIAG_V23 = [
+  {id:'intencao', rot:'1. Pesquisa local e intenção', serv:['SEO','GMN','ADS'], svc:'seo', itens:'Termos locais, intenção de busca, serviço prioritário e cidade/bairro.', rec:'Mapear palavras-chave locais por intenção e definir a prioridade de serviço/localidade.'},
+  {id:'gbp', rot:'2. Perfil da Empresa (GBP)', serv:['GMN'], svc:'gbp', itens:'Categorias, serviços, descrição, horário, contato, área, fotos e atividade.', rec:'Corrigir e completar os elementos prioritários do Perfil da Empresa.'},
+  {id:'reviews', rot:'3. Avaliações e reputação', serv:['GMN'], svc:'gbp', itens:'Quantidade, nota, frequência, respostas e processo de solicitação.', rec:'Implantar rotina de geração e resposta de avaliações com prova de atendimento.'},
+  {id:'concorrentes', rot:'4. Concorrentes e presença local', serv:['SEO','GMN','ADS'], svc:'seo', itens:'Quem domina Maps/orgânico/anúncios, diferenciais, páginas e sinais de autoridade.', rec:'Comparar os principais concorrentes e registrar lacunas que podem ser exploradas.'},
+  {id:'conversao', rot:'5. Site/LP e conversão', serv:['Site','ADS','SEO'], svc:'site', itens:'Oferta, primeira dobra, CTA, WhatsApp, telefone, confiança e aderência à busca.', rec:'Melhorar a página para transformar tráfego em contato com CTA e proposta claros.'},
+  {id:'seo_tecnico', rot:'6. SEO técnico e indexação', serv:['SEO','Site'], svc:'seo', itens:'Indexação, titles, descriptions, H1, canonicals, sitemap, robots e erros técnicos.', rec:'Corrigir os bloqueios técnicos que limitam rastreamento, indexação e relevância.'},
+  {id:'paginas', rot:'7. Serviços e localidades', serv:['SEO','Site'], svc:'seo', itens:'Cobertura de serviços, cidades/bairros, intenção, conteúdo único e arquitetura.', rec:'Criar ou melhorar páginas específicas para serviços e localidades prioritárias.'},
+  {id:'conteudo', rot:'8. Conteúdo, imagens e provas', serv:['SEO','Site','GMN','Social'], svc:'seo', itens:'Fotos reais, casos, equipe, frota, antes/depois, conteúdo útil e sinais de confiança.', rec:'Adicionar provas reais e conteúdo que demonstre experiência e capacidade de entrega.'},
+  {id:'ads', rot:'9. Google Ads', serv:['ADS'], svc:'ads', itens:'Campanhas, grupos, termos, negativas, anúncios, recursos, geografia, verba e LP.', rec:'Reestruturar ou otimizar campanhas com foco nos termos e serviços que geram contatos.'},
+  {id:'mensuracao_ads', rot:'10. Conversões, CPL e qualidade dos leads', serv:['ADS'], svc:'ads', itens:'Conversões, WhatsApp, ligações, formulários, CPL, origem e qualidade dos contatos.', rec:'Validar mensuração e usar CPL/qualidade para orientar orçamento e otimizações.'},
+  {id:'ia_schema', rot:'11. IA e dados estruturados', serv:['SEO','Site'], svc:'seo', itens:'Schema, entidade, NAP, serviços, FAQs, clareza factual e conteúdo citável.', rec:'Estruturar dados e informações da empresa para mecanismos de busca e respostas por IA.'},
+  {id:'performance', rot:'12. Performance, mobile e acessibilidade', serv:['Site','SEO','ADS'], svc:'site', itens:'Velocidade, Core Web Vitals, responsividade, legibilidade, botões e estabilidade.', rec:'Corrigir os principais gargalos de mobile e performance que afetam conversão e busca.'},
+  {id:'medicao', rot:'13. Mensuração e melhoria contínua', serv:['GMN','ADS','Site','SEO','Social'], svc:'geral', itens:'Baseline, ranking, tráfego, leads, ações executadas, resultados e próxima revisão.', rec:'Definir indicadores, baseline e periodicidade de revisão para medir evolução.'}
+];
+function diagnosticosV23(nome){ return gesItens.filter(a=>a.tipo==='diagnostico'&&a.cliente===nome).sort((a,b)=>String(a.data||'').localeCompare(String(b.data||''))||String(a.created_at||'').localeCompare(String(b.created_at||''))); }
+function ultimoDiagnosticoV23(nome){ const l=diagnosticosV23(nome); return l[l.length-1]||null; }
+function diagAplicavelV23(d,c){ if(!c) return true; const sv=clienteServicosCanon(c); return !d.serv.length || d.serv.some(x=>sv.includes(svcCanon(x))); }
+function diagPriorV23(x){ if(!x||x.status!=='problema') return 0; const i=+(x.impacto||3),u=+(x.urgencia||3),cf=+(x.confianca||2),e=Math.max(1,+(x.esforco||3)); return Math.round((i*u*cf/e)*10)/10; }
+function diagClasseV23(x){ const n=diagPriorV23(x); return n>=25?'p-red':n>=12?'p-amb':'p-green'; }
+function diagValV23(id,campo,def){ const el=document.getElementById('d23-'+id+'-'+campo); return el ? el.value : def; }
+function coletarDiagnosticoV23(){ const out={}; DIAG_V23.forEach(d=>{ out[d.id]={status:diagValV23(d.id,'status','verificar'),impacto:+diagValV23(d.id,'impacto',3),urgencia:+diagValV23(d.id,'urgencia',3),confianca:+diagValV23(d.id,'confianca',2),esforco:+diagValV23(d.id,'esforco',3),evidencia:diagValV23(d.id,'evidencia','').trim(),achado:diagValV23(d.id,'achado','').trim(),recomendacao:diagValV23(d.id,'recomendacao',d.rec).trim()}; }); return out; }
+function renderDiagnosticoV23(el,c,p){
+  const ult=ultimoDiagnosticoV23(fichaNome), fr=(ult&&ult.frentes)||{};
+  const probs=Object.values(fr).filter(x=>x&&x.status==='problema').length;
+  const avali=Object.values(fr).filter(x=>x&&x.status&&x.status!=='verificar').length;
+  el.innerHTML=`<div class="faixa"><span class="eyebrow">Diagnóstico V2.3</span><span style="flex:1">13 frentes conectadas à Central de Trabalho. Registre evidência antes de transformar uma hipótese em prioridade.</span><span class="pill ${probs?'p-amb':'p-green'}">${avali}/13 avaliadas · ${probs} problemas</span></div>
+  <div class="aviso av-info no-print"><span><b>Fluxo:</b> avaliar → registrar evidência → pontuar → salvar → criar somente as tarefas prioritárias.</span><button class="btn btn-sm" onclick="salvarDiagnosticoV23()">Salvar diagnóstico</button></div>
+  <div class="cols">${DIAG_V23.map(d=>{ const x=fr[d.id]||{}, ap=diagAplicavelV23(d,c), pr=diagPriorV23(x); return `<div class="card g1" style="${ap?'':'opacity:.72'}"><div class="card-h"><div><h2>${esc(d.rot)}</h2><span class="sub">${esc(d.itens)}</span></div>${x.status==='problema'?`<span class="pill ${diagClasseV23(x)}">${pr}</span>`:`<span class="pill">${ap?'Avaliar':'Fora do pacote'}</span>`}</div>
+    <div class="form-row"><div class="form-group"><label>Status</label><select class="campo" id="d23-${d.id}-status"><option value="verificar" ${!x.status||x.status==='verificar'?'selected':''}>A verificar</option><option value="ok" ${x.status==='ok'?'selected':''}>OK</option><option value="problema" ${x.status==='problema'?'selected':''}>Problema</option><option value="na" ${x.status==='na'?'selected':''}>Não aplicável</option></select></div><div class="form-group"><label>Impacto · Urgência</label><div style="display:flex;gap:6px"><select class="campo" id="d23-${d.id}-impacto">${[1,2,3,4,5].map(n=>`<option ${+(x.impacto||3)===n?'selected':''}>${n}</option>`).join('')}</select><select class="campo" id="d23-${d.id}-urgencia">${[1,2,3,4,5].map(n=>`<option ${+(x.urgencia||3)===n?'selected':''}>${n}</option>`).join('')}</select></div></div></div>
+    <div class="form-row"><div class="form-group"><label>Confiança</label><select class="campo" id="d23-${d.id}-confianca">${[1,2,3].map(n=>`<option ${+(x.confianca||2)===n?'selected':''}>${n}</option>`).join('')}</select></div><div class="form-group"><label>Esforço</label><select class="campo" id="d23-${d.id}-esforco">${[1,2,3,4,5].map(n=>`<option ${+(x.esforco||3)===n?'selected':''}>${n}</option>`).join('')}</select></div></div>
+    <div class="form-group"><label>Evidência / fonte</label><textarea class="campo" id="d23-${d.id}-evidencia" rows="2" style="width:100%;height:auto;padding:10px 13px" placeholder="URL, relatório, observação, dado medido...">${esc(x.evidencia||'')}</textarea></div>
+    <div class="form-group"><label>Achado</label><textarea class="campo" id="d23-${d.id}-achado" rows="2" style="width:100%;height:auto;padding:10px 13px" placeholder="O que foi encontrado?">${esc(x.achado||'')}</textarea></div>
+    <div class="form-group"><label>Recomendação</label><textarea class="campo" id="d23-${d.id}-recomendacao" rows="2" style="width:100%;height:auto;padding:10px 13px">${esc(x.recomendacao||d.rec)}</textarea></div>
+    <div class="acoes no-print"><button class="btn btn-sm" onclick="criarTarefaDiagV23('${d.id}')">Criar tarefa</button></div></div>`; }).join('')}</div>
+  <div class="card"><div class="card-h"><h2>Ações do diagnóstico</h2><span class="sub">Evite transformar todos os achados em tarefas de uma vez.</span></div><div class="acoes no-print"><button class="btn btn-pri" onclick="salvarDiagnosticoV23()">Salvar diagnóstico</button><button class="btn" onclick="criarTopDiagV23()">Criar até 3 tarefas prioritárias</button></div>${ult?`<div class="sub" style="margin-top:10px">Último diagnóstico salvo: ${fmtDate(ult.data)} · histórico: ${diagnosticosV23(fichaNome).length}</div>`:''}</div>`;
+}
+async function salvarDiagnosticoV23(silencioso){
+  const hoje=hojeISO(), fr=coletarDiagnosticoV23(); let a=diagnosticosV23(fichaNome).find(x=>x.data===hoje);
+  if(!a){ a={id:uid(),cliente:fichaNome,tipo:'diagnostico',servico:'geral',status:'fechado',data:hoje,texto:'Diagnóstico 13 frentes'}; gesItens.push(a); }
+  a.frentes=fr; const ps=Object.values(fr).filter(x=>x.status==='problema'); a.texto=`Diagnóstico: ${ps.length} problema${ps.length===1?'':'s'} em 13 frentes`; a.scoreDiagnostico=ps.reduce((z,x)=>z+diagPriorV23(x),0);
+  const ok=await persist('acoes',a); if(!silencioso){ renderAtual(); if(ok) toast('Diagnóstico salvo.'); } return ok;
+}
+async function criarTarefaDiagV23(id){
+  const d=DIAG_V23.find(x=>x.id===id); if(!d)return; const fr=coletarDiagnosticoV23(),x=fr[id];
+  if(x.status!=='problema'){ toast('Marque esta frente como Problema antes de criar a tarefa.'); return; }
+  if(!x.evidencia){ if(!confirm('Esta frente ainda não tem evidência registrada. Criar tarefa mesmo assim?')) return; }
+  const texto=x.recomendacao||x.achado||d.rec; if(!texto){toast('Informe uma recomendação concreta.');return;}
+  const dup=gesItens.some(a=>gesAberto(a)&&a.origem==='diagnostico'&&a.cliente===fichaNome&&a.origemFrente===id&&a.texto===texto); if(dup){toast('Essa tarefa já está aberta na Central.');return;}
+  await salvarDiagnosticoV23(true);
+  const a={id:uid(),cliente:fichaNome,servico:d.svc,tipo:'plano',data:hojeISO(),texto,status:'aberto',statusOperacional:'a_fazer',origem:'diagnostico',schemaVersion:2,origemFrente:id,impacto:x.impacto,urgencia:x.urgencia,confianca:x.confianca,esforco:x.esforco,estimativaMin:30,evidencia:x.evidencia,achado:x.achado};
+  gesItens.push(a); const ok=await persist('acoes',a); atualizarContaGestao(); renderAtual(); if(ok)toast('Tarefa criada na Central de Trabalho.');
+}
+async function criarTopDiagV23(){
+  const fr=coletarDiagnosticoV23(); const cand=DIAG_V23.map(d=>({d,x:fr[d.id],p:diagPriorV23(fr[d.id])})).filter(z=>z.x.status==='problema').sort((a,b)=>b.p-a.p);
+  if(!cand.length){toast('Nenhum problema marcado.');return;}
+  await salvarDiagnosticoV23(true); let n=0;
+  for(const z of cand){ if(n>=3)break; const texto=z.x.recomendacao||z.x.achado||z.d.rec; const dup=gesItens.some(a=>gesAberto(a)&&a.origem==='diagnostico'&&a.cliente===fichaNome&&a.origemFrente===z.d.id&&a.texto===texto); if(dup)continue; const a={id:uid(),cliente:fichaNome,servico:z.d.svc,tipo:'plano',data:hojeISO(),texto,status:'aberto',statusOperacional:'a_fazer',origem:'diagnostico',schemaVersion:2,origemFrente:z.d.id,impacto:z.x.impacto,urgencia:z.x.urgencia,confianca:z.x.confianca,esforco:z.x.esforco,estimativaMin:30,evidencia:z.x.evidencia,achado:z.x.achado}; gesItens.push(a); await persist('acoes',a); n++; }
+  atualizarContaGestao(); renderAtual(); toast(n?`${n} tarefa${n===1?'':'s'} prioritária${n===1?'':'s'} criada${n===1?'':'s'}.`:'As prioridades já estão abertas na Central.');
+}
+function renderPlanoV23(el){
+  const l=gesItens.filter(a=>a.cliente===fichaNome&&gesAberto(a)&&!['ficha','auditoria','diagnostico','contato'].includes(a.tipo)).sort((a,b)=>prioridadeAcao(b)-prioridadeAcao(a));
+  const hist=gesItens.filter(a=>a.cliente===fichaNome&&a.origem==='diagnostico'&&opStatus(a)==='concluida').slice(-5).reverse();
+  el.innerHTML=`<div class="faixa"><span class="eyebrow">Plano de ação</span><span style="flex:1">Somente trabalho decidido entra aqui. Diagnóstico identifica; plano executa.</span><button class="btn btn-sm" data-n="${esc(fichaNome)}" onclick="abrirGestao(this.dataset.n)">Abrir Central</button></div><div class="cols"><div class="card g3"><div class="card-h"><h2>Em aberto</h2><span class="sub">${l.length} ações</span></div>${l.length?l.map(a=>`<div class="fila-l"><div class="quem"><b>${esc(a.texto)}</b><span class="sub">${esc(SERV_ROT[a.servico]||'Geral')} · ${rotOp(a)}${a.origem?' · '+esc(a.origem):''}</span></div><span class="pill ${prioridadeAcao(a)>=80?'p-red':prioridadeAcao(a)>=60?'p-amb':'p-green'}">${prioridadeAcao(a)}/100</span></div>`).join(''):vazioG('Nenhuma ação aberta para este cliente.')}</div><div class="card g1"><div class="card-h"><h2>Concluídas do diagnóstico</h2></div>${hist.length?hist.map(a=>`<div class="fila-l"><div class="quem"><b>${esc(curto(a.texto,60))}</b><span class="sub">${a.concluidoEm?fmtDate(String(a.concluidoEm).slice(0,10)):''}</span></div></div>`).join(''):'<div class="sub">Ainda não há tarefas de diagnóstico concluídas.</div>'}</div></div>`;
+}
+
+
+// V2.3.4 · Integração Apps Script → JSON → Sistema NTN / Looker Studio
+const AJ_INTEGRACAO_ID='integracao_resultados_v1';
+function integracaoRow(){let r=ajustes.find(x=>x.id===AJ_INTEGRACAO_ID);if(!r){r={id:AJ_INTEGRACAO_ID,dados:{schemaVersion:1,registros:[]}};ajustes.push(r)};r.dados=r.dados||{};r.dados.registros=Array.isArray(r.dados.registros)?r.dados.registros:[];return r;}
+function registrosIntegracao(cliente){return integracaoRow().dados.registros.filter(r=>!cliente||r.cliente===cliente).sort((a,b)=>String(b.competencia||'').localeCompare(String(a.competencia||'')));}
+function numeroBR(v){const n=+v;return Number.isFinite(n)?n:null;}
+function normalizarResultadoImportado(o){
+ if(!o||typeof o!=='object')throw new Error('JSON inválido.');
+ const cliente=String(o.cliente||fichaNome||'').trim(), competencia=String(o.competencia||o.mes||'').slice(0,7);
+ if(!cliente)throw new Error('Informe o campo cliente.'); if(!/^\d{4}-\d{2}$/.test(competencia))throw new Error('Use competencia no formato AAAA-MM.');
+ const copia=JSON.parse(JSON.stringify(o)); copia.cliente=cliente;copia.competencia=competencia;copia.schemaVersion=1;copia.importadoEm=new Date().toISOString();return copia;
+}
+async function salvarResultadoIntegrado(obj){const r=integracaoRow(), reg=normalizarResultadoImportado(obj), i=r.dados.registros.findIndex(x=>x.cliente===reg.cliente&&x.competencia===reg.competencia);if(i>=0)r.dados.registros[i]=reg;else r.dados.registros.push(reg);await persist('ajustes',r);return reg;}
+async function importarJSONResultadoV233(){
+ const txt=prompt('Cole o JSON gerado pelo Apps Script para '+fichaNome+'.\n\nCampos mínimos: cliente e competencia (AAAA-MM).'); if(txt===null)return;
+ try{const obj=JSON.parse(txt),reg=await salvarResultadoIntegrado(obj);toast('Dados de '+reg.competencia+' importados.');renderFicha();}catch(e){alert('Não foi possível importar:\n'+e.message);}
+}
+function importarArquivoResultadoV233(){const inp=document.createElement('input');inp.type='file';inp.accept='.json,application/json';inp.onchange=()=>{const f=inp.files&&inp.files[0];if(!f)return;const rd=new FileReader();rd.onload=async()=>{try{const obj=JSON.parse(rd.result),reg=await salvarResultadoIntegrado(obj);toast('Dados de '+reg.competencia+' importados.');renderFicha();}catch(e){alert('Não foi possível importar:\n'+e.message)}};rd.readAsText(f,'utf-8')};inp.click();}
+function baixarModeloIntegracaoV233(){const o={schemaVersion:1,cliente:fichaNome,competencia:refAtual(),google_ads:{impressoes:0,cliques:0,ctr:0,custo:0,conversoes:0,cpl:0},gbp:{visualizacoes:0,ligacoes:0,cliques_site:0,rotas:0},seo:{cliques:0,impressoes:0,ctr:0,posicao_media:0},site:{sessoes:0,conversoes:0,taxa_conversao:0},resumo:{destaques:[],problemas:[],oportunidades:[]}};baixar('modelo_integracao_'+slug(fichaNome)+'_'+refAtual()+'.json',JSON.stringify(o,null,2),'application/json');}
+function achatar(obj,prefix='',out={}){Object.entries(obj||{}).forEach(([k,v])=>{const nk=prefix?prefix+'_'+k:k;if(v!==null&&typeof v==='object'&&!Array.isArray(v))achatar(v,nk,out);else out[nk]=Array.isArray(v)?v.join(' | '):v});return out;}
+function exportarLookerV233(){const regs=registrosIntegracao();if(!regs.length){alert('Ainda não há dados integrados.');return;}const rows=regs.map(r=>achatar(r)), cols=[...new Set(rows.flatMap(r=>Object.keys(r)))];const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';const csv='\ufeff'+[cols.map(q).join(';'),...rows.map(r=>cols.map(c=>q(r[c])).join(';'))].join('\n');baixar('ntn_resultados_looker.csv',csv,'text/csv;charset=utf-8');}
+async function excluirResultadoV233(comp){if(!confirm('Excluir os dados importados de '+comp+' para '+fichaNome+'?'))return;const r=integracaoRow();r.dados.registros=r.dados.registros.filter(x=>!(x.cliente===fichaNome&&x.competencia===comp));await persist('ajustes',r);renderFicha();}
+function metricaCardsV233(reg){if(!reg)return '';const grupos=[['Google Ads',reg.google_ads],['Perfil da Empresa',reg.gbp],['SEO',reg.seo],['Site',reg.site]].filter(x=>x[1]&&typeof x[1]==='object');return grupos.map(([nome,g])=>`<div class="card"><div class="eyebrow">${esc(nome)}</div><div class="metricas-v233">${Object.entries(g).filter(([,v])=>v!==null&&v!==''&&typeof v!=='object').slice(0,8).map(([k,v])=>`<div><small>${esc(k.replaceAll('_',' '))}</small><b>${esc(String(v))}</b></div>`).join('')}</div></div>`).join('');}
+function renderResultadosV232(el,c){
+ const ref=refAtual(), hs=historico.filter(h=>h.cliente===fichaNome&&String(h.data).slice(0,7)===ref), mins=hs.reduce((z,h)=>z+(+h.minutos||0),0);
+ const concl=gesItens.filter(a=>a.cliente===fichaNome&&opStatus(a)==='concluida'&&String(a.fechadoEm||a.data).slice(0,7)===ref);
+ const rk=ranking.filter(r=>r.cliente===fichaNome).sort((a,b)=>String(b.data||b.ref||'').localeCompare(String(a.data||a.ref||''))).slice(0,5);
+ const posts=postagens.filter(p=>p.cliente===fichaNome&&String(p.data||'').slice(0,7)===ref).length;
+ const regs=registrosIntegracao(fichaNome), reg=regs.find(x=>x.competencia===ref)||regs[0]||null;
+ const resumo=reg&&reg.resumo||{};
+ el.innerHTML=`<div class="faixa"><span class="eyebrow">Resultados · ${refLabel(ref)}</span><span style="flex:1">Dados operacionais do sistema + dados estruturados do Apps Script.</span><button class="btn btn-sm" onclick="importarJSONResultadoV233()">Colar JSON</button><button class="btn btn-sm" onclick="importarArquivoResultadoV233()">Importar arquivo</button><button class="btn btn-sm" onclick="baixarModeloIntegracaoV233()">Modelo JSON</button><button class="btn btn-sm" onclick="exportarLookerV233()">CSV Looker</button></div>
+ <div class="kpis"><div class="kpi"><small>Tarefas concluídas</small><b>${concl.length}</b></div><div class="kpi"><small>Tempo registrado</small><b>${fmtMin(mins)}</b></div><div class="kpi"><small>Postagens</small><b>${posts}</b></div><div class="kpi"><small>Dados externos</small><b>${reg?esc(reg.competencia):'—'}</b></div></div>
+ ${reg?`<div class="faixa faixa-ok"><span class="eyebrow">Base integrada</span><span style="flex:1">${esc(reg.cliente)} · competência ${esc(reg.competencia)} · importado ${reg.importadoEm?new Date(reg.importadoEm).toLocaleString('pt-BR'):'—'}</span><button class="btn btn-sm" onclick="excluirResultadoV233('${esc(reg.competencia)}')">Excluir competência</button></div><div class="integracao-grid">${metricaCardsV233(reg)}</div>${(resumo.destaques||[]).length||(resumo.problemas||[]).length||(resumo.oportunidades||[]).length?`<div class="cols"><div class="card g1"><h2>Destaques</h2>${(resumo.destaques||[]).map(x=>`<div class="fila-l">${esc(x)}</div>`).join('')||vazioG('Sem destaques.')}</div><div class="card g1"><h2>Pontos de atenção</h2>${(resumo.problemas||[]).map(x=>`<div class="fila-l">${esc(x)}</div>`).join('')||vazioG('Sem problemas.')}</div><div class="card g1"><h2>Oportunidades</h2>${(resumo.oportunidades||[]).map(x=>`<div class="fila-l">${esc(x)}</div>`).join('')||vazioG('Sem oportunidades.')}</div></div>`:''}`:`<div class="aviso av-info"><span><b>Integração preparada.</b> Importe o JSON produzido pelo Apps Script para esta competência. O sistema guarda por cliente + mês e pode exportar uma base plana para o Looker Studio.</span></div>`}
+ <div class="cols"><div class="card g2"><h2>Entregas concluídas</h2>${concl.length?concl.slice(-12).reverse().map(a=>`<div class="fila-l"><div class="quem"><b>${esc(a.texto)}</b><span class="sub">${esc(SERV_ROT[svcCanon(a.servico)]||'Geral')} · ${a.minutosReal?fmtMin(a.minutosReal):'sem tempo'}</span></div></div>`).join(''):vazioG('Nenhuma tarefa concluída neste mês.')}</div><div class="card g2"><h2>Histórico de competências importadas</h2>${regs.length?regs.slice(0,12).map(r=>`<div class="fila-l"><div class="quem"><b>${esc(r.competencia)}</b><span class="sub">Apps Script · ${r.importadoEm?new Date(r.importadoEm).toLocaleDateString('pt-BR'):'importado'}</span></div></div>`).join(''):vazioG('Nenhum JSON importado ainda.')}</div></div>`;
+}
+
+function renderHistoricoFichaV232(el){
+ const hs=historico.filter(h=>h.cliente===fichaNome).sort((a,b)=>String(b.data).localeCompare(String(a.data))).slice(0,100);
+ el.innerHTML=`<div class="faixa"><span class="eyebrow">Histórico do cliente</span><span style="flex:1">Passado factual: tarefas concluídas e registros do diário de bordo.</span></div><div class="card">${hs.length?hs.map(h=>`<div class="fila-l"><div class="quem"><b>${fmtDate(String(h.data).slice(0,10))} · ${esc(h.texto)}</b><span class="sub">${h.etapa&&ETAPA_ROT[h.etapa]?esc(ETAPA_ROT[h.etapa]):h.auto?'Automático':'Manual'}${+h.minutos?' · '+fmtMin(h.minutos):''}</span></div></div>`).join(''):vazioG('Nenhum histórico deste cliente.')}</div>`;
+}
+function rotinaCfgV232(c,id){return ((((c||{}).extra||{}).rotinas||{})[id]||{});}
+async function toggleRotinaV232(id,ativo){const c=clientes.find(x=>x.nome===fichaNome);if(!c)return;c.extra=c.extra||{};c.extra.rotinas=c.extra.rotinas||{};c.extra.rotinas[id]={...(c.extra.rotinas[id]||{}),ativo};await persist('clientes',c);renderFicha();}
+async function estimarRotinaV232(id){const c=clientes.find(x=>x.nome===fichaNome),r=ROTINAS_V22.find(x=>x.id===id);if(!c||!r)return;const cfg=rotinaCfgV232(c,id),v=prompt('Estimativa em minutos para esta rotina:',String(cfg.estimativaMin||r.estimativaMin));if(v===null)return;c.extra=c.extra||{};c.extra.rotinas=c.extra.rotinas||{};c.extra.rotinas[id]={...cfg,estimativaMin:Math.max(1,+v||r.estimativaMin)};await persist('clientes',c);renderFicha();}
+function renderRotinasFichaV232(el,c){if(!c){el.innerHTML=vazioG('Rotinas são configuradas quando o possível cliente vira cliente.');return;}const sv=clienteServicosCanon(c),rs=ROTINAS_V22.filter(r=>sv.includes(r.servicoCliente));el.innerHTML=`<div class="faixa"><span class="eyebrow">Obrigações por serviço</span><span style="flex:1">Personalize o que realmente faz parte do pacote deste cliente. Desativar uma rotina impede novas tarefas automáticas; não apaga histórico.</span><button class="btn btn-sm" onclick="baixarSchemaV2()">JSON Schema V2</button></div><div class="card">${rs.length?rs.map(r=>{const cfg=rotinaCfgV232(c,r.id),on=cfg.ativo!==false;return `<div class="fila-l"><div class="quem"><b>${esc(r.texto)}</b><span class="sub">${esc(SERV_ROT[r.servico])} · ${r.cadencia==='semana'?'semanal':'mensal'} · estimativa ${cfg.estimativaMin||r.estimativaMin} min</span></div><div class="acoes"><button class="btn btn-sm ${on?'btn-pri':''}" onclick="toggleRotinaV232('${r.id}',${!on})">${on?'Ativa':'Desativada'}</button><button class="btn btn-sm" onclick="estimarRotinaV232('${r.id}')">Tempo</button></div></div>`}).join(''):vazioG('Nenhuma rotina aplicável aos serviços contratados.')}</div>`;}
+
+// ── onboarding ──
+function renderFichaOnb(el, f) {
+  const o = (f && f.onb) || {}, pend = onbPendentes(f).length, tot = Object.keys(ONB_ITENS).length;
+  el.innerHTML = `<div class="faixa"><span class="eyebrow">Onboarding</span><span style="flex:1">O que você precisa receber para começar a entregar. Cada item marcado vai para o Histórico. ${f && f.onbInicio ? 'Começou em ' + fmtDate(f.onbInicio) + '.' : 'Ainda não começou: ele começa sozinho quando o possível cliente vira cliente.'}</span>${f && f.onbInicio ? '' : '<button class="btn btn-mint btn-sm" onclick="comecarOnb()">Começar agora</button>'}</div>
+  <div class="cols">${Object.values(ONB).map(g => { const feitos = g.itens.filter(([id]) => o[id]).length; return `<div class="card g1"><div class="card-h"><h2>${g.rot}</h2><span class="sub">${feitos} de ${g.itens.length}</span></div>
+    ${g.itens.map(([id, nome]) => `<label class="onb-it ${o[id] ? 'feito' : ''}"><input type="checkbox" ${o[id] ? 'checked' : ''} onchange="marcarOnb('${id}', this.checked)"><span><b>${esc(nome)}</b>${o[id] ? `<small>recebido em ${fmtDate(o[id])}</small>` : ''}</span></label>`).join('')}</div>`; }).join('')}</div>
+  <div class="sub">${pend ? `Faltam ${plural(pend, 'item', 'itens')}. Itens que não se aplicam a este cliente (por exemplo, sem anúncios) podem ser marcados para sair da lista.` : 'Onboarding completo.'}</div>`;
+}
+async function comecarOnb() { if (await gravarFicha({ onbInicio: hojeISO() })) toast('Onboarding começado. O que faltar aparece na Gestão.', 3000); }
+async function marcarOnb(id, on) {
+  const f = fichaDe(fichaNome), o = { ...((f && f.onb) || {}) };
+  if (on) o[id] = hojeISO(); else delete o[id];
+  const mud = { onb: o }; if (!(f && f.onbInicio)) mud.onbInicio = hojeISO();
+  mud.onbFim = Object.keys(ONB_ITENS).every(k => o[k]) ? hojeISO() : null;
+  await gravarFicha(mud);
+  if (on && clientes.some(c => c.nome === fichaNome)) await registrarHistoricoAuto(fichaNome, 'Onboarding: recebido — ' + ONB_ITENS[id]);
+  if (mud.onbFim) toast('Onboarding completo!');
+}
+
+// V2.3.4 — biblioteca de Sites e Ferramentas
+function ferramentasRowV234(){ return ajustes.find(a=>a.id==='ferramentas'); }
+function ferramentasV234(){ const r=ferramentasRowV234(); return r&&r.dados&&Array.isArray(r.dados.itens)?r.dados.itens:[]; }
+async function salvarFerramentasV234(itens){ let r=ferramentasRowV234(); if(!r){r={id:'ferramentas',dados:{itens:[]}};ajustes.push(r);} r.dados={...(r.dados||{}),itens}; return persist('ajustes',r); }
+function hostV234(url){ try{return new URL(url).hostname.replace(/^www\./,'')}catch(e){return url||''} }
+function renderFerramentas(){
+  setTopo('Biblioteca interna','Sites e Ferramentas','<button class="btn btn-pri" onclick="novaFerramentaV234()">Adicionar ferramenta</button>');
+  const el=document.getElementById('ferramentas-conteudo'), itens=ferramentasV234(), cats=[...new Set(itens.map(x=>x.categoria||'Outros'))].sort();
+  el.innerHTML=`<div class="faixa"><span class="eyebrow">Biblioteca da agência</span><span style="flex:1">Guarde links úteis, explique o que cada ferramenta faz e em que situação você costuma usá-la.</span><span class="pill p-green">${itens.length} cadastradas</span></div><div class="card"><div class="filtros"><input id="ferr-q" class="campo" placeholder="Buscar ferramenta, uso ou site" oninput="filtrarFerramentasV234()"><select id="ferr-cat" class="campo" onchange="filtrarFerramentasV234()"><option value="">Todas as categorias</option>${cats.map(c=>`<option>${esc(c)}</option>`).join('')}</select></div><div id="ferr-lista" style="margin-top:12px"></div></div>`; filtrarFerramentasV234();
+}
+function filtrarFerramentasV234(){ const el=document.getElementById('ferr-lista');if(!el)return;const q=(document.getElementById('ferr-q').value||'').toLowerCase(),cat=document.getElementById('ferr-cat').value;let xs=ferramentasV234().filter(x=>(!cat||(x.categoria||'Outros')===cat)&&(!q||[x.nome,x.url,x.descricao,x.uso,x.categoria].join(' ').toLowerCase().includes(q))); if(!xs.length){el.innerHTML=vazioG('Nenhuma ferramenta encontrada.');return;} const grupos={};xs.forEach(x=>(grupos[x.categoria||'Outros']||(grupos[x.categoria||'Outros']=[])).push(x));el.innerHTML=Object.keys(grupos).sort().map(c=>`<div style="margin-bottom:18px"><div class="eyebrow" style="margin-bottom:8px">${esc(c)}</div>${grupos[c].map(x=>`<div class="fila-l"><div class="quem"><b>${esc(x.nome)}</b><span class="sub">${esc(hostV234(x.url))}${x.descricao?' · '+esc(x.descricao):''}</span>${x.uso?`<span class="sub"><b>Uso:</b> ${esc(x.uso)}</span>`:''}</div><div class="acoes"><a class="btn btn-sm" href="${esc(x.url)}" target="_blank" rel="noopener">Abrir</a><button class="btn btn-sm" onclick="editarFerramentaV234('${esc(x.id)}')">Editar</button><button class="btn btn-sm" onclick="excluirFerramentaV234('${esc(x.id)}')">Excluir</button></div></div>`).join('')}</div>`).join(''); }
+async function novaFerramentaV234(){ return editarFerramentaV234(''); }
+async function excluirFerramentaV234(id){ const itens=ferramentasV234();const x=itens.find(a=>a.id===id);if(!x||!confirm(`Excluir ${x.nome} da biblioteca?`))return;await salvarFerramentasV234(itens.filter(a=>a.id!==id));renderFerramentas();toast('Ferramenta excluída.'); }
+async function editarFerramentaV234(id){ const itens=[...ferramentasV234()], atual=itens.find(x=>x.id===id)||{};const nome=prompt('Nome da ferramenta:',atual.nome||'');if(nome===null||!nome.trim())return;const url=prompt('Link (https://...):',atual.url||'https://');if(url===null)return;const categoria=prompt('Categoria/grupo:',atual.categoria||'Utilidades');if(categoria===null)return;const descricao=prompt('O que faz:',atual.descricao||'');if(descricao===null)return;const uso=prompt('Como / para que você usa:',atual.uso||'');if(uso===null)return;const obj={id:atual.id||uid(),nome:nome.trim(),url:url.trim(),categoria:(categoria||'Outros').trim(),descricao:descricao.trim(),uso:uso.trim(),atualizado:hojeISO()};const i=itens.findIndex(x=>x.id===obj.id);if(i>=0)itens[i]=obj;else itens.push(obj);await salvarFerramentasV234(itens);renderFerramentas();toast('Ferramenta salva.'); }
+
 // ═══════════════════════════════ UI HELPERS ══════════════════════════════════
 const RENDERS = {
   dash: () => renderDash(), clientes: () => renderClientes(), comercial: () => renderComercial(),
   mensalidades: () => renderMensalidades(), postagens: () => renderPostagens(), avulsos: () => renderAvulsos(),
-  historico: () => renderHistorico(), ranking: () => renderRanking(), relatorio: () => renderRelatorio(), gestao: () => renderGestao()
+  historico: () => renderHistorico(), ranking: () => renderRanking(), relatorio: () => renderRelatorio(), gestao: () => renderGestao(), precos: () => renderPrecos(), ficha: () => renderFicha(), ferramentas: () => renderFerramentas()
 };
 function telaAtual() { const s = document.querySelector('.section.active'); return s ? s.id : 'dash'; }
 function renderAtual() { const id = telaAtual(); if (RENDERS[id]) RENDERS[id](); atualizarContaNav(); atualizarContaGestao(); }
@@ -1945,7 +2739,7 @@ function atualizarContaNav() {
 }
 
 function show(id) {
-  if (!document.getElementById(id) || !RENDERS[id]) id = 'dash';
+  if (!document.getElementById(id) || !RENDERS[id] || (id === 'ficha' && !fichaNome)) id = 'dash';
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('#sidenav [data-tela]').forEach(b => { const on = b.dataset.tela === id; b.classList.toggle('active', on); if (on) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
   document.getElementById(id).classList.add('active');
@@ -1990,6 +2784,22 @@ const AV_RECEBIDO = ['Pago','Pago antecipado'];
 function avAReceber(a) { return !AV_RECEBIDO.includes(a.status) && a.status !== 'Cancelado'; }
 function diasSemRanking() { const ult = ranking.map(r => r.data).filter(Boolean).sort().pop(); return ult ? { dias: diasEntre(ult, hojeISO()), data: ult } : null; }
 
+function proximasV231HTML(){
+  const atual=focoAtual(), fila=filaPrioridade().filter(a=>!atual||a.id!==atual.id).slice(0,3);
+  return `<div class="card"><div class="card-h"><div><div class="eyebrow">Depois</div><h2>Próximas prioridades</h2></div><button class="btn btn-sm" onclick="abrirGestao('')">Central de Trabalho</button></div>${fila.length?`<div class="prox-grid">${fila.map((a,i)=>`<div class="prox-card"><span class="pill ${prioridadeAcao(a)>=80?'p-red':prioridadeAcao(a)>=60?'p-amb':'p-green'}">#${i+1} · ${prioridadeAcao(a)}/100</span><b>${esc(a.cliente)}</b><div>${esc(curto(a.texto,90))}</div><div class="sub" style="margin-top:6px">${esc(SERV_ROT[a.servico]||'Geral')}${a.estimativaMin?' · '+a.estimativaMin+' min':''}</div></div>`).join('')}</div>`:'<div class="sub">Nenhuma outra atividade executável na fila.</div>'}</div>`;
+}
+function alertasCriticosV231HTML(){
+  const hoje=hojeISO(), itens=[];
+  // Problemas operacionais críticos registrados na Central, inclusive site fora do ar.
+  gesItens.filter(a=>gesAberto(a)).forEach(a=>{
+    const txt=String(a.texto||'').toLowerCase();
+    const siteOff=/site.*(fora do ar|offline|indispon|não abre|nao abre)|fora do ar.*site/.test(txt);
+    if(a.tipo==='suspensao'||siteOff||prioridadeAcao(a)>=90) itens.push({n:a.cliente,t:a.texto,cls:'av-red',id:a.id});
+  });
+  avisosAtencaoV22().filter(x=>x.d>=21).forEach(x=>itens.push({n:x.c.nome,t:x.d===999?'Nenhuma atividade concluída registrada':x.d+' dias sem atividade concluída',cls:'av-red'}));
+  const un=[]; const seen=new Set(); for(const x of itens){const k=x.n+'|'+x.t;if(!seen.has(k)){seen.add(k);un.push(x)}}
+  return `<div class="card alertas-v231${un.length?' crit-v231':''}"><div class="card-h"><div><div class="eyebrow">Alertas críticos</div><h2>${un.length?plural(un.length,'situação exige','situações exigem')+' atenção':'Nenhum alerta crítico'}</h2></div></div>${un.length?un.slice(0,8).map(x=>`<div class="aviso ${x.cls}"><span><b>${esc(x.n)}</b>: ${esc(x.t)}</span><button class="btn btn-sm" data-n="${esc(x.n)}" onclick="abrirGestao(this.dataset.n)">Abrir</button></div>`).join(''):'<div class="sub">Suspensões, sites registrados como fora do ar e prioridades críticas aparecerão aqui.</div>'}</div>`;
+}
 function renderDash() {
   const atual = refAtual(), hoje = hojeISO(), mes = nomeMes(atual);
   const doMes = pagamentos.filter(p => p.ref === atual);
@@ -2000,7 +2810,10 @@ function renderDash() {
   const titulo = pendMes.length ? `${mes} tem ${plural(pendMes.length, 'mensalidade', 'mensalidades')} para confirmar`
     : antigos.length ? `Faltam ${plural(antigos.length, 'confirmação', 'confirmações')} de meses anteriores` : `${mes} está conferido`;
   const dataExt = new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  setTopo('Início · ' + dataExt, titulo, '');
+  setTopo('Início · ' + dataExt, TEM_ACOES ? 'O que fazer agora' : titulo, '<span class="pill p-green">V2.3.4</span>');
+  document.getElementById('dash-foco').innerHTML = TEM_ACOES ? focoV21HTML() : '<div class="card"><h2>Central de Trabalho ainda não disponível</h2></div>';
+  document.getElementById('dash-proximas').innerHTML = TEM_ACOES ? proximasV231HTML() : '';
+  document.getElementById('dash-alertas').innerHTML = TEM_ACOES ? alertasCriticosV231HTML() : '';
 
   const confirmados = doMes.filter(p => p.status !== 'Pendente').length;
   const segs = doMes.slice(0, 30).map(p => `<span class="seg ${p.status === 'Pago' ? 's-pago' : p.status === 'Pendente' ? '' : p.status === 'Atrasado' ? 's-atras' : 's-outro'}" title="${esc(p.cliente)}: ${SIT[sitPag(p)].rot}"></span>`).join('');
@@ -2045,6 +2858,7 @@ function renderDash() {
   const avRec = soma(avulsos.filter(a => AV_RECEBIDO.includes(a.status))), avReceber = soma(avulsos.filter(avAReceber));
   const rk = diasSemRanking();
   let avisos = '';
+  if(TEM_ACOES) avisosAtencaoV22().slice(0,3).forEach(x=>{ avisos += `<div class="aviso ${x.d>=21?'av-red':'av-amb'}"><span><b>${esc(x.c.nome)}</b>: ${x.d===999?'nenhuma atividade concluída registrada':x.d+' dias sem atividade concluída'}.</span><button class="btn btn-sm" data-n="${esc(x.c.nome)}" onclick="abrirGestao(this.dataset.n)">Abrir</button></div>`; });
   retornos.sort((a,b) => a.followupData.localeCompare(b.followupData)).slice(0, 4).forEach(p => {
     avisos += `<div class="aviso av-amb"><span>Retorno: <b>${esc(p.nome)}</b> — ${esc(p.followupTipo || 'retomar contato')} (${p.followupData === hoje ? 'hoje' : 'era ' + fmtDia(p.followupData)})${p.followupObs ? ' · ' + esc(p.followupObs) : ''}</span><button class="btn btn-sm" onclick="abrirPossivel('${esc(p.id)}')">Abrir</button></div>`;
   });
@@ -2311,7 +3125,7 @@ function renderClientesLista() {
     const chips = (c.servicos || []).map(s => `<span class="chip">${esc(s)}</span>`).join('') || '<span class="chip">sem serviço marcado</span>';
     const links = [c.site ? `<a class="chip" href="${urlSegura(c.site)}" target="_blank" rel="noopener">${esc(c.plataforma || 'Site')}</a>` : '']
       .concat((c.links || []).map(l => `<a class="chip" href="${urlSegura(l.url)}" target="_blank" rel="noopener">${esc(l.nome)}</a>`)).join('');
-    let meio, acoes = `<button class="btn btn-fill" onclick="editarCliente('${cid}')">Editar</button><button class="btn btn-fill" onclick="verHistorico('${cid}')">Histórico</button>${TEM_ACOES ? `<button class="btn btn-fill" onclick="abrirGestaoId('${cid}')">Gestão</button>` : ''}` +
+    let meio, acoes = `<button class="btn btn-fill" onclick="editarCliente('${cid}')">Editar</button><button class="btn btn-fill" onclick="verHistorico('${cid}')">Histórico</button>${TEM_ACOES ? `<button class="btn btn-fill" onclick="abrirFichaCli('${cid}')">Ficha</button><button class="btn btn-fill" onclick="abrirGestaoId('${cid}')">Gestão</button>` : ''}` +
       (zap ? `<a class="btn btn-fill" href="${zap}" target="_blank" rel="noopener">WhatsApp</a>` : '');
     if (c.status === 'Em Teste') {
       meio = `<div class="tira">Em teste não gera mensalidade. A recorrência começa quando virar ativo.</div>`;
@@ -2507,7 +3321,7 @@ function renderComercial() {
       ${p.pontos ? `<div class="nota">Dúvida: ${esc(p.pontos)}</div>` : ''}
       ${p.conversa ? `<div class="sub">${esc(p.conversa.length > 110 ? p.conversa.slice(0, 110) + '…' : p.conversa)}</div>` : ''}
       ${ret}${fu && p.followupObs ? `<div class="sub">${esc(p.followupObs)}</div>` : ''}
-      <div class="acoes"><button class="btn btn-sm btn-fill" onclick="openModalPossivel('${pid}', true)">${fu ? 'Mudar retorno' : 'Marcar retorno'}</button><button class="btn btn-sm btn-fill" onclick="openModalPossivel('${pid}')">Editar</button></div>
+      <div class="acoes"><button class="btn btn-sm btn-fill" onclick="openModalPossivel('${pid}', true)">${fu ? 'Mudar retorno' : 'Marcar retorno'}</button><button class="btn btn-sm btn-fill" onclick="openModalPossivel('${pid}')">Editar</button>${TEM_ACOES ? `<button class="btn btn-sm btn-fill" onclick="abrirFichaPos('${pid}')">Ficha</button>` : ''}<button class="btn btn-sm btn-fill" onclick="abrirPrecos('orcamento','${pid}')">Orçamento</button></div>
       <button class="btn btn-sm ${fecha ? 'btn-pri' : ''}" onclick="converterParaAtivo('${pid}')">Fechou: virar cliente</button>
     </article>`;
   };
@@ -2566,6 +3380,7 @@ async function salvarPossivel() {
   };
   if (anterior) possiveis = possiveis.map(p => p.id === id ? obj : p);
   else possiveis.push(obj);
+  if (anterior && anterior.nome !== nome && TEM_ACOES) { const mv = gesItens.filter(a => a.cliente === anterior.nome); mv.forEach(a => { a.cliente = nome; }); if (mv.length) await persistMuitos('acoes', mv); }
   closeModal('modal-possivel'); renderAtual();
   if (await persist('possiveis', obj)) toast('Salvo!');
 }
@@ -2595,6 +3410,7 @@ async function converterParaAtivo(id) {
   await registrarHistoricoAuto(novo.nome, `Convertido de possível cliente para ${novo.status}`);
   if (p.conversa) await registrarHistoricoAuto(novo.nome, 'Negociação: ' + p.conversa);
   if (p.pontos) await registrarHistoricoAuto(novo.nome, 'Pontos levantados na negociação: ' + p.pontos);
+  if (TEM_ACOES) { const fo = fichaNome; fichaNome = novo.nome; const f = fichaDe(novo.nome); if (!(f && f.onbInicio)) await gravarFicha({ onbInicio: hojeISO() }); fichaNome = fo; }
   irPara('clientes');
   editarCliente(novo.id);
   toast(`${p.nome} virou cliente. Confira valor, dia de vencimento e serviços e salve.`, 4500);
