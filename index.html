@@ -358,7 +358,7 @@ details.card[open] > summary { margin-bottom: 12px; }
 /* V2.3.2 consolidação */
 .prio-score{cursor:pointer}.fila-l .acoes{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}@media(max-width:800px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
-/* V2.3.4 · dados integrados */
+/* V2.3.5 · dados integrados */
 .integracao-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}.metricas-v233{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}.metricas-v233>div{padding:10px;border:1px solid var(--soft);border-radius:10px}.metricas-v233 small{display:block;text-transform:capitalize;color:var(--muted);font-size:11px}.metricas-v233 b{display:block;margin-top:4px;font-size:18px}.faixa-ok{border-color:#b9e8cf;background:#effbf5}@media(max-width:800px){.integracao-grid,.metricas-v233{grid-template-columns:1fr 1fr}}
 </style>
 </head>
@@ -539,8 +539,11 @@ details.card[open] > summary { margin-bottom: 12px; }
       <div id="ges-off"></div>
       <div class="barra-reg no-print" id="ges-barra">
         <select id="ges-cli" class="campo" aria-label="Cliente" style="flex:1 1 160px;min-width:0"></select>
-        <select id="ges-serv" class="campo" aria-label="Serviço" style="flex:0 1 140px;min-width:0"></select>
+        <select id="ges-serv" class="campo" aria-label="Serviço" style="flex:0 1 140px;min-width:0" onchange="gesAtividadeAtualizar()"></select>
         <select id="ges-tipo" class="campo" aria-label="Tipo" style="flex:0 1 180px;min-width:0" onchange="gesTipoMudou()"></select>
+        <select id="ges-atividade" class="campo" aria-label="Atividade realizada" style="display:none;flex:0 1 220px;min-width:0" onchange="gesAtividadeEscolhida()"></select>
+        <input id="ges-qtd" class="campo" type="number" min="1" aria-label="Quantidade" placeholder="Qtd." style="display:none;flex:0 1 80px;min-width:0">
+        <input id="ges-min" class="campo" type="number" min="0" aria-label="Tempo em minutos" placeholder="Min." style="display:none;flex:0 1 85px;min-width:0">
         <input id="ges-texto" class="campo claro" aria-label="O que foi feito e por quê" placeholder="O que foi feito e por quê" style="flex:4 1 260px;min-width:0" onkeydown="if(event.key==='Enter') registrarAcao()">
         <label class="ges-data" style="flex:0 1 170px">Data<input type="date" id="ges-data" class="campo" onchange="gesTipoMudou()"></label>
         <label class="ges-data" id="ges-quando-wrap" style="flex:0 1 230px"><span id="ges-quando-rot">Reavaliar em</span><input type="date" id="ges-quando" class="campo"></label>
@@ -597,6 +600,7 @@ details.card[open] > summary { margin-bottom: 12px; }
   </div>
   <div class="form-group" id="cli-meta-wrap" style="display:none"><label for="cli-meta">Meta de posts por mês</label><input id="cli-meta" type="number" min="0" max="60" placeholder="4"></div>
   <div class="form-group"><label for="cli-site">Site principal</label><input id="cli-site" placeholder="https://..."></div>
+  <div class="form-group"><label for="cli-drive">Pasta do Google Drive</label><input id="cli-drive" placeholder="https://drive.google.com/drive/folders/..."><div class="sub" style="margin-top:5px">Use a pasta principal do cliente. O acesso continua respeitando as permissões do Google Drive.</div></div>
   <div class="form-row">
     <div class="form-group"><label for="cli-plataforma">Plataforma do site</label>
       <select id="cli-plataforma"><option value="">—</option><option>Github</option><option>Netlify</option><option>Vercel</option><option>WordPress</option><option>Wix</option><option>Outro</option></select></div>
@@ -1641,12 +1645,13 @@ async function copiarSQL() {
 }
 
 // ═════════════════════════════════ GESTÃO ════════════════════════════════════
-// Mudanças, testes, planos, problemas, espera pelo cliente e casos de suspensão.
+// Atividades realizadas, mudanças, testes, planos, problemas, espera pelo cliente e casos de suspensão.
 // Tabela "acoes": id, cliente e o resto em "dados" (JSON).
 let TEM_ACOES = false, gesItens = [], gesCliente = '', gesServ = '';
 const SERVICOS_G = [['gbp','Perfil (GBP)'],['ads','Google Ads'],['site','Site / Landing Page'],['seo','SEO'],['social','Redes sociais'],['geral','Geral / Administrativo']];
 const SERV_ROT = Object.fromEntries(SERVICOS_G);
 const TIPOS_G = {
+  atividade: { rot:'Atividade realizada', cor:'p-ok', quando:'', dias:null },
   mudanca:   { rot:'Mudança',            cor:'p-blue', quando:'Reavaliar em',      dias:14 },
   teste:     { rot:'Teste',              cor:'p-blue', quando:'Reavaliar em',      dias:14 },
   plano:     { rot:'Plano',              cor:'',       quando:'Fazer em',          dias:null },
@@ -1678,7 +1683,7 @@ function normalizarAcaoV2(a){
   a.minutosAcumulados=Math.max(0,+a.minutosAcumulados||0);
   return a;
 }
-function schemaV2JSON(){ return {schemaVersion:2,acao:{id:'string',cliente:'string',servico:'gbp|ads|site|seo|social|geral',tipo:'mudanca|teste|plano|problema|espera|contato|suspensao|diagnostico|auditoria',origem:'diagnostico|rotina|cliente|financeiro|comercial|manual',statusOperacional:'a_fazer|em_execucao|aguardando|reavaliar|concluida|cancelada',impacto:'1..5',urgencia:'1..5',confianca:'1..3',esforco:'1..5',estimativaMin:'number|null',minutosAcumulados:'number',iniciadoEm:'ISO|null',prazo:'YYYY-MM-DD|null',obrigacaoContratual:'boolean',riscoFinanceiro:'0..5',proximaAcao:'string|null'},clienteExtra:{rotinas:{'<rotinaId>':{ativo:'boolean',estimativaMin:'number|null',dia:'number|null'}}}}; }
+function schemaV2JSON(){ return {schemaVersion:2,acao:{id:'string',cliente:'string',servico:'gbp|ads|site|seo|social|geral',tipo:'atividade|mudanca|teste|plano|problema|espera|contato|suspensao|diagnostico|auditoria',origem:'diagnostico|rotina|cliente|financeiro|comercial|manual',statusOperacional:'a_fazer|em_execucao|aguardando|reavaliar|concluida|cancelada',impacto:'1..5',urgencia:'1..5',confianca:'1..3',esforco:'1..5',estimativaMin:'number|null',minutosAcumulados:'number',iniciadoEm:'ISO|null',prazo:'YYYY-MM-DD|null',obrigacaoContratual:'boolean',riscoFinanceiro:'0..5',proximaAcao:'string|null'},clienteExtra:{rotinas:{'<rotinaId>':{ativo:'boolean',estimativaMin:'number|null',dia:'number|null'}}}}; }
 function baixarSchemaV2(){ const b=new Blob([JSON.stringify(schemaV2JSON(),null,2)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='ntn_schema_v2.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000); }
 
 // V2.1: camada operacional sem alterar a estrutura da tabela acoes
@@ -1759,7 +1764,7 @@ function bonusAtrasoV234(a){ if(a.origem!=='rotina')return 0; const d=atrasoRoti
 async function consolidarRotinasAntigasV234(){
   const grupos={}; gesItens.filter(a=>gesAberto(a)&&a.origem==='rotina'&&a.rotinaId).forEach(a=>{const k=a.cliente+'|'+a.rotinaId;(grupos[k]||(grupos[k]=[])).push(a)});
   const mud=[];
-  Object.values(grupos).forEach(xs=>{ if(xs.length<2)return; xs.sort((a,b)=>String(b.prazo||b.quando||b.data||'').localeCompare(String(a.prazo||a.quando||a.data||''))); xs.slice(1).forEach(a=>{a.status='fechado';a.statusOperacional='cancelada';a.fechadoEm=hojeISO();a.motivoCancelamento='Consolidada pela V2.3.4: rotina recorrente substituída pela pendência atual.';mud.push(a);}); });
+  Object.values(grupos).forEach(xs=>{ if(xs.length<2)return; xs.sort((a,b)=>String(b.prazo||b.quando||b.data||'').localeCompare(String(a.prazo||a.quando||a.data||''))); xs.slice(1).forEach(a=>{a.status='fechado';a.statusOperacional='cancelada';a.fechadoEm=hojeISO();a.motivoCancelamento='Consolidada pela V2.3.5: rotina recorrente substituída pela pendência atual.';mud.push(a);}); });
   if(mud.length) await persistMuitos('acoes',mud); return mud.length;
 }
 async function gerarObrigacoesV22(silencioso){
@@ -1857,6 +1862,34 @@ function nomesGestao() {
   s.delete(INTERNO);
   return [...s].sort((a, b) => a.localeCompare(b));
 }
+const ATIVIDADES_G = {
+  gbp:[['gbp_avaliacoes','Responder avaliações'],['gbp_perfil','Atualizar informações do perfil'],['gbp_fotos','Adicionar fotos'],['gbp_posts','Criar/publicar postagem'],['gbp_servicos','Atualizar serviços/produtos'],['gbp_ranking','Medir ranking local'],['gbp_verificar','Verificar perfil'],['outra','Outra atividade']],
+  ads:[['ads_termos','Revisar termos de pesquisa'],['ads_negativas','Adicionar palavras negativas'],['ads_orcamento','Ajustar/revisar orçamento'],['ads_anuncios','Ajustar anúncios'],['ads_conversoes','Revisar conversões'],['ads_desempenho','Analisar desempenho/CPL'],['ads_lp','Revisar landing page'],['outra','Outra atividade']],
+  site:[['site_disp','Verificar disponibilidade do site'],['site_manut','Manutenção/atualização'],['site_correcao','Correção no site'],['site_conteudo','Atualizar conteúdo'],['site_seo','Ajuste de SEO'],['site_conv','Ajuste de conversão/CTA'],['site_publicacao','Publicação'],['outra','Outra atividade']],
+  seo:[['seo_tecnico','Revisar SEO técnico/indexação'],['seo_conteudo','Trabalhar conteúdo/página'],['seo_resultados','Analisar resultados orgânicos'],['seo_links','Ajustar links/metadados'],['outra','Outra atividade']],
+  social:[['social_planejamento','Planejar conteúdo'],['social_execucao','Criar/publicar conteúdo'],['social_respostas','Responder/interagir'],['social_resultados','Analisar resultados'],['outra','Outra atividade']],
+  geral:[['relatorio','Preparar relatório'],['atendimento','Atendimento ao cliente'],['estudo','Estudo/análise'],['organizacao','Organização/administrativo'],['outra','Outra atividade']]
+};
+function atividadesOpts(serv,sel){return (ATIVIDADES_G[svcCanon(serv)]||ATIVIDADES_G.geral).map(([k,r])=>`<option value="${k}" ${k===sel?'selected':''}>${r}</option>`).join('');}
+function gesAtividadeAtualizar(){
+  const tipo=document.getElementById('ges-tipo')?.value, sel=document.getElementById('ges-atividade'), qtd=document.getElementById('ges-qtd'), min=document.getElementById('ges-min');
+  if(!sel)return; const on=tipo==='atividade'; sel.style.display=on?'':'none'; qtd.style.display=on?'':'none'; min.style.display=on?'':'none';
+  if(on){sel.innerHTML=atividadesOpts(document.getElementById('ges-serv').value,sel.value);gesAtividadeEscolhida();}
+}
+function gesAtividadeEscolhida(){
+  const tipo=document.getElementById('ges-tipo')?.value;if(tipo!=='atividade')return; const sel=document.getElementById('ges-atividade'), txt=document.getElementById('ges-texto');
+  const rot=sel?.selectedOptions?.[0]?.textContent||''; if(txt&&!txt.value.trim()&&rot!=='Outra atividade')txt.placeholder='Observação opcional — '+rot; else if(txt)txt.placeholder='O que foi feito e por quê';
+}
+function rotinaDaAtividade(chave,serv){
+  const mapa={gbp_avaliacoes:'gbp_avaliacoes',gbp_perfil:'gbp_perfil',gbp_posts:'gbp_posts',gbp_ranking:'gbp_ranking',ads_termos:'ads_termos',ads_negativas:'ads_termos',ads_conversoes:'ads_conversoes',ads_desempenho:'ads_orcamento',ads_orcamento:'ads_orcamento',ads_lp:'ads_lp',site_disp:'site_disp',site_manut:'site_manut',site_conv:'site_conv',site_seo:'site_manut',seo_tecnico:'seo_tecnico',seo_conteudo:'seo_conteudo',seo_resultados:'seo_resultados',social_planejamento:'social_planejamento',social_execucao:'social_execucao',social_resultados:'social_resultados'};
+  return mapa[chave]||null;
+}
+async function cumprirRotinaPorAtividade(a){
+  const rid=rotinaDaAtividade(a.atividadeChave,a.servico); if(!rid)return false;
+  const r=gesItens.find(x=>x.id!==a.id&&x.cliente===a.cliente&&x.origem==='rotina'&&x.rotinaId===rid&&gesAberto(x)); if(!r)return false;
+  r.status='fechado';r.statusOperacional='concluida';r.fechadoEm=a.data||hojeISO();r.minutosReal=+a.minutosReal||0;r.resultadoTxt='Cumprida pelo registro de atividade: '+a.texto;
+  await persist('acoes',r); return true;
+}
 function optsCli(sel, comTodos) {
   return (comTodos ? `<option value="">Todos os clientes</option>` : '') +
     [...nomesGestao(), INTERNO].map(n => `<option value="${esc(n)}" ${n === sel ? 'selected' : ''}>${esc(n)}</option>`).join('');
@@ -1872,6 +1905,7 @@ function gesTipoMudou(pref) {
   document.getElementById(pref + '-quando-rot').textContent = t.quando || '';
   if (pref === 'ges') document.getElementById('ges-quando').value = t.dias ? addDias(document.getElementById('ges-data').value || hojeISO(), t.dias) : '';
   const ed = document.getElementById('acao-espera-wrap'); if (pref === 'acao' && ed) ed.style.display = document.getElementById('acao-tipo').value === 'suspensao' ? '' : 'none';
+  if(pref==='ges') gesAtividadeAtualizar();
 }
 
 // ── tela ──
@@ -1906,7 +1940,7 @@ function pillsAcao(a) {
   let h = `<span class="pill ${t.cor}">${esc(t.rot)}</span><span class="chip">${esc(SERV_ROT[svcCanon(a.servico)] || 'Geral')}</span>${a.origem==='rotina'?'<span class="chip v22-origem">Rotina</span>':''}${gesAberto(a) && !['contato','auditoria'].includes(a.tipo) ? `<span class="chip prio-score">P${prioridadeAcao(a)}</span><span class="chip ${opStatus(a)==='em_execucao'?'op-exec':opStatus(a)==='aguardando'?'op-wait':''}">${rotOp(a)}</span>` : ''}`;
   if (a.resultado && RESULT_G[a.resultado]) h += `<span class="pill ${RESULT_G[a.resultado][1]}">${RESULT_G[a.resultado][0]}</span>`;
   if (a.aprendizado) h += `<span class="pill p-ok">Aprendizado</span>`;
-  if (a.status === 'fechado' && !a.resultado && a.tipo !== 'contato' && a.tipo !== 'auditoria') h += `<span class="pill">${a.tipo === 'plano' ? 'Feito' : a.tipo === 'espera' ? 'Recebido' : a.tipo === 'suspensao' ? 'Encerrado' : 'Resolvido'}</span>`;
+  if (a.status === 'fechado' && !a.resultado && a.tipo !== 'contato' && a.tipo !== 'auditoria') h += `<span class="pill">${a.tipo === 'atividade' ? 'Realizada' : a.tipo === 'plano' ? 'Feito' : a.tipo === 'espera' ? 'Recebido' : a.tipo === 'suspensao' ? 'Encerrado' : 'Resolvido'}</span>`;
   return h;
 }
 function linhaQuando(a) {
@@ -2030,15 +2064,29 @@ async function salvarPacote() {
 // ── registrar, editar, fechar ──
 async function gravarAcao(a) { a.atualizado = hojeISO(); renderAtual(); atualizarContaGestao(); return persist('acoes', a); }
 async function registrarAcao() {
-  const cliente = document.getElementById('ges-cli').value, tipo = document.getElementById('ges-tipo').value;
-  const texto = document.getElementById('ges-texto').value.trim(), data = document.getElementById('ges-data').value || hojeISO();
-  if (!cliente || !texto) { toast('Escolha o cliente e escreva o que foi feito'); return; }
-  const a = { id: uid(), cliente, servico: document.getElementById('ges-serv').value, tipo, data, texto, status: tipo === 'contato' ? 'fechado' : 'aberto', statusOperacional: tipo==='contato'?'concluida':tipo==='espera'?'aguardando':'a_fazer', origem:'manual', schemaVersion:2, impacto:3, urgencia:3, confianca:2, esforco:3 };
-  if ((TIPOS_G[tipo] || {}).quando) a.quando = document.getElementById('ges-quando').value || null;
-  if (tipo === 'suspensao') { a.etapas = [{ id: uid(), data, tipo: 'risco', texto: '' }]; a.esperaDias = 7; }
-  gesItens.push(a);
-  document.getElementById('ges-texto').value = ''; document.getElementById('ges-data').value = hojeISO(); gesTipoMudou();
-  if (await gravarAcao(a)) toast(tipo === 'suspensao' ? 'Caso aberto. Registre cada mudança como etapa.' : 'Registrado!', tipo === 'suspensao' ? 3500 : 0);
+  const cliente=document.getElementById('ges-cli').value, tipo=document.getElementById('ges-tipo').value, servico=svcCanon(document.getElementById('ges-serv').value);
+  const data=document.getElementById('ges-data').value||hojeISO(); let texto=document.getElementById('ges-texto').value.trim();
+  if(!cliente){toast('Escolha o cliente');return;}
+  if(tipo==='atividade'){
+    const sel=document.getElementById('ges-atividade'), chave=sel.value, rot=sel.selectedOptions[0]?.textContent||'Atividade realizada';
+    const qtd=Math.max(0,+document.getElementById('ges-qtd').value||0), mins=Math.max(0,+document.getElementById('ges-min').value||0);
+    if(chave==='outra'&&!texto){toast('Descreva a atividade realizada');return;}
+    const base=chave==='outra'?texto:rot+(qtd?' · '+qtd:'')+(texto?' — '+texto:'');
+    const a={id:uid(),cliente,servico,tipo:'atividade',data,texto:base,status:'fechado',statusOperacional:'concluida',fechadoEm:data,origem:'manual',schemaVersion:2,atividadeChave:chave,atividadeRotulo:rot,quantidade:qtd||null,minutosReal:mins||null};
+    gesItens.push(a);
+    const h={id:uid(),cliente,data,texto:base,tipo:'auto',auto:true,origem:'atividade',servico,atividadeChave:chave,quantidade:qtd||null};
+    if(TEM_TEMPO){h.minutos=mins||null;h.etapa=(ROTINAS_V22.find(r=>r.id===rotinaDaAtividade(chave,servico))||{}).etapa||null;}
+    historico.push(h); await persist('historico',h); await persist('acoes',a);
+    const cumpriu=await cumprirRotinaPorAtividade(a);
+    document.getElementById('ges-texto').value='';document.getElementById('ges-qtd').value='';document.getElementById('ges-min').value='';
+    renderAtual(); atualizarContaGestao(); toast(cumpriu?'Atividade registrada e obrigação correspondente cumprida.':'Atividade registrada no Histórico.',3200); return;
+  }
+  if(!texto){toast('Escreva o que foi feito');return;}
+  const a={id:uid(),cliente,servico,tipo,data,texto,status:tipo==='contato'?'fechado':'aberto',statusOperacional:tipo==='contato'?'concluida':tipo==='espera'?'aguardando':'a_fazer',origem:'manual',schemaVersion:2,impacto:3,urgencia:3,confianca:2,esforco:3};
+  if((TIPOS_G[tipo]||{}).quando)a.quando=document.getElementById('ges-quando').value||null;
+  if(tipo==='suspensao'){a.etapas=[{id:uid(),data,tipo:'risco',texto:''}];a.esperaDias=7;}
+  gesItens.push(a);document.getElementById('ges-texto').value='';document.getElementById('ges-data').value=hojeISO();gesTipoMudou();
+  if(await gravarAcao(a))toast(tipo==='suspensao'?'Caso aberto. Registre cada mudança como etapa.':'Registrado!',tipo==='suspensao'?3500:0);
 }
 async function fecharAcao(id) { const a = gesItens.find(x => x.id === id); if (!a) return; a.status = 'fechado'; a.fechadoEm = hojeISO(); if (await gravarAcao(a)) toast('Fechado!'); }
 async function cobreiDeNovo(id) {
@@ -2493,7 +2541,8 @@ function renderFicha() {
 
 function renderFichaResumo(el, c, p, f, ult) {
   const ch = (ult && ult.checks) || {};
-  el.innerHTML = `<div class="cols">
+  const acessos = c ? `<div class="card" style="margin-bottom:14px"><div class="card-h"><h2>Acessos rápidos</h2><span class="sub">Links principais do cliente</span></div><div class="acoes">${c.site ? `<a class="btn" href="${esc(c.site)}" target="_blank" rel="noopener noreferrer">Abrir site</a>` : ''}${c.driveUrl ? `<button class="btn btn-pri" data-n="${esc(c.nome)}" onclick="abrirDriveCliente(this.dataset.n)">Abrir Google Drive</button>` : `<button class="btn" data-id="${esc(c.id)}" onclick="editarCliente(this.dataset.id)">Cadastrar pasta do Drive</button>`}</div></div>` : '';
+  el.innerHTML = `${acessos}<div class="cols">
     <div class="card g3"><div class="card-h"><h2>Dados para a auditoria e a proposta</h2></div>
       <div class="form-row">
         <div class="form-group"><label for="fic-cidade">Cidade</label><input id="fic-cidade" class="campo" style="width:100%" value="${esc((f && f.cidade) || '')}" placeholder="Ex: Campos dos Goytacazes"></div>
@@ -2640,7 +2689,7 @@ function renderPlanoV23(el){
 }
 
 
-// V2.3.4 · Integração Apps Script → JSON → Sistema NTN / Looker Studio
+// V2.3.5 · Integração Apps Script → JSON → Sistema NTN / Looker Studio
 const AJ_INTEGRACAO_ID='integracao_resultados_v1';
 function integracaoRow(){let r=ajustes.find(x=>x.id===AJ_INTEGRACAO_ID);if(!r){r={id:AJ_INTEGRACAO_ID,dados:{schemaVersion:1,registros:[]}};ajustes.push(r)};r.dados=r.dados||{};r.dados.registros=Array.isArray(r.dados.registros)?r.dados.registros:[];return r;}
 function registrosIntegracao(cliente){return integracaoRow().dados.registros.filter(r=>!cliente||r.cliente===cliente).sort((a,b)=>String(b.competencia||'').localeCompare(String(a.competencia||'')));}
@@ -2703,7 +2752,7 @@ async function marcarOnb(id, on) {
   if (mud.onbFim) toast('Onboarding completo!');
 }
 
-// V2.3.4 — biblioteca de Sites e Ferramentas
+// V2.3.5 — biblioteca de Sites e Ferramentas
 function ferramentasRowV234(){ return ajustes.find(a=>a.id==='ferramentas'); }
 function ferramentasV234(){ const r=ferramentasRowV234(); return r&&r.dados&&Array.isArray(r.dados.itens)?r.dados.itens:[]; }
 async function salvarFerramentasV234(itens){ let r=ferramentasRowV234(); if(!r){r={id:'ferramentas',dados:{itens:[]}};ajustes.push(r);} r.dados={...(r.dados||{}),itens}; return persist('ajustes',r); }
@@ -2810,7 +2859,7 @@ function renderDash() {
   const titulo = pendMes.length ? `${mes} tem ${plural(pendMes.length, 'mensalidade', 'mensalidades')} para confirmar`
     : antigos.length ? `Faltam ${plural(antigos.length, 'confirmação', 'confirmações')} de meses anteriores` : `${mes} está conferido`;
   const dataExt = new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  setTopo('Início · ' + dataExt, TEM_ACOES ? 'O que fazer agora' : titulo, '<span class="pill p-green">V2.3.4</span>');
+  setTopo('Início · ' + dataExt, TEM_ACOES ? 'O que fazer agora' : titulo, '<span class="pill p-green">V2.3.5</span>');
   document.getElementById('dash-foco').innerHTML = TEM_ACOES ? focoV21HTML() : '<div class="card"><h2>Central de Trabalho ainda não disponível</h2></div>';
   document.getElementById('dash-proximas').innerHTML = TEM_ACOES ? proximasV231HTML() : '';
   document.getElementById('dash-alertas').innerHTML = TEM_ACOES ? alertasCriticosV231HTML() : '';
@@ -3164,11 +3213,23 @@ function renderClientesLista() {
   }).join('') : `<div class="empty" style="flex:1">Nenhum cliente ${busca ? 'com esse nome' : 'nesse filtro'}.</div>`;
 }
 
+function extrairDriveFolderId(url) {
+  const v = String(url || '').trim();
+  if (!v) return '';
+  const m = v.match(/\/folders\/([a-zA-Z0-9_-]+)/) || v.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  return m ? m[1] : '';
+}
+function abrirDriveCliente(nome) {
+  const c = clientes.find(x => x.nome === nome);
+  if (!c || !c.driveUrl) { toast('Este cliente ainda não possui pasta do Drive cadastrada.'); return; }
+  window.open(c.driveUrl, '_blank', 'noopener,noreferrer');
+}
+
 function openModalCliente() {
   document.getElementById('cli-id').value = '';
   document.getElementById('modal-cli-title').textContent = 'Novo cliente';
   document.getElementById('cli-excluir').style.display = 'none';
-  ['cli-nome','cli-contato','cli-site','cli-obs','cli-valor','cli-venc','cli-meta','cli-reajuste','cli-verba','cli-dominio-venc','cli-hosp-venc','cli-prop-data','cli-prop-txt'].forEach(id => document.getElementById(id).value = '');
+  ['cli-nome','cli-contato','cli-site','cli-drive','cli-obs','cli-valor','cli-venc','cli-meta','cli-reajuste','cli-verba','cli-dominio-venc','cli-hosp-venc','cli-prop-data','cli-prop-txt'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('cli-extra-wrap').style.display = TEM_EXTRA ? '' : 'none';
   document.getElementById('cli-status').value = 'Ativo';
   document.getElementById('cli-plataforma').value = '';
@@ -3191,6 +3252,7 @@ function editarCliente(id) {
   document.getElementById('cli-contato').value = c.contato || '';
   document.getElementById('cli-inicio').value = c.inicio || '';
   document.getElementById('cli-site').value = c.site || '';
+  document.getElementById('cli-drive').value = c.driveUrl || '';
   document.getElementById('cli-plataforma').value = c.plataforma || '';
   document.getElementById('cli-contrato').value = c.contrato || 'OK';
   document.getElementById('cli-obs').value = c.obs || '';
@@ -3225,6 +3287,8 @@ async function salvarCliente() {
     contato: document.getElementById('cli-contato').value.trim(),
     inicio: document.getElementById('cli-inicio').value,
     site: document.getElementById('cli-site').value.trim(),
+    driveUrl: document.getElementById('cli-drive').value.trim(),
+    driveFolderId: extrairDriveFolderId(document.getElementById('cli-drive').value.trim()),
     plataforma: document.getElementById('cli-plataforma').value,
     contrato: document.getElementById('cli-contrato').value,
     obs: document.getElementById('cli-obs').value.trim(),
