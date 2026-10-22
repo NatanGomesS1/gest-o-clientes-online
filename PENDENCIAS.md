@@ -32,6 +32,11 @@ O gerador (https://natangomess1.github.io/gerador-relatorios/, repositório `Nat
      - na JC veio **com** rotas (46 inclui 31 de rota).
    - `__GBP_SERVICOS_EST__`, `__GBP_FATURAMENTO_EST__`, `__GBP_ROAS__` e `__RESUMO_MES__` também contam as rotas. Na JC, o app diz 13 serviços e R$ 2.600; o gerador, sem rotas, diz 4 serviços e R$ 800.
    - Sugestão: opção por cliente "contar rotas como resultado", **desligada por padrão**, aplicada igual em todos os campos.
+   - **Loja física** (ex.: Eletroled, material elétrico): configuração por cliente "Tipo de negócio: loja física".
+     - Mostra as **visitas à loja** (Store visits do Ads, estimativa do Google) num bloco separado, que não soma nos contatos.
+     - Pedidos de rota continuam fora do resultado.
+     - Liga a nota "Sobre os números" no relatório: anúncio direto para o WhatsApp + venda no balcão = o relatório mostra o mínimo garantido, não o total.
+     - Até existir a configuração, a decisão fica anotada na Observação da Ficha do cliente.
 
 4. **Nome do contato do cliente** (cadastro / aba Relatório)
    - `__PRIMEIRO_NOME__` hoje traz o nome do responsável da agência ("Natan").
@@ -40,6 +45,7 @@ O gerador (https://natangomess1.github.io/gerador-relatorios/, repositório `Nat
 
 ### Cliente de referência
 - **JC Artefatos:** vende e entrega artefatos de cimento (cobogó etc.). Sem anúncios no Google: só Perfil no Google e acompanhamento (R$ 50/mês).
+- **Eletroled (Cabo Frio):** loja de material elétrico, atendimento presencial. Anúncios vão direto para o WhatsApp, sem landing page. Tem a conversão "Store visits" ativa no Ads.
 
 ## Etapa 3: Serviços contratados
 Cada serviço com situação própria (GBP ativo, Ads ativo, Site concluído/manutenção), alimentando Obrigações, Central e Relatórios.
