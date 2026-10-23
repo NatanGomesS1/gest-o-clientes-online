@@ -47,6 +47,38 @@ O gerador (https://natangomess1.github.io/gerador-relatorios/, repositório `Nat
 - **JC Artefatos:** vende e entrega artefatos de cimento (cobogó etc.). Sem anúncios no Google: só Perfil no Google e acompanhamento (R$ 50/mês).
 - **Eletroled (Cabo Frio):** loja de material elétrico, atendimento presencial. Anúncios vão direto para o WhatsApp, sem landing page. Tem a conversão "Store visits" ativa no Ads.
 
+## Integração com os agentes (decisão do Natan, 23/out/2026): registrar, implementar só quando ele pedir
+**O app é a fonte da verdade do dia a dia** (clientes, funil, ações, prioridades, resultados e aprendizados). Os agentes do `site-agropet` guardam só o método e a ficha estratégica. Nada de duas memórias.
+Especificação completa: repositório `site-agropet`, branch `claude/agente-anuncios` (PR #7), arquivo `integracao-app.md`.
+
+- **Entrada (app → agente):** já existe. É o "Exportar backup" (`exportarJSON`). O agente lê as ações (abertas, e as fechadas com `resultado`/`resultadoTxt`/`aprendizado`), clientes, possiveis e historico.
+- **Saída (agente → app):** cada agente entrega um bloco JSON:
+  `{"tipo":"ntn_acoes_agente","schemaVersion":2,"agente":"anuncios","geradoEm":"ISO","acoes":[{ id, cliente, servico, tipo, origem, texto, proximaAcao, data, quando, prazo, status:"aberto", statusOperacional, impacto, urgencia, confianca, esforco, estimativaMin, obrigacaoContratual, riscoFinanceiro, evidencia }]}`
+  - Campos e valores seguem o `schemaV2JSON()`.
+  - `origem` = `"diagnostico"` (o enum não tem "agente").
+  - `id` = `ag-<agente>-<cliente>-<AAAAMMDD>-<nn>`.
+  - `cliente` = nome exato do cadastro.
+
+**A fazer no app: botão "Colar ações do agente" na Central de Trabalho**
+1. Caixa de texto para colar o JSON (sem arquivo).
+2. Validar:
+   - `tipo` e `schemaVersion`;
+   - os valores de cada campo;
+   - as faixas: impacto 1–5, urgencia 1–5, confianca 1–3, esforco 1–5, riscoFinanceiro 0–5;
+   - se o cliente existe.
+3. **Prévia antes de gravar:** o que será criado, atualizado ou ignorado, com a prioridade calculada (`prioridadeAcao`).
+4. Gravar com `persist('acoes', …)`, juntando por `id`:
+   - id novo → cria;
+   - id aberto → atualiza;
+   - id concluído ou cancelado → não mexe e avisa na prévia.
+5. Cliente não encontrado → não grava aquela ação e mostra o nome para corrigir.
+6. **Nunca** apagar nada. **Nunca** sobrescrever `resultado`, `resultadoTxt`, `aprendizado` ou `minutosAcumulados` que já existam.
+7. O aprendizado continua como hoje: caixa "Vale testar em outros clientes" ao fechar a ação.
+
+- **Primeiro pacote para testar:** `clientes/sunleg/ficha.md` no `site-agropet` (seção "Primeiras ações para colar no app"), com 4 ações.
+- **Confirmar com o Natan:** o nome exato da Sunleg no cadastro do app.
+- **Ligação com o plano:** encaixa na Central de Trabalho, sem mexer em prioridade, obrigações nem Foco Agora. Quando a Etapa 3 trocar a ligação por ID, o `cliente` do JSON pode passar a aceitar também o ID da empresa.
+
 ## Etapa 3: Serviços contratados
 Cada serviço com situação própria (GBP ativo, Ads ativo, Site concluído/manutenção), alimentando Obrigações, Central e Relatórios.
 
