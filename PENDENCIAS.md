@@ -49,7 +49,7 @@ O gerador (https://natangomess1.github.io/gerador-relatorios/, repositório `Nat
 
 ## Integração com os agentes (decisão do Natan, 23/out/2026): registrar, implementar só quando ele pedir
 **O app é a fonte da verdade do dia a dia** (clientes, funil, ações, prioridades, resultados e aprendizados). Os agentes do `site-agropet` guardam só o método e a ficha estratégica. Nada de duas memórias.
-Especificação completa: repositório `site-agropet`, branch `claude/agente-anuncios` (PR #7), arquivo `integracao-app.md`.
+Especificação completa: repositório `site-agropet`, branch `main`, arquivo `integracao-app.md`.
 
 - **Entrada (app → agente):** já existe. É o "Exportar backup" (`exportarJSON`). O agente lê as ações (abertas, e as fechadas com `resultado`/`resultadoTxt`/`aprendizado`), clientes, possiveis e historico.
 - **Saída (agente → app):** cada agente entrega um bloco JSON:
@@ -59,7 +59,8 @@ Especificação completa: repositório `site-agropet`, branch `claude/agente-anu
   - `id` = `ag-<agente>-<cliente>-<AAAAMMDD>-<nn>`.
   - `cliente` = nome exato do cadastro.
 
-**A fazer no app: botão "Colar ações do agente" na Central de Trabalho**
+**✅ Feito na V2.5.0 (24/out/2026): botão "Colar do agente" na Central de Trabalho.** A caixa decide pelo `tipo`: `ntn_acoes_agente` vai para a Central e `ntn_grade` vai para o Ranking. Aceita o bloco com texto ou ```json em volta. Nome igual sem acento/maiúscula já vem marcado; nome diferente pede para escolher o cliente (com sugestão de parecidos) ou não gravar. Ação sem `evidencia` entra com confiança 1. Colar de novo mostra "Sem mudança".
+O que foi pedido:
 1. Caixa de texto para colar o JSON (sem arquivo).
 2. Validar:
    - `tipo` e `schemaVersion`;
@@ -85,7 +86,8 @@ Hoje a tela **Ranking Google** guarda **uma posição por cliente** em cada term
 **Lado da grade (feito no `gerador-relatorios`):** botão "Copiar para o app" que gera um bloco JSON:
 `{"tipo":"ntn_grade","schemaVersion":1,"cliente","busca","data","centro":{lat,lng},"n","km","pontos":[{"lin","col","pos"("x" = não apareceu, null = não medido),"primeiro"(id do concorrente ou null)}],"concorrentes":[{"id","nome","categoria","avaliacoes","nota"}],"resumo":{"top3","total","media","naoApareceu"}}`
 
-**A fazer no app: "Colar grade" na tela Ranking** (pode ser a mesma caixa do "Colar ações do agente", decidindo pelo `tipo`)
+**✅ Feito na V2.5.0 (24/out/2026): botão "Colar grade" na tela Ranking** (mesma caixa do "Colar do agente"). A grade fica no cliente do termo (`clientes[].grade`) e a anterior vai para o `hist`. A "Nova verificação" e o "Corrigir" à mão também não apagam mais a grade nem cortam o histórico (antes guardava só as últimas 12).
+O que foi pedido: (pode ser a mesma caixa do "Colar ações do agente", decidindo pelo `tipo`)
 1. Valida `tipo`, `schemaVersion` e se o `cliente` existe. Nome não encontrado → pergunta qual cliente antes de gravar.
 2. Cria ou atualiza o termo (`busca`) daquele cliente. A posição do card passa a ser a **média**, com a linha "top 3 em X de Y pontos".
 3. Guarda a grade inteira no histórico do termo (o `hist` que já existe), para a evolução por cliente.
