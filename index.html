@@ -209,6 +209,14 @@ details.card[open] > summary { margin-bottom: 12px; }
 .rail i.ant { top: -2px; width: 14px; height: 14px; margin-left: -7px; background: #fff; border: 2px solid #8A968F; }
 .pos-n { flex: 0 0 84px; text-align: right; font-family: var(--mono); font-size: 17px; font-weight: 600; white-space: nowrap; }
 .pos-n small { font-size: 12px; font-weight: 600; } .sobe { color: var(--green-d); } .cai { color: var(--red); }
+.pos-g { display: flex; flex-direction: column; gap: 8px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.mini-grades { display: flex; flex-wrap: wrap; gap: 14px; }
+.mini-grade-w { margin: 0; display: flex; flex-direction: column; gap: 4px; }
+.mini-grade { display: grid; gap: 2px; width: 104px; }
+.mini-grade i { aspect-ratio: 1; border-radius: 3px; font-style: normal; font-family: var(--mono); font-size: 9px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+.mg-top { background: var(--green-bg); color: var(--green-d); } .mg-meio { background: var(--amber-bg); color: var(--amber); }
+.mg-fora { background: var(--red-bg); color: var(--red); } .mg-nd { background: var(--grey-bg); }
+.modal-larga { max-width: 780px; }
 .barra-reg { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; background: var(--ink); border-radius: 16px; padding: 14px 16px; }
 .barra-reg .campo { background: var(--ink2); border-color: var(--ink3); color: #fff; color-scheme: dark; }
 .barra-reg .campo.claro { background: #fff; color: var(--text); color-scheme: light; }
@@ -736,6 +744,18 @@ details.card[open] > summary { margin-bottom: 12px; }
   <div class="modal-footer">
     <button class="btn" onclick="closeModal('modal-ranking')">Cancelar</button>
     <button class="btn btn-pri" onclick="salvarRanking()">Salvar</button>
+  </div>
+</div></div>
+
+<div class="modal-overlay" id="modal-colar"><div class="modal modal-larga">
+  <h2>Colar do agente</h2>
+  <p class="sub" style="margin:-8px 0 12px">Cole o bloco que o agente entregou. Ações vão para a Central de Trabalho; a grade de posições vai para o Ranking Google. Nada é gravado antes de você ver a prévia, e nada é apagado.</p>
+  <div class="form-group"><label for="cola-txt">Bloco do agente</label><textarea id="cola-txt" rows="7" spellcheck="false" oninput="colaMudou()" placeholder='{"tipo":"ntn_acoes_agente", ...} ou {"tipo":"ntn_grade", ...}' style="font-family:var(--mono);font-size:12px"></textarea></div>
+  <div id="cola-previa" aria-live="polite"></div>
+  <div class="modal-footer">
+    <button class="btn" onclick="closeModal('modal-colar')">Cancelar</button>
+    <button class="btn" onclick="previaColar()">Ver prévia</button>
+    <button class="btn btn-pri" id="cola-gravar" style="display:none" onclick="gravarColar()">Gravar</button>
   </div>
 </div></div>
 
@@ -1950,6 +1970,7 @@ function renderGestao() {
   const itens = gesItens.filter(a => a.tipo !== 'ficha' && (!gesServ || a.servico === gesServ || a.tipo === 'auditoria'));
   if (gesCliente) renderGestaoCliente(itens.filter(a => a.cliente === gesCliente), cont);
   else renderGestaoGeral(itens, cont);
+  document.getElementById('tela-acoes').insertAdjacentHTML('afterbegin', '<button class="btn" onclick="abrirColarAgente()">Colar do agente</button>');
 }
 
 function pillsAcao(a) {
@@ -2933,7 +2954,7 @@ function renderDash() {
   const titulo = pendMes.length ? `${mes} tem ${plural(pendMes.length, 'mensalidade', 'mensalidades')} para confirmar`
     : antigos.length ? `Faltam ${plural(antigos.length, 'confirmação', 'confirmações')} de meses anteriores` : `${mes} está conferido`;
   const dataExt = new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  setTopo('Início · ' + dataExt, TEM_ACOES ? 'O que fazer agora' : titulo, '<span class="pill p-green">V2.4.0</span>');
+  setTopo('Início · ' + dataExt, TEM_ACOES ? 'O que fazer agora' : titulo, '<span class="pill p-green">V2.5.0</span>');
   document.getElementById('dash-foco').innerHTML = TEM_ACOES ? focoV21HTML() : '<div class="card"><h2>Central de Trabalho ainda não disponível</h2></div>';
   document.getElementById('dash-proximas').innerHTML = TEM_ACOES ? proximasV231HTML() : '';
   document.getElementById('dash-alertas').innerHTML = TEM_ACOES ? alertasCriticosV231HTML() : '';
@@ -3719,19 +3740,21 @@ function renderRanking() {
   const rk = diasSemRanking();
   setTopo('Ranking Google · ' + plural(ranking.length, 'termo', 'termos'),
     !ranking.length ? 'Nenhum termo acompanhado ainda' : rk && rk.dias > 30 ? `Última medição há ${rk.dias} dias. Está na hora de medir de novo.` : `Posições medidas em ${rk ? fmtDate(rk.data) : '—'}`,
-    `<button class="btn btn-pri" onclick="openModalRanking(null)">Novo termo</button>`);
+    `<button class="btn" onclick="abrirColarAgente()">Colar grade</button><button class="btn btn-pri" onclick="openModalRanking(null)">Novo termo</button>`);
   document.getElementById('rank-aviso').innerHTML = rk && rk.dias > 30 ? `<div class="aviso av-amb"><span><b>Verificação vencida.</b> A medição mais recente é de ${fmtDate(rk.data)}. Use “Nova verificação” em cada termo: ela guarda a posição atual como anterior e mostra quem subiu e quem caiu.</span></div>` : '';
   const list = document.getElementById('ranking-list');
   if (!ranking.length) { list.innerHTML = `<div class="empty" style="flex:1">Cadastre um termo de busca para acompanhar a posição dos clientes.</div>`; return; }
   const esq = pos => Math.max(0, Math.min(100, (Math.min(+pos || 20, 20) - 1) / 19 * 100)).toFixed(1);
   list.innerHTML = ranking.map(r => {
     const rid = esc(r.id);
-    const linhas = (r.clientes || []).slice().sort((a,b) => a.pos - b.pos).map(cp => {
+    const linhas = (r.clientes || []).slice().sort((a,b) => (a.pos ?? 99) - (b.pos ?? 99)).map(cp => {
+      if (cp.grade) return linhaGradeRanking(cp);
       const hist = cp.hist || [], ant = hist[hist.length - 1];
       let evol = '';
-      if (ant) { const d = ant.pos - cp.pos; evol = d > 0 ? ` <small class="sobe">▲${d}</small>` : d < 0 ? ` <small class="cai">▼${-d}</small>` : ' <small class="muted">=</small>'; }
+      if (ant && ant.grade) evol = ' <small class="muted">≠ grade</small>';
+      else if (ant) { const d = ant.pos - cp.pos; evol = d > 0 ? ` <small class="sobe">▲${d}</small>` : d < 0 ? ` <small class="cai">▼${-d}</small>` : ' <small class="muted">=</small>'; }
       const cor = cp.pos <= 3 ? 'color:var(--green-d)' : cp.pos > 10 ? 'color:var(--amber)' : '';
-      return `<div class="pos-l"><div class="nome">${esc(cp.nome)}${ant ? `<div class="sub">antes ${esc(ant.pos)}º em ${fmtDia(ant.data)}</div>` : ''}</div>
+      return `<div class="pos-l"><div class="nome">${esc(cp.nome)}${ant ? `<div class="sub">antes ${esc(posTxt(ant.pos))}${ant.grade ? ' (média da grade)' : ''} em ${fmtDia(ant.data)}</div>` : ''}</div>
         <div class="rail" role="img" aria-label="${esc(cp.nome)} na posição ${esc(cp.pos)}">${ant ? `<i class="ant" style="left:${esq(ant.pos)}%"></i>` : ''}<i style="left:${esq(cp.pos)}%"></i></div>
         <div class="pos-n" style="${cor}">${esc(cp.pos)}º${evol}</div></div>`;
     }).join('');
@@ -3764,8 +3787,8 @@ function openModalRanking(id, nova) {
     nomes.map(n => {
       const cp = r ? (r.clientes || []).find(x => x.nome === n) : null;
       return `<div style="display:grid;grid-template-columns:1fr 90px;gap:8px;margin-bottom:6px;align-items:center">
-        <span>${esc(n)}${cp && _rankNova ? ` <span class="sub">(estava em ${esc(cp.pos)}º)</span>` : ''}</span>
-        <input type="number" min="1" max="100" placeholder="posição" value="${cp && !_rankNova ? esc(cp.pos) : ''}" data-nome="${esc(n)}" aria-label="Posição de ${esc(n)}">
+        <span>${esc(n)}${cp && _rankNova ? ` <span class="sub">(estava em ${esc(posTxt(cp.pos))}${cp.grade ? ', média da grade' : ''})</span>` : ''}</span>
+        <input type="number" min="1" max="100" placeholder="posição" value="${cp && !_rankNova && cp.pos != null ? esc(cp.pos) : ''}" data-nome="${esc(n)}" aria-label="Posição de ${esc(n)}">
       </div>`;
     }).join('')
   }</div></div>`;
@@ -3782,8 +3805,9 @@ async function salvarRanking() {
     const nome = inp.dataset.nome;
     const velho = anterior ? (anterior.clientes || []).find(x => x.nome === nome) : null;
     let hist = velho ? (velho.hist || []) : [];
-    if (!inp.value) { if (velho && _rankNova) posClientes.push(velho); return; } // nova verificação sem posição: mantém a anterior
-    if (velho && _rankNova) hist = [...hist, { data: anterior.data || '', pos: velho.pos }].slice(-12);
+    if (!inp.value) { if (velho && (_rankNova || velho.grade)) posClientes.push(velho); return; } // em branco: mantém a anterior (e a grade)
+    if (velho && !_rankNova && +inp.value === +velho.pos) { posClientes.push(velho); return; } // correção sem mudar o número: mantém igual
+    if (velho && _rankNova) hist = [...hist, histDe(velho, anterior.data)]; // nunca apaga medição anterior
     posClientes.push({ nome, pos: parseInt(inp.value), hist });
     if (clientes.some(c => c.nome === nome)) medidos.push({ nome, pos: parseInt(inp.value) });
   });
@@ -4170,6 +4194,283 @@ window.addEventListener('DOMContentLoaded', async () => {
   if (autenticado) loadAll();
 });
 
+
+// ═══════════════ V2.5.0: COLAR DO AGENTE (ações → Central · grade → Ranking) ═══════════════
+// Especificação: site-agropet/integracao-app.md. Nada é gravado antes da prévia; nada é apagado.
+const AG_ENUM = {
+  servico: ['gbp','ads','site','seo','social','geral'],
+  tipo: ['atividade','mudanca','teste','plano','problema','espera','contato','suspensao','diagnostico','auditoria'],
+  origem: ['diagnostico','rotina','cliente','financeiro','comercial','manual'],
+  statusOperacional: ['a_fazer','em_execucao','aguardando','reavaliar','concluida','cancelada']
+};
+const AG_FAIXA = { impacto:[1,5], urgencia:[1,5], confianca:[1,3], esforco:[1,5], riscoFinanceiro:[0,5] };
+// campos que o agente pode escrever; resultado, resultadoTxt, aprendizado, minutosAcumulados e iniciadoEm ficam de fora
+const AG_CAMPOS = ['servico','tipo','origem','texto','proximaAcao','data','quando','prazo','statusOperacional','impacto','urgencia','confianca','esforco','estimativaMin','obrigacaoContratual','riscoFinanceiro','evidencia'];
+let _cola = null; // { tipo:'acoes'|'grade', pacote, itens, mapa:{ nomeColado: nomeDoCadastro|'' } }
+
+function abrirColarAgente() {
+  _cola = null;
+  document.getElementById('cola-txt').value = '';
+  document.getElementById('cola-previa').innerHTML = '';
+  document.getElementById('cola-gravar').style.display = 'none';
+  openModal('modal-colar');
+  setTimeout(() => document.getElementById('cola-txt').focus(), 50);
+}
+function colaMudou() { _cola = null; document.getElementById('cola-gravar').style.display = 'none'; document.getElementById('cola-previa').innerHTML = ''; }
+function lerJSONColado(txt) {
+  txt = String(txt || '').trim();
+  const i = txt.indexOf('{'), j = txt.lastIndexOf('}');
+  if (i < 0 || j < i) throw new Error('Não encontrei um bloco JSON no texto colado.');
+  try { return JSON.parse(txt.slice(i, j + 1)); } catch (e) { throw new Error('O bloco está incompleto ou com erro de digitação (' + e.message + ').'); }
+}
+function normNome(s) { return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim(); }
+function nomesCadastro() { return [...new Set(clientes.map(c => c.nome).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR')); }
+function nomeExiste(nome, comInterno) { return nomesCadastro().includes(nome) || (comInterno && nome === INTERNO); }
+// nome igual tirando acento e maiúscula: pode marcar sozinho. Parecido (uma palavra em comum): só sugere.
+function nomeIgualSemAcento(nome) { const k = normNome(nome); return nomesCadastro().find(n => normNome(n) === k) || ''; }
+function nomesParecidos(nome) {
+  const pal = normNome(nome).split(/[^a-z0-9]+/).filter(p => p.length >= 4);
+  return nomesCadastro().filter(n => { const k = normNome(n); return pal.some(p => k.includes(p)); });
+}
+function clienteDoColado(nome, comInterno) {
+  if (nomeExiste(nome, comInterno)) return nome;
+  return (_cola && _cola.mapa[nome]) || '';
+}
+function posTxt(p) { if (p == null || p === '') return 'fora do top 20'; const n = +p; return (Number.isInteger(n) ? n : n.toFixed(1).replace('.', ',')) + 'º'; }
+
+function previaColar() {
+  const el = document.getElementById('cola-previa');
+  document.getElementById('cola-gravar').style.display = 'none';
+  let pacote;
+  try {
+    pacote = lerJSONColado(document.getElementById('cola-txt').value);
+    if (pacote.tipo === 'ntn_acoes_agente') _cola = montarColaAcoes(pacote);
+    else if (pacote.tipo === 'ntn_grade') _cola = montarColaGrade(pacote);
+    else throw new Error(`Tipo "${pacote.tipo || 'sem tipo'}" não reconhecido. Aceito "ntn_acoes_agente" (ações) e "ntn_grade" (grade de posições).`);
+  } catch (e) {
+    _cola = null;
+    el.innerHTML = `<div class="aviso av-red"><span><b>Não deu para ler.</b> ${esc(e.message)}</span></div>`;
+    return;
+  }
+  // nome igual sem acento já vem marcado
+  Object.keys(_cola.mapa).forEach(n => { if (!_cola.mapa[n]) _cola.mapa[n] = nomeIgualSemAcento(n); });
+  desenharPrevia();
+}
+function colaMapa(sel) { if (!_cola) return; _cola.mapa[sel.dataset.nome] = sel.value; desenharPrevia(); }
+function seletorCliente(nome) {
+  const sug = nomesParecidos(nome), atual = _cola.mapa[nome] || '';
+  const outros = nomesCadastro().filter(n => !sug.includes(n));
+  return `<div class="aviso av-amb" style="margin-bottom:10px"><span><b>“${esc(nome)}” não está no cadastro.</b> Escolha o cliente certo ou deixe sem gravar.</span>
+    <select class="campo" data-nome="${esc(nome)}" onchange="colaMapa(this)" aria-label="Cliente para ${esc(nome)}">
+      <option value="">Não gravar</option>
+      ${sug.length ? `<optgroup label="Parecidos">${sug.map(n => `<option value="${esc(n)}" ${n === atual ? 'selected' : ''}>${esc(n)}</option>`).join('')}</optgroup>` : ''}
+      <optgroup label="Todos">${outros.map(n => `<option value="${esc(n)}" ${n === atual ? 'selected' : ''}>${esc(n)}</option>`).join('')}</optgroup>
+    </select></div>`;
+}
+
+// ── Ações (ntn_acoes_agente, schemaVersion 2) ──
+function montarColaAcoes(pacote) {
+  if (!TEM_ACOES) throw new Error('A Central de Trabalho ainda não está ligada no banco (falta a tabela de ações).');
+  if (pacote.schemaVersion !== 2) throw new Error(`Versão ${pacote.schemaVersion} do pacote não é aceita (esperado schemaVersion 2).`);
+  if (!Array.isArray(pacote.acoes) || !pacote.acoes.length) throw new Error('O pacote não tem ações (campo "acoes" vazio).');
+  const vistos = new Set(), mapa = {};
+  const itens = pacote.acoes.map(p => {
+    const erros = validarAcaoAgente(p);
+    if (p && p.id) { if (vistos.has(p.id)) erros.push('id repetido no pacote'); vistos.add(p.id); }
+    const nome = String(p && p.cliente || '').trim();
+    if (nome && !nomeExiste(nome, true)) mapa[nome] = '';
+    return { p, erros, nome };
+  });
+  return { tipo: 'acoes', pacote, itens, mapa };
+}
+function validarAcaoAgente(a) {
+  if (!a || typeof a !== 'object' || Array.isArray(a)) return ['não é uma ação'];
+  const e = [], tem = k => a[k] != null && a[k] !== '';
+  if (typeof a.id !== 'string' || !a.id.trim()) e.push('sem id');
+  if (!String(a.cliente || '').trim()) e.push('sem cliente');
+  if (!String(a.texto || '').trim()) e.push('sem texto');
+  Object.entries(AG_ENUM).forEach(([k, vals]) => { if (tem(k) && !vals.includes(a[k])) e.push(`${k} "${a[k]}" não existe`); });
+  Object.entries(AG_FAIXA).forEach(([k, [mi, ma]]) => { if (tem(k)) { const v = +a[k]; if (!Number.isInteger(v) || v < mi || v > ma) e.push(`${k} fora de ${mi} a ${ma}`); } });
+  ['data','quando','prazo'].forEach(k => { if (tem(k) && !/^\d{4}-\d{2}-\d{2}$/.test(a[k])) e.push(`${k} não está como AAAA-MM-DD`); });
+  if (tem('estimativaMin') && !(+a.estimativaMin >= 0)) e.push('estimativaMin inválida');
+  if (a.obrigacaoContratual != null && typeof a.obrigacaoContratual !== 'boolean') e.push('obrigacaoContratual precisa ser true ou false');
+  return e;
+}
+function acaoDoPacote(p, cliente) {
+  const o = { id: p.id.trim(), cliente };
+  AG_CAMPOS.forEach(k => { if (p[k] != null && p[k] !== '') o[k] = p[k]; });
+  ['impacto','urgencia','confianca','esforco','riscoFinanceiro','estimativaMin'].forEach(k => { if (o[k] != null) o[k] = +o[k]; });
+  if (o.statusOperacional) o.status = ['concluida','cancelada'].includes(o.statusOperacional) ? 'fechado' : 'aberto';
+  return o;
+}
+function decidirAcao(it) {
+  if (it.erros.length) return { op: 'erro', motivo: it.erros.join('; ') };
+  const cli = clienteDoColado(it.nome, true);
+  if (!cli) return { op: 'sem_cliente', motivo: 'Cliente fora do cadastro: não grava' };
+  const novo = acaoDoPacote(it.p, cli), agente = String(_cola.pacote.agente || '');
+  const atual = gesItens.find(a => a.id === novo.id);
+  if (!atual) {
+    const obj = { data: hojeISO(), servico: 'geral', tipo: 'plano', origem: 'diagnostico', status: 'aberto', ...novo, schemaVersion: 2, agente, importadoEm: new Date().toISOString() };
+    if (!obj.statusOperacional) obj.statusOperacional = obj.tipo === 'espera' ? 'aguardando' : 'a_fazer';
+    const semEvid = !obj.evidencia; if (semEvid) obj.confianca = 1; // regra do pacote: sem evidência, confiança 1
+    return { op: 'criar', obj, semEvid };
+  }
+  if (!gesAberto(atual) || ['concluida','cancelada'].includes(opStatus(atual))) return { op: 'ignorar', motivo: 'Já concluída ou cancelada no app: não mexo' };
+  const muda = Object.keys(novo).filter(k => JSON.stringify(atual[k] ?? null) !== JSON.stringify(novo[k]));
+  if (!muda.length) return { op: 'igual', motivo: 'Já está igual no app' };
+  return { op: 'atualizar', obj: { ...atual, ...novo, agente: agente || atual.agente || '', atualizadoPeloAgenteEm: new Date().toISOString() }, muda };
+}
+const COLA_OP = { criar:['Criar','p-ok'], atualizar:['Atualizar','p-blue'], igual:['Sem mudança',''], ignorar:['Não mexe','p-amb'], sem_cliente:['Não grava','p-amb'], erro:['Com erro','p-red'] };
+function previaAcoesHTML() {
+  const decs = _cola.itens.map(it => ({ it, d: decidirAcao(it) }));
+  const cont = {}; decs.forEach(({ d }) => cont[d.op] = (cont[d.op] || 0) + 1);
+  const resumo = Object.entries(COLA_OP).filter(([k]) => cont[k]).map(([k, [rot, cor]]) => `<span class="pill ${cor}">${cont[k]} · ${rot}</span>`).join(' ');
+  const faltam = Object.keys(_cola.mapa).map(seletorCliente).join('');
+  const linhas = decs.map(({ it, d }) => {
+    const [rot, cor] = COLA_OP[d.op], o = d.obj;
+    const prio = o && !['contato','auditoria'].includes(o.tipo) ? `P${prioridadeAcao({ ...o })}` : '—';
+    const det = d.op === 'atualizar' ? 'Muda: ' + d.muda.join(', ') : d.op === 'criar' && d.semEvid ? 'Sem evidência: confiança 1' : (d.motivo || '');
+    return `<tr><td>${esc(o ? o.cliente : it.nome || '—')}</td><td>${esc(curto(String(it.p && it.p.texto || ''), 110))}${o ? `<div class="sub">${esc(SERV_ROT[o.servico] || o.servico || '')} · ${esc((TIPOS_G[o.tipo] || {}).rot || o.tipo || '')}${o.prazo ? ' · prazo ' + fmtDate(o.prazo) : ''}</div>` : ''}</td><td style="font-family:var(--mono)">${prio}</td><td><span class="pill ${cor}">${rot}</span>${det ? `<div class="sub">${esc(det)}</div>` : ''}</td></tr>`;
+  }).join('');
+  const n = (cont.criar || 0) + (cont.atualizar || 0);
+  return { n, html: `<div class="eyebrow" style="margin-bottom:6px">Prévia · ${plural(_cola.itens.length, 'ação', 'ações')} do agente ${esc(_cola.pacote.agente || 'sem nome')}</div>
+    <div style="margin-bottom:10px">${resumo}</div>${faltam}
+    <div style="overflow-x:auto"><table><tr><th>Cliente</th><th>Ação</th><th>Prioridade</th><th>O que acontece</th></tr>${linhas}</table></div>` };
+}
+async function gravarAcoesColadas() {
+  const decs = _cola.itens.map(decidirAcao).filter(d => d.op === 'criar' || d.op === 'atualizar');
+  if (!decs.length) return 0;
+  const objs = decs.map(d => {
+    const o = normalizarAcaoV2(d.obj), i = gesItens.findIndex(a => a.id === o.id);
+    if (i >= 0) gesItens[i] = o; else gesItens.push(o);
+    return o;
+  });
+  const ok = await persistMuitos('acoes', objs);
+  const cri = decs.filter(d => d.op === 'criar').length, atu = decs.length - cri;
+  if (ok) toast([cri ? plural(cri, 'ação criada', 'ações criadas') : '', atu ? plural(atu, 'ação atualizada', 'ações atualizadas') : ''].filter(Boolean).join(' · ') + ' na Central de Trabalho', 3500);
+  return decs.length;
+}
+
+// ── Grade de Posições (ntn_grade, schemaVersion 1) ──
+function montarColaGrade(g) {
+  const e = [];
+  if (g.schemaVersion !== 1) e.push(`versão ${g.schemaVersion} não é aceita (esperado schemaVersion 1)`);
+  if (!String(g.cliente || '').trim()) e.push('sem cliente');
+  if (!String(g.busca || '').trim()) e.push('sem busca');
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(g.data || '')) e.push('data não está como AAAA-MM-DD');
+  const n = +g.n;
+  if (!Number.isInteger(n) || n < 1 || n > 15) e.push('tamanho da grade (n) inválido');
+  if (!(+g.km > 0)) e.push('distância (km) inválida');
+  if (!g.centro || g.centro.lat == null || g.centro.lng == null || !Number.isFinite(+g.centro.lat) || !Number.isFinite(+g.centro.lng)) e.push('centro sem latitude e longitude');
+  if (!Array.isArray(g.pontos) || g.pontos.length !== n * n) e.push(`esperava ${n * n || '?'} pontos, vieram ${Array.isArray(g.pontos) ? g.pontos.length : 0}`);
+  else g.pontos.forEach((p, i) => { const v = p && p.pos; if (!(v === null || v === 'x' || (Number.isInteger(+v) && +v >= 1))) e.push(`ponto ${i + 1}: posição "${v}" inválida`); });
+  if (e.length) throw new Error('Grade com problema: ' + e.slice(0, 5).join('; ') + (e.length > 5 ? ` (e mais ${e.length - 5})` : '') + '.');
+  const nome = String(g.cliente).trim(), mapa = {};
+  if (!nomeExiste(nome)) mapa[nome] = '';
+  const pontos = g.pontos.map((p, i) => ({ lin: p.lin != null ? +p.lin : Math.floor(i / n), col: p.col != null ? +p.col : i % n, pos: p.pos === null ? null : p.pos === 'x' ? 'x' : +p.pos, primeiro: p.primeiro ?? null }))
+    .sort((a, b) => a.lin - b.lin || a.col - b.col);
+  const grade = { data: g.data, centro: { lat: +g.centro.lat, lng: +g.centro.lng }, n, km: +g.km, pontos,
+    concorrentes: (Array.isArray(g.concorrentes) ? g.concorrentes : []).filter(c => c && c.nome).map(c => ({ id: c.id ?? null, nome: String(c.nome), categoria: c.categoria || null, avaliacoes: c.avaliacoes != null && c.avaliacoes !== '' ? +c.avaliacoes : null, nota: c.nota != null && c.nota !== '' ? +c.nota : null, pontos: c.pontos != null ? +c.pontos : null })),
+    resumo: resumoGrade(pontos) };
+  return { tipo: 'grade', pacote: g, itens: [], mapa, nome, busca: String(g.busca).trim(), grade };
+}
+// mesma conta da grade publicada: top 3 = posição 1 a 3; média só onde aparece até a 20ª
+function resumoGrade(pontos) {
+  const feitos = pontos.filter(p => p.pos !== null), ap = feitos.filter(p => p.pos !== 'x' && p.pos <= 20);
+  const media = ap.length ? +(ap.reduce((s, p) => s + p.pos, 0) / ap.length).toFixed(1) : null;
+  return { top3: feitos.filter(p => p.pos !== 'x' && p.pos <= 3).length, total: pontos.length, medidos: feitos.length, media, naoApareceu: feitos.length - ap.length };
+}
+function mesmaMedicao(a, b) { return !!(a && b && a.n === b.n && a.km === b.km && Math.abs(a.centro.lat - b.centro.lat) < 1e-4 && Math.abs(a.centro.lng - b.centro.lng) < 1e-4); }
+function histDe(cp, dataTermo) { const h = { data: cp.data || dataTermo || '', pos: cp.pos }; if (cp.grade) h.grade = cp.grade; return h; }
+function aplicarGrade() {
+  const cli = clienteDoColado(_cola.nome); if (!cli) return null;
+  const g = _cola.grade, k = normNome(_cola.busca);
+  const anterior = ranking.find(r => normNome(r.termo) === k);
+  const r = anterior ? JSON.parse(JSON.stringify(anterior)) : { id: uid(), termo: _cola.busca, clientes: [], data: g.data };
+  const cps = r.clientes || [], i = cps.findIndex(c => c.nome === cli), velho = i >= 0 ? cps[i] : null;
+  if (velho && velho.grade && JSON.stringify(velho.grade.pontos) === JSON.stringify(g.pontos) && velho.grade.data === g.data && mesmaMedicao(velho.grade, g)) return { r, cli, velho, igual: true, novoTermo: false };
+  const entrada = { nome: cli, pos: g.resumo.media, data: g.data, grade: g, hist: velho ? [...(velho.hist || []), histDe(velho, r.data)] : [] };
+  if (i >= 0) cps[i] = entrada; else cps.push(entrada);
+  r.clientes = cps;
+  if (!r.data || g.data > r.data) r.data = g.data;
+  return { r, cli, velho, entrada, novoTermo: !anterior };
+}
+function corPonto(v) { return v === null ? 'mg-nd' : v === 'x' || v > 10 ? 'mg-fora' : v <= 3 ? 'mg-top' : 'mg-meio'; }
+function miniGrade(g, rot) {
+  const rs = g.resumo || resumoGrade(g.pontos);
+  return `<figure class="mini-grade-w"><div class="mini-grade" style="grid-template-columns:repeat(${g.n},1fr)" role="img" aria-label="${esc(rot)}: top 3 em ${rs.top3} de ${rs.total} pontos">${g.pontos.map(p => `<i class="${corPonto(p.pos)}" title="${p.pos === null ? 'não medido' : p.pos === 'x' ? 'não apareceu' : p.pos + 'º'}">${p.pos === null ? '' : p.pos === 'x' ? '×' : p.pos}</i>`).join('')}</div><figcaption class="sub">${esc(rot)}</figcaption></figure>`;
+}
+function comparaGrade(g, antG) {
+  if (!antG) return '';
+  if (!mesmaMedicao(g, antG)) return '<small class="muted">não comparável com a anterior (mudou centro, tamanho ou distância)</small>';
+  const a = g.resumo, b = antG.resumo || resumoGrade(antG.pontos), d = a.top3 - b.top3;
+  const t3 = d > 0 ? `<small class="sobe">▲ +${d} no top 3</small>` : d < 0 ? `<small class="cai">▼ ${d} no top 3</small>` : '<small class="muted">= top 3</small>';
+  let med = '';
+  if (a.media != null && b.media != null && a.media !== b.media) { const dm = +(b.media - a.media).toFixed(1); med = dm > 0 ? ` <small class="sobe">média ▲${String(dm).replace('.', ',')}</small>` : ` <small class="cai">média ▼${String(-dm).replace('.', ',')}</small>`; }
+  return t3 + med;
+}
+// quem ganha mais pontos e como as avaliações dele andaram entre as medições
+function concorrentesHTML(cp) {
+  const g = cp.grade, cs = (g.concorrentes || []).filter(c => c.pontos).sort((a, b) => b.pontos - a.pontos).slice(0, 3);
+  if (!cs.length) return '';
+  const grades = [...(cp.hist || []).map(h => h.grade).filter(Boolean), g];
+  const mesmo = (a, b) => (a.id != null && b.id != null && a.id === b.id) || normNome(a.nome) === normNome(b.nome);
+  return `<div class="sub" style="margin-top:6px"><b>Quem aparece em 1º:</b> ${cs.map(c => {
+    const serie = grades.map(x => { const k = (x.concorrentes || []).find(y => mesmo(y, c)); return k && k.avaliacoes != null ? `${k.avaliacoes} (${fmtDia(x.data)})` : null; }).filter(Boolean);
+    return `${esc(c.nome)} · ${c.pontos} de ${g.resumo.total} pontos${c.nota ? ` · nota ${String(c.nota).replace('.', ',')}` : ''}${serie.length ? ` · avaliações ${esc(serie.join(' → '))}` : ''}`;
+  }).join('<br>')}</div>`;
+}
+function linhaGradeRanking(cp) {
+  const g = cp.grade, rs = g.resumo, ant = (cp.hist || [])[(cp.hist || []).length - 1], antG = ant && ant.grade;
+  const evol = ant ? (antG ? comparaGrade(g, antG) : '<small class="muted">antes medido à mão: não comparável</small>') : '';
+  const cor = rs.media == null ? 'color:var(--red)' : rs.top3 * 2 >= rs.total ? 'color:var(--green-d)' : 'color:var(--amber)';
+  return `<div class="pos-g"><div class="pos-l"><div class="nome">${esc(cp.nome)}<div class="sub">grade ${g.n}×${g.n}, ${String(g.km).replace('.', ',')} km · ${fmtDia(g.data)}</div></div>
+    <div style="flex:1;font-size:14px"><b>Top 3 em ${rs.top3} de ${rs.total} pontos</b>${rs.naoApareceu ? `<div class="sub">não apareceu em ${rs.naoApareceu}</div>` : ''}<div>${evol}</div></div>
+    <div class="pos-n" style="${cor}" title="posição média onde aparece">${posTxt(rs.media)}</div></div>
+    <div class="mini-grades">${miniGrade(g, 'agora')}${antG ? miniGrade(antG, 'anterior · ' + fmtDia(antG.data)) : ''}</div>${concorrentesHTML(cp)}</div>`;
+}
+function previaGradeHTML() {
+  const faltam = Object.keys(_cola.mapa).map(seletorCliente).join('');
+  const g = _cola.grade, rs = g.resumo;
+  const ap = clienteDoColado(_cola.nome) ? aplicarGrade() : null;
+  let oque = '<span class="pill p-amb">Não grava</span><div class="sub">Escolha o cliente acima.</div>', n = 0;
+  if (ap && ap.igual) oque = '<span class="pill">Sem mudança</span><div class="sub">Esta grade já está no app.</div>';
+  else if (ap) {
+    n = 1; const antG = ap.velho && ap.velho.grade;
+    oque = `<span class="pill p-ok">${ap.novoTermo ? 'Novo termo' : ap.velho ? 'Nova medição' : 'Cliente novo neste termo'}</span><div class="sub">${ap.velho ? `A anterior (${posTxt(ap.velho.pos)}${ap.velho.data ? ' em ' + fmtDia(ap.velho.data) : ''}) fica guardada no histórico. ` : ''}${ap.velho ? (antG ? comparaGrade(g, antG) : 'A anterior foi medida à mão: não comparável.') : ''}</div>`;
+  }
+  const quemG = (_cola.grade.concorrentes || []).filter(c => c.pontos).sort((a, b) => b.pontos - a.pontos)[0];
+  return { n, html: `<div class="eyebrow" style="margin-bottom:6px">Prévia · grade de posições</div>${faltam}
+    <div class="card" style="padding:14px"><div class="pos-l"><div style="flex:1"><b>${esc(clienteDoColado(_cola.nome) || _cola.nome)}</b> · “${esc(_cola.busca)}”<div class="sub">${fmtDate(g.data)} · grade ${g.n}×${g.n}, ${String(g.km).replace('.', ',')} km</div></div><div class="pos-n">${posTxt(rs.media)}</div></div>
+    <div style="margin:8px 0">Top 3 em <b>${rs.top3} de ${rs.total}</b> pontos${rs.naoApareceu ? ` · não apareceu em ${rs.naoApareceu}` : ''}${rs.medidos < rs.total ? ` · ${rs.total - rs.medidos} sem medir` : ''}</div>
+    <div class="mini-grades">${miniGrade(g, 'esta medição')}${ap && ap.velho && ap.velho.grade ? miniGrade(ap.velho.grade, 'anterior') : ''}</div>
+    ${quemG ? `<div class="sub" style="margin-top:6px">Quem mais aparece em 1º: ${esc(quemG.nome)} (${quemG.pontos} de ${rs.total} pontos)</div>` : ''}
+    <div style="margin-top:10px">${oque}</div></div>` };
+}
+async function gravarGradeColada() {
+  const ap = aplicarGrade(); if (!ap || ap.igual) return 0;
+  const i = ranking.findIndex(x => x.id === ap.r.id);
+  if (i >= 0) ranking[i] = ap.r; else ranking.push(ap.r);
+  const ok = await persist('ranking', ap.r);
+  if (ok) toast(`Grade de “${ap.r.termo}” gravada para ${ap.cli}`, 3500);
+  return 1;
+}
+
+function desenharPrevia() {
+  const p = _cola.tipo === 'acoes' ? previaAcoesHTML() : previaGradeHTML();
+  document.getElementById('cola-previa').innerHTML = p.html;
+  const b = document.getElementById('cola-gravar');
+  b.style.display = p.n ? '' : 'none';
+  b.textContent = _cola.tipo === 'acoes' ? `Gravar ${plural(p.n, 'ação', 'ações')}` : 'Gravar grade';
+}
+async function gravarColar() {
+  if (!_cola) return;
+  const b = document.getElementById('cola-gravar'); b.disabled = true;
+  try {
+    const n = _cola.tipo === 'acoes' ? await gravarAcoesColadas() : await gravarGradeColada();
+    if (n) { closeModal('modal-colar'); _cola = null; atualizarContaGestao(); renderAtual(); }
+  } finally { b.disabled = false; }
+}
 </script>
 </body>
 </html>
